@@ -1,0 +1,121 @@
+{% extends "base_customer.html" %}
+{% block title %}Services | Local Services{% endblock %}
+
+    {% block content %}
+
+    
+    <div style="margin-bottom: 2rem;">
+        <div class="flex justify-between items-center">
+            <h2>Available Services</h2>
+            <div class="search-bar" style="max-width: 300px;">
+                <input type="text" class="search-input" placeholder="Search services..."
+                    style="padding: 0.5rem 1rem;">
+                <i class="fa-solid fa-magnifying-glass text-light" style="padding-right: 1rem;"></i>
+            </div>
+        </div>
+
+        <!-- Category Tabs -->
+        <div class="flex gap-sm" style="margin-top: 1rem; overflow-x: auto; padding-bottom: 0.5rem;">
+            <button class="btn btn-primary btn-sm rounded-full">All</button>
+            <button class="btn btn-secondary btn-sm rounded-full">Cleaning</button>
+            <button class="btn btn-secondary btn-sm rounded-full">Electrician</button>
+            <button class="btn btn-secondary btn-sm rounded-full">Plumbing</button>
+            <button class="btn btn-secondary btn-sm rounded-full">AC & Appliance</button>
+            <button class="btn btn-secondary btn-sm rounded-full">Beauty</button>
+        </div>
+    </div>
+
+    <!-- Services Grid -->
+    <div class="grid grid-cols-3 grid-gap">
+        <!-- Service 1 -->
+        <div class="card card-hover flex flex-col h-full" style="padding: 0;">
+            <div
+                style="height: 160px; background-color: #E2E8F0; position: relative; border-radius: var(--radius-md) var(--radius-md) 0 0; display: flex; align-items: center; justify-content: center;">
+                <i class="fa-solid fa-broom fa-3x text-light"></i>
+                <span class="badge badge-warning" style="position: absolute; top: 1rem; right: 1rem;">Best
+                            Seller</span>
+            </div>
+            <div style="padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1;">
+                <div class="flex justify-between items-start" style="margin-bottom: 0.5rem;">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 0;">Full Home Deep Cleaning</h3>
+                    <span class="flex items-center text-sm gap-xs"><i class="fa-solid fa-star text-warning"></i>
+                                4.9</span>
+                </div>
+                <p class="text-sm text-light" style="margin-bottom: 1.5rem;">Includes floor, furniture,
+                            bathroom, and kitchen deep cleaning.</p>
+
+                <div class="flex justify-between items-center" style="margin-top: auto;">
+                    <span class="font-bold text-lg">$89.00</span>
+                    <a href="service_detail.html" class="btn btn-outline btn-sm">View</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service 2 -->
+        <div class="card card-hover flex flex-col h-full" style="padding: 0;">
+            <div
+                style="height: 160px; background-color: #E2E8F0; position: relative; border-radius: var(--radius-md) var(--radius-md) 0 0; display: flex; align-items: center; justify-content: center;">
+                <i class="fa-solid fa-fan fa-3x text-light"></i>
+            </div>
+            <div style="padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1;">
+                <div class="flex justify-between items-start" style="margin-bottom: 0.5rem;">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 0;">AC Service & Repair</h3>
+                    <span class="flex items-center text-sm gap-xs"><i class="fa-solid fa-star text-warning"></i>
+                        4.7</span>
+                </div>
+                <p class="text-sm text-light" style="margin-bottom: 1.5rem;">Professional servicing for
+                    Split/Window ACs.</p>
+
+                <div class="flex justify-between items-center" style="margin-top: auto;">
+                    <span class="font-bold text-lg">$25.00</span>
+                    <a href="service_detail.html" class="btn btn-outline btn-sm">View</a>
+                </div>
+            </div>
+        </div>
+
+                <!-- Service 3 -->
+        <div class="card card-hover flex flex-col h-full" style="padding: 0;">
+            <div
+                style="height: 160px; background-color: #E2E8F0; position: relative; border-radius: var(--radius-md) var(--radius-md) 0 0; display: flex; align-items: center; justify-content: center;">
+                <i class="fa-solid fa-plug fa-3x text-light"></i>
+            </div>
+            <div style="padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1;">
+                <div class="flex justify-between items-start" style="margin-bottom: 0.5rem;">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 0;">Electrician Visit</h3>
+                    <span class="flex items-center text-sm gap-xs"><i class="fa-solid fa-star text-warning"></i>
+                                4.5</span>
+                </div>
+                <p class="text-sm text-light" style="margin-bottom: 1.5rem;">Quick repairs, installation, and
+                    fault checking.</p>
+
+                <div class="flex justify-between items-center" style="margin-top: auto;">
+                    <span class="font-bold text-lg">$15.00</span>
+                    <a href="service_detail.html" class="btn btn-outline btn-sm">View</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service 4 -->
+        <div class="card card-hover flex flex-col h-full" style="padding: 0;">
+            <div
+                style="height: 160px; background-color: #E2E8F0; position: relative; border-radius: var(--radius-md) var(--radius-md) 0 0; display: flex; align-items: center; justify-content: center;">
+                <i class="fa-solid fa-spa fa-3x text-light"></i>
+            </div>
+            <div style="padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1;">
+                <div class="flex justify-between items-start" style="margin-bottom: 0.5rem;">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 0;">Salon at Home</h3>
+                    <span class="flex items-center text-sm gap-xs"><i class="fa-solid fa-star text-warning"></i>
+                        4.9</span>
+                </div>
+                <p class="text-sm text-light" style="margin-bottom: 1.5rem;">Premium facial, waxing, and cleanup
+                    services.</p>
+
+                <div class="flex justify-between items-center" style="margin-top: auto;">
+                    <span class="font-bold text-lg">$45.00</span>
+                    <a href="service_detail.html" class="btn btn-outline btn-sm">View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endblock %}

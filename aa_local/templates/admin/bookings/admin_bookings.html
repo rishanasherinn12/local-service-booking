@@ -1,0 +1,48 @@
+{% extends "base_admin.html" %}
+{% block title %}Admin Bookings{% endblock %}
+
+        <!-- Main Content -->
+        {% block content %}
+
+            <div class="flex justify-between items-center" style="margin-bottom: 2rem;">
+                <h2>All Bookings</h2>
+                <div class="flex gap-sm">
+                    <button class="btn btn-secondary btn-sm">Filter</button>
+                    <button class="btn btn-secondary btn-sm">Export</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-md">
+                <div class="card"
+                    style="padding: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div class="flex items-center gap-sm mb-1">
+                            <span class="font-bold">#AG-8823</span>
+                            <span class="badge badge-info">Assigned</span>
+                        </div>
+                        <h4 style="margin: 0;">Deep Home Cleaning</h4>
+                        <p class="text-sm text-light">Customer: John Doe • 20 Dec, 10:00 AM</p>
+                    </div>
+                    <div class="flex flex-col items-end gap-sm">
+                        <span class="font-bold">$94.00</span>
+                        <a href="admin_booking_detail.html" class="btn btn-outline btn-sm">Manage</a>
+                    </div>
+                </div>
+
+                <div class="card"
+                    style="padding: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div class="flex items-center gap-sm mb-1">
+                            <span class="font-bold">#AG-8822</span>
+                            <span class="badge badge-warning">Pending</span>
+                        </div>
+                        <h4 style="margin: 0;">AC Repair</h4>
+                        <p class="text-sm text-light">Customer: Sarah Smith • 25 Dec, 02:00 PM</p>
+                    </div>
+                    <div class="flex flex-col items-end gap-sm">
+                        <span class="font-bold">$25.00</span>
+                        <a href="admin_booking_detail.html" class="btn btn-primary btn-sm">Assign</a>
+                    </div>
+                </div>
+            </div>
+        {% endblock %}

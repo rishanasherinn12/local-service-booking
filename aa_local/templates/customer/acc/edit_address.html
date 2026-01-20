@@ -1,0 +1,71 @@
+{% extends "base_customer.html" %}
+{% block title %}Edit Address | Local Services{% endblock %}
+
+    {% block content %}
+
+            {% comment %} <!-- Breadcrumbs -->
+            <div class="breadcrumbs">
+                <a href="profile.html">Profile</a> <span
+                    style="margin: 0 0.5rem; color: var(--color-text-light);">></span> Add Address
+            </div> {% endcomment %}
+
+            <h2 style="margin-bottom: 2rem;">Edit Address</h2>
+
+            <div style="max-width: 600px;">
+                <div class="card">
+                    <form method = "POST">
+                        {% csrf_token %}
+                        <!-- 1. Address Label -->
+                        <div class="form-group">
+                            <label class="form-label">Address Label <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="label" value="{{ address.label }}" required>
+                        </div>
+
+                        <!-- 2. Full Address -->
+                        <div class="form-group">
+                            <label class="form-label">Full Address <span class="text-danger">*</span></label>
+                            <textarea class="form-control" rows="3" name="full_address" required>{{address.full_address}}</textarea>
+                        </div>
+
+                        <!-- 3. City & 4. State -->
+                        <div class="grid grid-cols-2 grid-gap">
+                            <div class="form-group">
+                                <label class="form-label">City <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="city" value="{{ address.city }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">State <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="state" value="{{ address.state }}" required>
+                            </div>
+                        </div>
+
+                        <!-- 5. Postal Code & 6. Landmark -->
+                        <div class="grid grid-cols-2 grid-gap">
+                            <div class="form-group">
+                                <label class="form-label">Postal Code <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="pincode" value="{{ address.pincode }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Landmark</label>
+                                <input type="text" class="form-control" name="landmark" value="{{ address.landmark }}">
+                            </div>
+                        </div>
+
+                        <!-- 7. Set as Default -->
+                        <div class="form-group">
+                            <div class="flex items-center gap-sm">
+                                <input type="checkbox" id="defaultaddr" name="is_default" style="width: 1.2rem; height: 1.2rem; cursor: pointer;">
+                                <label for="defaultaddr" class="form-label"
+                                    style="margin-bottom: 0; cursor: pointer;">Make this my default address</label>
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="flex gap-md" style="margin-top: 2rem;">
+                            <button type="submit" class="btn btn-primary">Update Address</button>
+                            <a href="{% url 'profile' %}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+    {% endblock %} 

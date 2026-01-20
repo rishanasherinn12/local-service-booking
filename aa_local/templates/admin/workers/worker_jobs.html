@@ -1,0 +1,98 @@
+{% extends "base_admin.html" %}
+{% block title %}Admin Worker Jobs{% endblock %}
+
+        <!-- Main Content -->
+        {% block content %}
+
+            <!-- Breadcrumbs -->
+            <div class="breadcrumbs">
+                <a href="admin_workers.html">Professionals</a> &gt; Worker Jobs
+            </div>
+
+            <div class="flex justify-between items-center" style="margin-bottom: 2rem;">
+                <h2>Worker Jobs</h2>
+                <a href="admin_workers.html" class="btn btn-secondary">Back to Professionals</a>
+            </div>
+
+            <!-- Worker Summary -->
+            <div class="card flex items-center gap-lg" style="margin-bottom: 2rem; padding: 1.5rem;">
+                <div
+                    style="width: 60px; height: 60px; background: #CBD5E1; border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                    <i class="fa-solid fa-user fa-lg text-light"></i>
+                </div>
+                <div>
+                    <h3 style="margin-bottom: 0.25rem;">Rahul Sharma</h3>
+                    <div class="flex items-center gap-md">
+                        <span class="text-light text-sm">Cleaning Expert</span>
+                        <div class="flex items-center gap-xs text-warning text-sm">
+                            <i class="fa-solid fa-star"></i> 4.8
+                        </div>
+                        <span class="badge badge-success">Active</span>
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="margin-bottom: 1.5rem;">Assigned Jobs</h3>
+
+            <!-- Jobs List -->
+            <div class="grid grid-cols-1 gap-md">
+
+                <!-- Job Card 1 -->
+                <div class="card"
+                    style="padding: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div class="flex items-center gap-sm mb-1">
+                            <span class="font-bold">#AG-8823</span>
+                            <span class="badge badge-info">Assigned</span>
+                        </div>
+                        <h4 style="margin: 0;">Deep Home Cleaning</h4>
+                        <p class="text-sm text-light">Customer: John Doe • 20 Dec, 10:00 AM</p>
+                        <p class="text-sm text-light"><i class="fa-solid fa-location-dot"></i> 142, Orchid Towers, MG
+                            Road</p>
+                    </div>
+                    <div class="flex flex-col items-end gap-sm">
+                        <span class="font-bold">$94.00</span>
+                        <a href="admin_booking_detail.html" class="btn btn-secondary btn-sm">View Booking</a>
+                    </div>
+                </div>
+
+                <!-- Job Card 2 -->
+                <div class="card"
+                    style="padding: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div class="flex items-center gap-sm mb-1">
+                            <span class="font-bold">#AG-8801</span>
+                            <span class="badge badge-success">Completed</span>
+                        </div>
+                        <h4 style="margin: 0;">Kitchen Cleaning</h4>
+                        <p class="text-sm text-light">Customer: Anita Roy • 18 Dec, 04:00 PM</p>
+                        <p class="text-sm text-light"><i class="fa-solid fa-location-dot"></i> 55, Lake View,
+                            Indiranagar</p>
+                    </div>
+                    <div class="flex flex-col items-end gap-sm">
+                        <span class="font-bold">$45.00</span>
+                        <a href="admin_booking_detail.html" class="btn btn-secondary btn-sm">View Booking</a>
+                    </div>
+                </div>
+
+                <!-- Job Card 3 -->
+                <div class="card"
+                    style="padding: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div class="flex items-center gap-sm mb-1">
+                            <span class="font-bold">#AG-8750</span>
+                            <span class="badge badge-danger">Cancelled</span>
+                        </div>
+                        <h4 style="margin: 0;">Bathroom Deep Clean</h4>
+                        <p class="text-sm text-light">Customer: Steven Lee • 15 Dec, 11:00 AM</p>
+                        <p class="text-sm text-light"><i class="fa-solid fa-location-dot"></i> 12A, Palm Grove,
+                            Koramangala</p>
+                    </div>
+                    <div class="flex flex-col items-end gap-sm">
+                        <span class="font-bold">$30.00</span>
+                        <a href="admin_booking_detail.html" class="btn btn-secondary btn-sm">View Booking</a>
+                    </div>
+                </div>
+
+            </div>
+        {% endblock %}

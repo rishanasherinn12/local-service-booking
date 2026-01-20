@@ -1,0 +1,73 @@
+{% extends "base_admin.html" %}
+{% block title %}Admin Workers{% endblock %}
+
+        <!-- Main Content -->
+        {% block content %}
+
+            <div class="flex justify-between items-center" style="margin-bottom: 2rem;">
+                <h2>Professionals</h2>
+                <a href="add_worker.html">
+                <button class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add New Worker</button>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-3 grid-gap">
+                <!-- Worker Card -->
+                <div class="card text-center">
+                    <div
+                        style="width: 80px; height: 80px; background: #CBD5E1; border-radius: 50%; margin: 0 auto 1rem; overflow: hidden;">
+                        <img src="https://via.placeholder.com/80" alt="Avatar"
+                            style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <h3 style="margin-bottom: 0.25rem;">Rahul Sharma</h3>
+                    <p class="text-light text-sm mb-2">Cleaning Expert</p>
+                    <div class="flex justify-center gap-xs text-warning mb-2">
+                        <i class="fa-solid fa-star"></i> 4.8
+                    </div>
+                    <div class="flex justify-center gap-sm mt-3">
+                        <a href="worker_profile.html">
+                        <button class="btn btn-outline btn-sm">Profile</button>
+                        </a>
+                        <a href="worker_jobs.html">
+                        <button class="btn btn-secondary btn-sm">Jobs</button>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Worker Card -->
+                <div class="card text-center">
+                    <div
+                        style="width: 80px; height: 80px; background: #CBD5E1; border-radius: 50%; margin: 0 auto 1rem; overflow: hidden;">
+                        <img src="https://via.placeholder.com/80" alt="Avatar"
+                            style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <h3 style="margin-bottom: 0.25rem;">Anita Roy</h3>
+                    <p class="text-light text-sm mb-2">Beautician</p>
+                    <div class="flex justify-center gap-xs text-warning mb-2">
+                        <i class="fa-solid fa-star"></i> 4.9
+                    </div>
+                    <div class="flex justify-center gap-sm mt-3">
+                        <button class="btn btn-outline btn-sm">Profile</button>
+                        <button class="btn btn-secondary btn-sm">Jobs</button>
+                    </div>
+                </div>
+
+                <!-- Worker Card -->
+                <div class="card text-center">
+                    <div
+                        style="width: 80px; height: 80px; background: #CBD5E1; border-radius: 50%; margin: 0 auto 1rem; overflow: hidden;">
+                        <img src="https://via.placeholder.com/80" alt="Avatar"
+                            style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <h3 style="margin-bottom: 0.25rem;">Vijay Kumar</h3>
+                    <p class="text-light text-sm mb-2">Appliance Tech</p>
+                    <div class="flex justify-center gap-xs text-warning mb-2">
+                        <i class="fa-solid fa-star"></i> 4.5
+                    </div>
+                    <div class="flex justify-center gap-sm mt-3">
+                        <button class="btn btn-outline btn-sm">Profile</button>
+                        <button class="btn btn-secondary btn-sm">Jobs</button>
+                    </div>
+                </div>
+            </div>
+        {% endblock %}

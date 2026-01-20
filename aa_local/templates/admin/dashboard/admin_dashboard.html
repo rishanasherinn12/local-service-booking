@@ -1,0 +1,75 @@
+{% extends "base_admin.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+
+        <!-- Main Content -->
+        {% block content %}
+        
+            <h2 style="margin-bottom: 2rem;">Admin Overview</h2>
+
+            <div class="grid grid-cols-4 grid-gap" style="margin-bottom: 2rem;">
+                <div class="card p-6">
+                    <p class="text-sm text-light mb-1">Total Revenue</p>
+                    <h3 class="text-2xl font-bold text-success">$12,450</h3>
+                    <span class="text-xs text-success"><i class="fa-solid fa-arrow-up"></i> +12% this week</span>
+                </div>
+                <div class="card p-6">
+                    <p class="text-sm text-light mb-1">Total Bookings</p>
+                    <h3 class="text-2xl font-bold">1,204</h3>
+                    <span class="text-xs text-success"><i class="fa-solid fa-arrow-up"></i> +5% this week</span>
+                </div>
+                <div class="card p-6">
+                    <p class="text-sm text-light mb-1">Active Workers</p>
+                    <h3 class="text-2xl font-bold">45</h3>
+                    <span class="text-xs text-light">3 currently offline</span>
+                </div>
+                <div class="card p-6">
+                    <p class="text-sm text-light mb-1">Pending Requests</p>
+                    <h3 class="text-2xl font-bold text-warning">8</h3>
+                    <span class="text-xs text-warning">Action required</span>
+                </div>
+            </div>
+
+            <h3 style="margin-bottom: 1rem;">Recent Bookings</h3>
+            <div class="card" style="padding: 0; overflow: hidden;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead style="background: #F8FAFC; border-bottom: 1px solid var(--color-border);">
+                        <tr>
+                            <th style="padding: 1rem;">ID</th>
+                            <th style="padding: 1rem;">Customer</th>
+                            <th style="padding: 1rem;">Service</th>
+                            <th style="padding: 1rem;">Status</th>
+                            <th style="padding: 1rem;">Amount</th>
+                            <th style="padding: 1rem;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid var(--color-border);">
+                            <td style="padding: 1rem;">#AG-8823</td>
+                            <td style="padding: 1rem;">John Doe</td>
+                            <td style="padding: 1rem;">Deep Cleaning</td>
+                            <td style="padding: 1rem;"><span class="badge badge-info">Assigned</span></td>
+                            <td style="padding: 1rem;">$94.00</td>
+                            <td style="padding: 1rem;"><a href="admin_booking_detail.html"
+                                    class="text-primary font-bold">View</a></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--color-border);">
+                            <td style="padding: 1rem;">#AG-8822</td>
+                            <td style="padding: 1rem;">Sarah Smith</td>
+                            <td style="padding: 1rem;">AC Repair</td>
+                            <td style="padding: 1rem;"><span class="badge badge-warning">Pending</span></td>
+                            <td style="padding: 1rem;">$25.00</td>
+                            <td style="padding: 1rem;"><a href="admin_booking_detail.html"
+                                    class="text-primary font-bold">View</a></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem;">#AG-8821</td>
+                            <td style="padding: 1rem;">Mike Ross</td>
+                            <td style="padding: 1rem;">Salon</td>
+                            <td style="padding: 1rem;"><span class="badge badge-success">Completed</span></td>
+                            <td style="padding: 1rem;">$45.00</td>
+                            <td style="padding: 1rem;"><a href="#" class="text-primary font-bold">View</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        {% endblock %}

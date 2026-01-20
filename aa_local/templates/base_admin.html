@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AdminDashboard | Local Services{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .admin-sidebar {
+            background: #1E293B;
+            color: #94A3B8;
+        }
+
+        .admin-sidebar .sidebar-item {
+            color: #94A3B8;
+        }
+
+        .admin-sidebar .sidebar-item:hover,
+        .admin-sidebar .sidebar-item.active {
+            background: #334155;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-layout">
+
+    <!-- Sidebar -->
+    {% include "sidebar/adminsidebar.html" %}
+
+    <!-- Page content -->
+    <main class="dashboard-content">
+
+
+        {% if messages %}
+            <div id="toast" style="
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #16a34a;
+                color: white;
+                padding: 12px 18px;
+                border-radius: 10px;
+                box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+                z-index: 9999;">
+
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+            </div>
+
+            <script>
+                setTimeout(function () {
+                    document.getElementById("toast").style.display = "none";
+                }, 3000);
+            </script>
+        {% endif %}
+
+
+
+        {% block content %}
+        {% endblock %}
+    </main>
+
+</div>
+
+</body>
+</html>

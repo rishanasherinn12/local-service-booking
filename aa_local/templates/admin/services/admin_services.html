@@ -1,0 +1,37 @@
+{% extends "base_admin.html" %}
+{% block title %}Admin Services{% endblock %}
+
+        <!-- Main Content -->
+        {% block content %}
+
+            <div class="flex justify-between items-center" style="margin-bottom: 2rem;">
+                <h2>Manage Services</h2>
+                <a href="{% url "add_service" %}">
+                <button class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add New Service</button>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 gap-md">
+                <!-- Service Item -->
+                 {% for service in services %}
+                <div class="card flex justify-between items-center">
+                    <div class="flex items-center gap-lg">
+                        <div
+                            style="width: 60px; height: 60px; background: #E2E8F0; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+
+                            <i class="fa-solid {{ service.category.icon }} fa-lg"></i>
+                        </div>
+                        <div>
+                            <h4 style="margin: 0;">{{ service.title }}</h4>
+                            <p class="text-sm text-light">Category: {{service.category.name}} • Price: ${{ service.price }}</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-sm">
+                        <button class="btn btn-secondary btn-sm"><i class="fa-solid fa-pen"></i> Edit</button>
+                        <button class="btn btn-secondary btn-sm text-danger"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>
+                {% endfor %}
+                
+            </div>
+        {% endblock %}

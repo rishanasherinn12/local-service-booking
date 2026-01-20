@@ -1,0 +1,85 @@
+{% extends "base_admin.html" %}
+{% block title %}Admin Add Service{% endblock %}
+
+        <!-- Main Content -->
+        {% block content %}
+            <!-- Breadcrumbs -->
+            <div class="breadcrumbs">
+                <a href="{% url "admin_services" %}">Services</a> &gt; Add New Service
+            </div>
+
+            <div class="flex justify-between items-center" style="margin-bottom: 2rem;">
+                <h2>Add New Service</h2>
+            </div>
+
+            <!-- Add Service Form -->
+            <div class="card" style="max-width: 800px; margin: 0 auto;">
+                <form action="{% url "add_service" %}" method="post" enctype="multipart/form-data"> <!-- Simulating form submission redirect -->
+                    {% csrf_token %} 
+                    <!-- Service Name -->
+                    <div class="form-group">
+                        <label class="form-label">Service Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" placeholder="AC Service & Repair" name = "title" required>
+                    </div>
+
+                    <!-- Service Category -->
+                    
+                    <div class="form-group">
+                        <label class="form-label">Service Category <span class="text-danger">*</span></label>
+                        <select name="category" class="form-control" required>
+                            <option value="">Select category</option>
+                            {% for cat in categories %}
+                                <option value="{{ cat.id }}">{{ cat.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+
+                    <!-- Price & Duration Row -->
+                    <div class="grid grid-cols-2 gap-md">
+                        <div class="form-group">
+                            <label class="form-label">Price <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" placeholder="0.00" name="price" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Estimated Duration</label>
+                            <input type="text" class="form-control" placeholder="2 hours" name="duration_minutes">
+                        </div>
+                    </div>
+
+                    <!-- Service Description -->
+                    <div class="form-group">
+                        <label class="form-label">Service Description <span class="text-danger">*</span></label>
+                        <textarea class="form-control" rows="4"
+                            placeholder="Describe what is included in this service..." name="description" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Service Image</label>
+                        <input type="file" class="form-control" name="image">
+                    </div>
+
+                    <!-- Service Status -->
+                    <div class="form-group">
+                        <label class="form-label" style="margin-bottom: 0.5rem;">Service Status</label>
+                        <div class="flex gap-lg">
+                            <label class="flex items-center gap-sm" style="cursor: pointer;">
+                                <input type="radio" name="status" value="active" checked>
+                                <span>Active</span>
+                            </label>
+                            <label class="flex items-center gap-sm" style="cursor: pointer;">
+                                <input type="radio" name="status" value="inactive">
+                                <span>Inactive</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="flex justify-between items-center" style="margin-top: 2rem;">
+                        <a href="{% url "admin_services" %}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Save Service</button>
+                    </div>
+
+                </form>
+            </div>
+        {%  endblock %}

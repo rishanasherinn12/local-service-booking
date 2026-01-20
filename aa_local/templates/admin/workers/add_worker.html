@@ -1,0 +1,87 @@
+{% extends "base_admin.html" %}
+{% block title %}Admin Add Workers{% endblock %}
+
+        <!-- Main Content -->
+        {% block content %}
+
+            <!-- Breadcrumbs -->
+            <div class="breadcrumbs">
+                <a href="admin_workers.html">Professionals</a> &gt; Add New Worker
+            </div>
+
+            <div class="flex justify-between items-center" style="margin-bottom: 2rem;">
+                <h2>Add New Worker</h2>
+            </div>
+
+            <!-- Add Worker Form -->
+            <div class="card" style="max-width: 800px; margin: 0 auto;">
+                <form action="admin_workers.html"> <!-- Simulating form submission redirect -->
+
+                    <!-- Full Name -->
+                    <div class="form-group">
+                        <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" placeholder="Rahul Sharma" required>
+                    </div>
+
+                    <!-- Role/Skill -->
+                    <div class="form-group">
+                        <label class="form-label">Role / Skill <span class="text-danger">*</span></label>
+                        <select class="form-control" required>
+                            <option value="">Select Role</option>
+                            <option value="cleaning_expert">Cleaning Expert</option>
+                            <option value="appliance_technician">Appliance Technician</option>
+                            <option value="electrician">Electrician</option>
+                            <option value="plumber">Plumber</option>
+                            <option value="beautician">Beautician</option>
+                            <option value="painter">Painter</option>
+                        </select>
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="form-group">
+                        <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+                        <input type="tel" class="form-control" placeholder="+91 98765 43210" required>
+                    </div>
+
+                    <!-- Email Address -->
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-control" placeholder="worker@example.com">
+                    </div>
+
+                    <!-- Experience & Service Area -->
+                    <div class="grid grid-cols-2 gap-md">
+                        <div class="form-group">
+                            <label class="form-label">Experience (Years)</label>
+                            <input type="number" class="form-control" placeholder="3">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Service Area / Location</label>
+                            <input type="text" class="form-control" placeholder="Bangalore">
+                        </div>
+                    </div>
+
+                    <!-- Worker Status -->
+                    <div class="form-group">
+                        <label class="form-label" style="margin-bottom: 0.5rem;">Worker Status</label>
+                        <div class="flex gap-lg">
+                            <label class="flex items-center gap-sm" style="cursor: pointer;">
+                                <input type="radio" name="status" value="active" checked>
+                                <span>Active</span>
+                            </label>
+                            <label class="flex items-center gap-sm" style="cursor: pointer;">
+                                <input type="radio" name="status" value="inactive">
+                                <span>Inactive</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="flex justify-between items-center" style="margin-top: 2rem;">
+                        <a href="admin_workers.html" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Save Worker</button>
+                    </div>
+
+                </form>
+            </div>
+        {% endblock %}

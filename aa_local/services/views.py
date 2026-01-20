@@ -1,0 +1,63 @@
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Service, ServiceCategory
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+
+# Create your views here.
+def services(request):
+    return render(request,'customer/services/service.html')
+
+def service_detail(request):
+    return render(request,'customer/services/service_detail.html')
+
+#--------------------------------
+@login_required
+def admin_services(request):
+    services = Service.objects.select_related('category').all()
+    return render(request,'admin/services/admin_services.html',{'services':services})
+
+@login_required
+def add_service(request):
+    categories = ServiceCategory.objects.filter(is_active = True)
+    if request.method == "POST":
+        title = request.POST.get('title')
+        category_id = request.POST.get('category')
+        description = request.POST.get('description')
+        price = request.POST.get('price')
+        duration_minutes = request.POST.get('duration_minutes')
+        image = request.FILES.get('image')
+        status = request.POST.get('status')
+
+        category = get_object_or_404(ServiceCategory, id=category_id)
+
+        Service.objects.create(title = title, category=category, description=description, 
+                               price=price, duration_minutes=duration_minutes, image=image, is_active=True if status == "active" else False)
+        messages.success(request, 'Service added successfully')
+        return redirect('admin_services')
+
+    return render(request,'admin/services/add_service.html', {'categories':categories})
+
+@login_required
+def edit_service(request,pk):
+    services = get_object_or_404(Service,pk=pk)
+    categories = ServiceCategory.objects.filter(is_active=True)
+    if request.method == "POST":
+        services.title = request.POST.get('title')
+
+        services.category = get_object_or_404(ServiceCategory,id=request.POST.get('category'))
+        services.description = request.POST.get('description')
+        services.price = request.POST.get('price')
+        services.duration_minutes = request.POST.get('duration_minutes')
+        services.image = request.FILES.get('image')
+        services.is_active = True if request.POST.get('status') == "active" else False
+        services.save()
+        messages.success(request,"Service updated sucessfully!")
+        return redirect('admin_services')
+
+    return render(request,'admin/services/edit_service.html',{'services':services,'categories':categories})
+
+def delete_service(request,pk):
+    services = get_object_or_404(Service,pk=pk)
+    services.delete()
+    messages.success(request,"Service deleted successfully!")
+    return redirect('admin_services')

@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | Local Booking Services</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <a href="index.html" class="logo justify-center" style="margin-bottom: 1rem;">
+                    <i class="fa-solid fa-bolt text-primary"></i>
+                    <span>Local Service Booking</span>
+                </a>
+                <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Create Account</h2>
+                <p class="text-light">Join thousands of happy customers</p>
+            </div>
+
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+
+            <form method="post">
+                 {% csrf_token %} 
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-control" name="username" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-control" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" class="form-control" name="phone">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control" placeholder="Create a password" name="password" required>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+                </div>
+
+                <div class="text-center">
+                    <p class="text-light">Already have an account? <a href="{% url "customer_login" %}"
+                            class="text-primary font-bold">Login</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+
+</html>

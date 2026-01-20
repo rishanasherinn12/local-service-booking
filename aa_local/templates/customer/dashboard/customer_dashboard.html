@@ -1,0 +1,120 @@
+
+{% extends "base_customer.html" %}
+{% block title %}Customer Dashboard{% endblock %}
+
+        <!-- Main Content -->
+        {% block content %}
+            <div class="flex justify-between items-center" style="margin-bottom: 2rem;">
+                <div>
+                    <h2>Hey, {{ request.user }}👋</h2>
+                    <p class="text-light">Here's what's happening with your home services.</p>
+                </div>
+                <div class="flex items-center gap-md">
+                    <a href="services.html" class="btn btn-primary">
+                        <i class="fa-solid fa-plus"></i> New Booking
+                    </a>
+                </div>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="grid grid-cols-3 grid-gap" style="margin-bottom: 2rem;">
+                <div class="card p-6 flex items-center gap-lg">
+                    <div style="background: #E0F2FE; padding: 1rem; border-radius: 50%;">
+                        <i class="fa-solid fa-calendar text-info fa-lg"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin-bottom: 0;">2</h3>
+                        <p class="text-sm text-light">Active Bookings</p>
+                    </div>
+                </div>
+
+                <div class="card p-6 flex items-center gap-lg">
+                    <div style="background: #DCFCE7; padding: 1rem; border-radius: 50%;">
+                        <i class="fa-solid fa-check text-success fa-lg"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin-bottom: 0;">12</h3>
+                        <p class="text-sm text-light">Completed Services</p>
+                    </div>
+                </div>
+
+                <div class="card p-6 flex items-center gap-lg">
+                    <div style="background: #FEF3C7; padding: 1rem; border-radius: 50%;">
+                        <i class="fa-solid fa-star text-warning fa-lg"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin-bottom: 0;">4.8</h3>
+                        <p class="text-sm text-light">Average Rating</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Booking -->
+            <div style="margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem;">Up Next</h3>
+                <div class="card">
+                    <div class="flex justify-between items-center"
+                        style="border-bottom: 1px solid var(--color-border); padding-bottom: 1rem; margin-bottom: 1rem;">
+                        <div class="flex items-center gap-md">
+                            <i class="fa-solid fa-calendar-day text-primary"></i>
+                            <span class="font-bold">Tomorrow, 10:00 AM</span>
+                        </div>
+                        <span class="badge badge-warning">Scheduled</span>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-lg">
+                            <div
+                                style="width: 50px; height: 50px; background: #F1F5F9; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fa-solid fa-broom text-light"></i>
+                            </div>
+                            <div>
+                                <h4 class="margin-bottom: 0.25rem">Deep Home Cleaning</h4>
+                                <p class="text-sm text-light">3 BHK • Standard Plan</p>
+                            </div>
+                        </div>
+                        <a href="booking_detail.html" class="btn btn-secondary btn-sm">View Details</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div>
+                <h3 style="margin-bottom: 1rem;">Recent Activity</h3>
+                <div class="card" style="padding: 0;">
+                    <div style="padding: 1rem; border-bottom: 1px solid var(--color-border);">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="font-bold">AC Repair</span> <span class="text-light text-sm">• 2 days
+                                    ago</span>
+                            </div>
+                            <span class="badge badge-success">Completed</span>
+                        </div>
+                    </div>
+                    <div style="padding: 1rem; border-bottom: 1px solid var(--color-border);">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="font-bold">Plumbing Check</span> <span class="text-light text-sm">• 1 week
+                                    ago</span>
+                            </div>
+                            <span class="badge badge-success">Completed</span>
+                        </div>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="font-bold">Sofa Cleaning</span> <span class="text-light text-sm">• 2 weeks
+                                    ago</span>
+                            </div>
+                            <span class="badge badge-danger">Cancelled</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endblock %}
+
+
+   
+
+
+
