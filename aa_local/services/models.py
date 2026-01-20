@@ -18,6 +18,10 @@ class Service(models.Model):
     image = models.ImageField(upload_to="services/",blank=True, null=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    is_best_seller = models.BooleanField(default=False)
+    includes = models.TextField(blank=True,default="",
+        help_text="Enter one item per line (e.g. Deep dusting, Floor cleaning, etc.)"
+    )
 
     def __str__(self):
         return self.title

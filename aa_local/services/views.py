@@ -2,15 +2,26 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Service, ServiceCategory
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from decimal import Decimal
+
 
 # Create your views here.
 def services(request):
-    return render(request,'customer/services/service.html')
+    services = Service.objects.select_related('category').all()
+    return render(request,'customer/services/service.html',{'services':services})
 
-def service_detail(request):
-    return render(request,'customer/services/service_detail.html')
+def service_detail(request,id):
+    service = Service.objects.get(id=id)
+    print(type(service.price))
+    tax = service.price * Decimal (0.18)
+    total = service.price + tax
+    return render(request,'customer/services/service_detail.html',{'service':service,'tax':tax,'total':total})
+
+
 
 #--------------------------------
+
+
 @login_required
 def admin_services(request):
     services = Service.objects.select_related('category').all()
@@ -48,8 +59,11 @@ def edit_service(request,pk):
         services.description = request.POST.get('description')
         services.price = request.POST.get('price')
         services.duration_minutes = request.POST.get('duration_minutes')
-        services.image = request.FILES.get('image')
         services.is_active = True if request.POST.get('status') == "active" else False
+
+        if 'image' in request.FILES:
+            services.image = request.FILES['image']
+
         services.save()
         messages.success(request,"Service updated sucessfully!")
         return redirect('admin_services')
@@ -61,3 +75,4 @@ def delete_service(request,pk):
     services.delete()
     messages.success(request,"Service deleted successfully!")
     return redirect('admin_services')
+

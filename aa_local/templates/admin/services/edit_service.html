@@ -1,25 +1,25 @@
 {% extends "base_admin.html" %}
-{% block title %}Admin Add Service{% endblock %}
+{% block title %}Admin Edit Service{% endblock %}
 
         <!-- Main Content -->
         {% block content %}
             <!-- Breadcrumbs -->
             <div class="breadcrumbs">
-                <a href="{% url "admin_services" %}">Services</a> &gt; Add New Service
+                <a href="{% url "admin_services" %}">Services</a> &gt; Edit Service
             </div>
 
             <div class="flex justify-between items-center" style="margin-bottom: 2rem;">
-                <h2>Add New Service</h2>
+                <h2>Edit Service</h2>
             </div>
 
             <!-- Add Service Form -->
             <div class="card" style="max-width: 800px; margin: 0 auto;">
-                <form action="{% url "add_service" %}" method="post" enctype="multipart/form-data"> <!-- Simulating form submission redirect -->
+                <form action="{% url "edit_service" services.id %}" method="post" enctype="multipart/form-data"> <!-- Simulating form submission redirect -->
                     {% csrf_token %} 
                     <!-- Service Name -->
                     <div class="form-group">
                         <label class="form-label">Service Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" placeholder="AC Service & Repair" name = "title" required>
+                        <input type="text" class="form-control"  value={{services.title}} name = "title" required>
                     </div>
 
                     <!-- Service Category -->
@@ -29,7 +29,7 @@
                         <select name="category" class="form-control" required>
                             <option value="">Select category</option>
                             {% for cat in categories %}
-                                <option value="{{ cat.id }}">{{ cat.name }}</option>
+                                <option value="{{ cat.id }}" {% if services.category.id == cat.id %}selected{% endif %}>{{ cat.name }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -39,11 +39,11 @@
                     <div class="grid grid-cols-2 gap-md">
                         <div class="form-group">
                             <label class="form-label">Price <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" placeholder="0.00" name="price" required>
+                            <input type="number" class="form-control" value={{ services.price }} name="price" required>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Estimated Duration</label>
-                            <input type="text" class="form-control" placeholder="2 hours" name="duration_minutes">
+                            <input type="text" class="form-control" value="{{ services.duration_minutes }}" name="duration_minutes">
                         </div>
                     </div>
 
@@ -51,11 +51,21 @@
                     <div class="form-group">
                         <label class="form-label">Service Description <span class="text-danger">*</span></label>
                         <textarea class="form-control" rows="4"
-                            placeholder="Describe what is included in this service..." name="description" required></textarea>
+                            placeholder="Describe what is included in this service..." name="description" required>{{ services.description }}</textarea>
                     </div>
 
+                    
+                    
                     <div class="form-group">
                         <label class="form-label">Service Image</label>
+                        {% if services.image %}
+                            <div style="margin-bottom: 10px;">
+                                <p class="text-sm">Current Image:</p>
+                                <img src="{{ services.image.url }}"
+                                    alt="Service Image"
+                                    style="width:120px; border-radius:8px;">
+                            </div>
+                        {% endif %}
                         <input type="file" class="form-control" name="image">
                     </div>
 
@@ -64,11 +74,11 @@
                         <label class="form-label" style="margin-bottom: 0.5rem;">Service Status</label>
                         <div class="flex gap-lg">
                             <label class="flex items-center gap-sm" style="cursor: pointer;">
-                                <input type="radio" name="status" value="active" checked>
+                                <input type="radio" name="status" value="active" {% if services.is_active %}checked{% endif %}>
                                 <span>Active</span>
                             </label>
                             <label class="flex items-center gap-sm" style="cursor: pointer;">
-                                <input type="radio" name="status" value="inactive">
+                                <input type="radio" name="status" value="inactive" {% if not services.is_active %}checked{% endif %}>
                                 <span>Inactive</span>
                             </label>
                         </div>

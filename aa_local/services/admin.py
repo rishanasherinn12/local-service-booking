@@ -6,7 +6,7 @@ class ServiceCategoryAdmin(admin.ModelAdmin):
     list_display=('name','icon','is_active')
 
 class ServiceAdmin(admin.ModelAdmin):
-    list_display=('title','category','price', 'image_preview','is_active')
+    list_display=('title','category','price', 'image_preview','includes','is_active')
 
     def image_preview(self,obj):
         if obj.image:

@@ -25,6 +25,7 @@ urlpatterns = [
 
 #-------------------------------------------------
 
+    path('logout/',views.logout_user,name="logout_user"),
     path('admin_workers/', views.admin_workers, name = "admin_workers"),
     path('admin/add_worker/', views.add_worker, name = "add_worker"),
     path('admin/worker_jobs/', views.worker_jobs, name = "worker_jobs"),

@@ -1,11 +1,11 @@
-from django.shortcuts import render
-from django.shortcuts import redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib import messages
-from django.contrib.auth import authenticate,login
+from django.contrib.auth import authenticate,login,logout
 from .models import CustomerProfile, Address
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404
+
+
 
 # Create your views here.
 
@@ -134,6 +134,12 @@ def delete_address(request,pk):
 
 #-------------------------------------------------------------------
 
+@login_required
+def logout_user(request):
+    logout(request)
+    return redirect('home')
+
+
 def login_admin(request):
     if request.method == "POST":
         username = request.POST.get('username')
@@ -152,6 +158,7 @@ def login_admin(request):
             return redirect('login_admin')
 
     return render(request,'admin/acc/login_admin.html')
+
 
 
 def admin_workers(request):
