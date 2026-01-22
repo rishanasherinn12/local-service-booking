@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from .models import CustomerProfile, Address
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
 
 
 
@@ -67,6 +68,7 @@ def google_login_redirect(request):
 
 
 @login_required
+@never_cache
 def profile(request):
     profile = request.user.customer_profile
     address = profile.address.all()

@@ -6,6 +6,9 @@
 
             <div class="flex justify-between items-center" style="margin-bottom: 2rem;">
                 <h2>Manage Services</h2>
+                <a href="{% url 'add_category' %}" class="btn btn-secondary">
+                    + Add Category
+                </a>
                 <a href="{% url "add_service" %}">
                 <button class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add New Service</button>
                 </a>

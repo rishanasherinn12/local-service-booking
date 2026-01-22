@@ -9,4 +9,5 @@ urlpatterns=[
     path('add_service/',views.add_service, name='add_service'),
     path('edit_service/<int:pk>/',views.edit_service, name='edit_service'),
     path('delete_service/<int:pk>/',views.delete_service, name='delete_service'),
+    path('add_category/',views.add_category, name='add_category'),
 ]
