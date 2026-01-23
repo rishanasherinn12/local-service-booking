@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ServiceCategory, Service
+from .models import ServiceCategory, Service, Worker
 from django.utils.html import format_html
 
 class ServiceCategoryAdmin(admin.ModelAdmin):
@@ -13,11 +13,15 @@ class ServiceAdmin(admin.ModelAdmin):
             return format_html('<img src="{}" width="60" style="object-fit:cover;"/>', obj.image.url)
         return "No Image"
     image_preview.short_description = "Image"
+
+class WorkerAdmin(admin.ModelAdmin):
+    list_display=('full_name','role','photo','rating','is_active')
     
 
 # Register your models here.
 admin.site.register(ServiceCategory,ServiceCategoryAdmin)
 admin.site.register(Service,ServiceAdmin)
+admin.site.register(Worker,WorkerAdmin)
 
 
 

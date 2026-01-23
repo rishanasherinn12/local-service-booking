@@ -5,39 +5,59 @@ from django.contrib.auth import authenticate,login,logout
 from .models import CustomerProfile, Address
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
+from .forms import RegisterForm,CustomerProfileForm, AddressForm
 
 
 
 # Create your views here.
 
+# def register(request):
+#     if request.method == 'POST':
+#         username = request.POST.get('username')
+#         email = request.POST.get('email')
+#         phone = request.POST.get('phone')
+#         password = request.POST.get('password')
+
+#         if User.objects.filter(username = username).exists():
+#             messages.error(request,'username already taken')
+#             return redirect('register')
+        
+#         if User.objects.filter(email = email).exists():
+#             messages.error(request,'email already taken')
+#             return redirect('register')
+        
+#         if CustomerProfile.objects.filter(phone = phone).exists():
+#             messages.error(request,'phone no already taken')
+#             return redirect('register')
+        
+#         user = User.objects.create_user(username = username, email = email, password = password)
+#         user.save()
+#         CustomerProfile.objects.create(user = user, phone = phone)
+#         messages.success(request,'Account created successfully')
+#         return redirect('customer_login')
+        
+
+#     return render(request, 'customer/acc/register_customer.html')
+
+
 def register(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        phone = request.POST.get('phone')
-        password = request.POST.get('password')
-
-        if User.objects.filter(username = username).exists():
-            messages.error(request,'username already taken')
-            return redirect('register')
-        
-        if User.objects.filter(email = email).exists():
-            messages.error(request,'email already taken')
-            return redirect('register')
-        
-        if CustomerProfile.objects.filter(phone = phone).exists():
-            messages.error(request,'phone no already taken')
-            return redirect('register')
-        
-        user = User.objects.create_user(username = username, email = email, password = password)
-        user.save()
-        CustomerProfile.objects.create(user = user, phone = phone)
-        messages.success(request,'Account created successfully')
-        return redirect('customer_login')
-        
-
-    return render(request, 'customer/acc/register_customer.html')
-
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit = False)
+            user.email = form.cleaned_data['email']
+            user.save()
+            CustomerProfile.objects.create(user = user, phone = form.cleaned_data['phone'])
+            messages.success(request,'Account created successfully')
+            return redirect('customer_login')
+        else:
+            # Push form errors into messages
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, error)
+            return redirect('register')   
+    form = RegisterForm()
+    return render(request, 'customer/acc/register_customer.html', {'form': form})
 
 
 
@@ -67,6 +87,25 @@ def google_login_redirect(request):
 
 
 
+# @login_required
+# @never_cache
+# def profile(request):
+#     profile = request.user.customer_profile
+#     address = profile.address.all()
+
+#     if request.method == "POST":
+#         full_name = request.POST.get('full_name','').strip()
+#         phone = request.POST.get('phone','').strip()
+#         if full_name:
+#             profile.full_name = full_name
+#         if phone:
+#             profile.phone = phone
+#         profile.save()
+#         messages.success(request,'profile updated successfully')
+#         return redirect('profile')
+    
+#     return render(request,'customer/acc/profile.html',{'profile':profile, 'address':address,})
+
 @login_required
 @never_cache
 def profile(request):
@@ -74,35 +113,82 @@ def profile(request):
     address = profile.address.all()
 
     if request.method == "POST":
-        full_name = request.POST.get('full_name','').strip()
-        phone = request.POST.get('phone','').strip()
-        if full_name:
-            profile.full_name = full_name
-        if phone:
-            profile.phone = phone
-        profile.save()
-        messages.success(request,'profile updated successfully')
-        return redirect('profile')
+        form = CustomerProfileForm(request.POST, instance = profile)
+        if form.is_valid():
+            form.save()
+
+            messages.success(request,'profile updated successfully')
+            return redirect('profile')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request,error)
+            return redirect('profile')
+    form = CustomerProfileForm(instance=profile)
     
-    return render(request,'customer/acc/profile.html',{'profile':profile, 'address':address,})
+    return render(request,'customer/acc/profile.html',{'profile':profile, 'address':address,'form':form})
 
 
+
+
+
+
+# @login_required(login_url='customer_login')
+# def add_address(request):
+#     customer = CustomerProfile.objects.get(user = request.user)
+#     if request.method == "POST":
+#         label = request.POST.get('label')
+#         full_address = request.POST.get('full_address')
+#         city = request.POST.get('city')
+#         state = request.POST.get('state')
+#         pincode = request.POST.get('pincode')
+#         landmark = request.POST.get('landmark')
+#         Address.objects.create(customer = customer, label = label, full_address = full_address, city = city, state = state, pincode = pincode, landmark = landmark)
+#         messages.success(request, "Adress added successfully")
+#         return redirect('profile')
+    
+#     return render(request, 'customer/acc/add_address.html')
 
 @login_required(login_url='customer_login')
 def add_address(request):
     customer = CustomerProfile.objects.get(user = request.user)
     if request.method == "POST":
-        label = request.POST.get('label')
-        full_address = request.POST.get('full_address')
-        city = request.POST.get('city')
-        state = request.POST.get('state')
-        pincode = request.POST.get('pincode')
-        landmark = request.POST.get('landmark')
-        Address.objects.create(customer = customer, label = label, full_address = full_address, city = city, state = state, pincode = pincode, landmark = landmark)
-        messages.success(request, "Adress added successfully")
-        return redirect('profile')
+        form = AddressForm(request.POST)
+        if form.is_valid():
+            address = form.save(commit = False)
+            address.customer = request.user.customer_profile
+            address.save()
+        
+            messages.success(request, "Adress added successfully")
+            return redirect('profile')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, error)
+            return redirect('add_address')
+    form = AddressForm()
     
-    return render(request, 'customer/acc/add_address.html')
+    return render(request, 'customer/acc/add_address.html',{'form':form})
+
+
+# @login_required
+# def edit_address(request, pk):
+#     profile = request.user.customer_profile
+#     address = get_object_or_404(Address, pk=pk, customer=profile)
+#     if request.method == "POST":
+#         address.label = request.POST.get('label')
+#         address.full_address = request.POST.get('full_address')
+#         address.city = request.POST.get('city')
+#         address.state = request.POST.get('state')
+#         address.pincode = request.POST.get('pincode')
+#         address.landmark = request.POST.get('landmark')
+#         address.is_default = bool(request.POST.get('is_default'))
+#         address.save()
+
+#         messages.success(request,'Address Updated Successfully')
+#         return redirect('profile')
+    
+#     return render(request, 'customer/acc/edit_address.html',{'address':address})
 
 
 @login_required
@@ -110,19 +196,20 @@ def edit_address(request, pk):
     profile = request.user.customer_profile
     address = get_object_or_404(Address, pk=pk, customer=profile)
     if request.method == "POST":
-        address.label = request.POST.get('label')
-        address.full_address = request.POST.get('full_address')
-        address.city = request.POST.get('city')
-        address.state = request.POST.get('state')
-        address.pincode = request.POST.get('pincode')
-        address.landmark = request.POST.get('landmark')
-        address.is_default = bool(request.POST.get('is_default'))
-        address.save()
-
-        messages.success(request,'Address Updated Successfully')
-        return redirect('profile')
+        form = AddressForm(request.POST, instance = address)
+        if form.is_valid():
+            form.save()
+            messages.success(request,'Address Updated Successfully')
+            return redirect('profile')
+        else:
+            for field,errors in form.errors.items():
+                for error in errors:
+                    messages.error(request,error)
+            return redirect('edit_address',pk)
+        
+    form = AddressForm(instance = address)
+    return render(request,'customer/acc/edit_address.html',{'form':form,'address':address})
     
-    return render(request, 'customer/acc/edit_address.html',{'address':address})
 
 
 @login_required
@@ -162,15 +249,3 @@ def login_admin(request):
     return render(request,'admin/acc/login_admin.html')
 
 
-
-def admin_workers(request):
-    return render(request, 'admin/workers/admin_workers.html')  
-
-def add_worker(request):
-    return render(request, 'admin/workers/add_worker.html')  
-
-def worker_jobs(request):
-    return render(request, 'admin/workers/worker_jobs.html')  
-
-def worker_profile(request):
-    return render(request, 'admin/workers/worker_profile.html')  

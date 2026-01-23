@@ -10,4 +10,10 @@ urlpatterns=[
     path('edit_service/<int:pk>/',views.edit_service, name='edit_service'),
     path('delete_service/<int:pk>/',views.delete_service, name='delete_service'),
     path('add_category/',views.add_category, name='add_category'),
+
+    path('admin_workers/', views.admin_workers, name = "admin_workers"),
+    path('admin/add_worker/', views.add_worker, name = "add_worker"),
+    path('admin/worker_jobs/', views.worker_jobs, name = "worker_jobs"),
+    path('admin/worker_profile/', views.worker_profile, name = "worker_profile"),
+
 ]

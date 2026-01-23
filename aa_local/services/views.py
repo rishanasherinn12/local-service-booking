@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Service, ServiceCategory
+from .models import Service, ServiceCategory, Worker
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from decimal import Decimal
@@ -102,3 +102,18 @@ def add_category(request):
         return redirect("admin_services")
 
     return render(request, "admin/services/add_category.html")
+
+
+
+def admin_workers(request):
+    workers = Worker.objects.filter(is_active = True)
+    return render(request, 'admin/workers/admin_workers.html',{'workers':workers})  
+
+def add_worker(request):
+    return render(request, 'admin/workers/add_worker.html')  
+
+def worker_jobs(request):
+    return render(request, 'admin/workers/worker_jobs.html')  
+
+def worker_profile(request):
+    return render(request, 'admin/workers/worker_profile.html')  
