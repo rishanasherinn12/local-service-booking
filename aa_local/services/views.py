@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from decimal import Decimal
 from django.views.decorators.cache import never_cache
+from .forms import WorkerForm
 
 
 # Create your views here.
@@ -109,8 +110,19 @@ def admin_workers(request):
     workers = Worker.objects.filter(is_active = True)
     return render(request, 'admin/workers/admin_workers.html',{'workers':workers})  
 
+
 def add_worker(request):
-    return render(request, 'admin/workers/add_worker.html')  
+    if request.method == "POST":
+       form = WorkerForm(request.POST, request.FILES)
+       if form.is_valid():
+           form.save()
+           messages.success(request,"Worker added Successfully")
+           return redirect("admin_worker")
+    else:
+        form = WorkerForm()
+    return render(request, 'admin/workers/add_worker.html',{'form':form})  
+
+
 
 def worker_jobs(request):
     return render(request, 'admin/workers/worker_jobs.html')  
