@@ -1,4 +1,4 @@
-﻿🌐 LocalServe – Local Service Booking Web Application
+﻿#🌐 LocalServe – Local Service Booking Web Application
 
 LocalServe is a full-stack web application built with Django that allows customers to easily book local home services such as cleaning, appliance repair, plumbing, and more. The system is designed with two user roles:
 
@@ -72,4 +72,5 @@ CRUD operations
 Booking workflows
 
 Real-world Django project structure
+
 
