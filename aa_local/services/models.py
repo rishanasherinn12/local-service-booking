@@ -28,11 +28,23 @@ class Service(models.Model):
     
 
 class Worker(models.Model):
+    ROLE_CHOICES = [
+        ('cleaning expert','Cleaning Expert'),
+        ('appliance_technician', 'Appliance Technician'),
+        ('electrician', 'Electrician'),
+        ('plumber', 'Plumber'),
+        ('beautician', 'Beautician'),
+        ('painter', 'Painter'),
+    ]
+
     full_name = models.CharField(max_length=150)
-    role = models.CharField(max_length=100)
+    role = models.CharField(max_length=100,choices = ROLE_CHOICES)
     phone = models.CharField(max_length=20,unique=True)
     photo = models.ImageField(upload_to="workers/",blank=True,null=True)
     rating = models.DecimalField(max_digits=3,decimal_places=2,default=0.0)
+    email = models.EmailField(blank=True)
+    experiance_years = models.IntegerField(null=True, blank=True)
+    location = models.CharField(max_length=100, blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
