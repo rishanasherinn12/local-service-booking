@@ -15,6 +15,7 @@
             <!-- Worker Card -->
             {% for worker in workers %}
             <div class="card text-center">
+                
                 <div
                     style="width: 80px; height: 80px; background: #CBD5E1; border-radius: 50%; margin: 0 auto 1rem; overflow: hidden;">
                     {% if worker.photo %}
@@ -23,12 +24,21 @@
                          <img src="https://via.placeholder.com/80" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
                     {% endif %}
                 </div>
-
+                
                 <h3 style="margin-bottom: 0.25rem;">{{ worker.full_name }}</h3>
                 <p class="text-light text-sm mb-2">{{ worker.role }}</p>
+
+                {% if worker.is_active %}
+                    <span class="badge badge-success">Active</span>
+                {% else %}
+                    <span class="badge badge-danger">Inactive</span>
+                {% endif %}
+
                 <div class="flex justify-center gap-xs text-warning mb-2">
                     <i class="fa-solid fa-star"></i> {{ worker.rating }}
                 </div>
+                
+
                 <div class="flex justify-center gap-sm mt-3">
                     <a href="{% url 'worker_profile' %}">
                         <button class="btn btn-outline btn-sm">Profile</button>

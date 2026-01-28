@@ -107,7 +107,7 @@ def add_category(request):
 
 
 def admin_workers(request):
-    workers = Worker.objects.filter(is_active = True)
+    workers = Worker.objects.all()
     return render(request, 'admin/workers/admin_workers.html',{'workers':workers})  
 
 
@@ -117,7 +117,7 @@ def add_worker(request):
        if form.is_valid():
            form.save()
            messages.success(request,"Worker added Successfully")
-           return redirect("admin_worker")
+           return redirect("admin_workers")
     else:
         form = WorkerForm()
     return render(request, 'admin/workers/add_worker.html',{'form':form})  

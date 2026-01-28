@@ -30,13 +30,7 @@
                     <!-- Role/Skill -->
                     <div class="form-group">
                         <label class="form-label">Role / Skill <span class="text-danger">*</span></label>
-                        {% comment %} <select class="form-control" name="role" required>
-                            <option value="">Select Role</option>
-                            {% for value,label in roles %}
-                            <option value="{{ value }}">{% if worker and worker.role == value %}selected{% endif %}{{ label }}</option>
-                            
-                            {% endfor %}
-                        </select> {% endcomment %}
+                        
                         {{ form.role }}
                             {% if form.role.errors %}
                                 <small class="text-danger">{{ form.role.errors.0 }}</small>
