@@ -127,5 +127,7 @@ def add_worker(request):
 def worker_jobs(request):
     return render(request, 'admin/workers/worker_jobs.html')  
 
-def worker_profile(request):
-    return render(request, 'admin/workers/worker_profile.html')  
+@login_required
+def worker_profile(request,pk):
+    worker = get_object_or_404(Worker,pk=pk)
+    return render(request, 'admin/workers/worker_profile.html',{'worker':worker})  

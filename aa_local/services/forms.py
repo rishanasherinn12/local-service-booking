@@ -21,7 +21,14 @@ class WorkerForm(forms.ModelForm):
 
         if not phone.isdigit():
             raise forms.ValidationError("Phone number must contain only digits.")
-        if len(phone)<10:
-            raise forms.ValidationError("Phone no must contain only digits")
+        if len(phone) != 10:
+            raise forms.ValidationError("Phone no must must be exactly 10 digits")
         
         return phone
+    
+    def clean_experiance_years(self):
+        exp = self.cleaned_data.get('experiance_years')
+        
+        if exp is not None and exp < 0:
+            raise forms.ValidationError('Experience cannot be negative')
+        return exp

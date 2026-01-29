@@ -17,11 +17,11 @@
             <div class="card text-center">
                 
                 <div
-                    style="width: 80px; height: 80px; background: #CBD5E1; border-radius: 50%; margin: 0 auto 1rem; overflow: hidden;">
+                    style="width: 120px; height: 120px; background: #CBD5E1; border-radius: 50%; margin: 0 auto 1.5rem; overflow: hidden; display: flex; align-items: center; justify-content: center;">
                     {% if worker.photo %}
-                        <img src="{{ worker.photo.url }}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
+                        <img src="{{ worker.photo.url }}" alt="{{ worker.full_name }}" style="width: 100%; height: 100%; object-fit: cover;">
                       {% else %}
-                         <img src="https://via.placeholder.com/80" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
+                         <i class="fa-solid fa-user fa-3x text-light"></i>
                     {% endif %}
                 </div>
                 
@@ -40,10 +40,10 @@
                 
 
                 <div class="flex justify-center gap-sm mt-3">
-                    <a href="{% url 'worker_profile' %}">
+                    <a href="{% url 'worker_profile' worker.id %}">
                         <button class="btn btn-outline btn-sm">Profile</button>
                     </a>
-                    <a href="{% url "worker_jobs" %}">
+                    <a href="{% url "worker_jobs" worker.id %}">
                         <button class="btn btn-secondary btn-sm">Jobs</button>
                     </a>
                 </div>

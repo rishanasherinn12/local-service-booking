@@ -20,7 +20,7 @@
 
                     <!-- Full Name -->
                     <div class="form-group">
-                        <label class="form-label">Full Name <span class="text-danger">*</span></label>           
+                        <label class="form-label">Full Name <span style="color: #e3342f;">*</span></label>           
                         {{ form.full_name }}
                         {% if form.full_name.errors %}
                         <small class="text-danger">{{ form.full_name.errors.0 }}</small>
@@ -29,7 +29,7 @@
 
                     <!-- Role/Skill -->
                     <div class="form-group">
-                        <label class="form-label">Role / Skill <span class="text-danger">*</span></label>
+                        <label class="form-label">Role / Skill <span style="color: #e3342f;">*</span></label>
                         
                         {{ form.role }}
                             {% if form.role.errors %}
@@ -41,10 +41,10 @@
 
                     <!-- Phone Number -->
                     <div class="form-group">
-                        <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+                        <label class="form-label">Phone Number <span style="color: #e3342f;">*</span></label>
                         {{ form.phone }}
                         {% if form.phone.errors %}
-                            <small class="text-danger">{{ form.phone.errors.0 }}</small>
+                            <small style="color: #e3342f;">{{ form.phone.errors.0 }}</small>
                         {% endif %}
                     </div>
 
@@ -59,6 +59,9 @@
                         <div class="form-group">
                             <label class="form-label">Experience (Years)</label>
                             {{ form.experiance_years }}
+                            {% if form.experiance_years.errors %}
+                            <small style="color: #e3342f;">{{ form.experiance_years.errors.0 }}</small>
+                            {% endif %}
                         </div>
                         <div class="form-group">
                             <label class="form-label">Service Area / Location</label>
@@ -77,11 +80,11 @@
                         <label class="form-label" style="margin-bottom: 0.5rem;">Worker Status</label>
                         <div class="flex gap-lg">
                             <label class="flex items-center gap-sm" style="cursor: pointer;">
-                                <input type="radio" name="status" value="active" {% if worker.is_active %} checked{% endif %}>
+                                <input type="radio" name="is_active" value="true" checked>
                                 <span>Active</span>
                             </label>
                             <label class="flex items-center gap-sm" style="cursor: pointer;">
-                                <input type="radio" name="status" value="inactive" {% if not worker.is_active %} checked{% endif %} >
+                                <input type="radio" name="is_active" value="false">
                                 <span>Inactive</span>
                             </label>
                         </div>
