@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmed | Antigravity Services</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="auth-container">
+        <div class="auth-card text-center">
+            <div
+                style="width: 80px; height: 80px; background: #DCFCE7; color: #16A34A; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                <i class="fa-solid fa-check fa-3x"></i>
+            </div>
+
+            <h2 style="margin-bottom: 0.5rem;">Booking Confirmed!</h2>
+            <p class="text-light" style="margin-bottom: 2rem;">Your service request has been placed successfully. A
+                professional will be assigned shortly.</p>
+
+            <div class="card p-4" style="background: #F8FAFC; border: none; margin-bottom: 2rem; text-align: left;">
+                <div class="flex justify-between items-center" style="margin-bottom: 0.5rem;">
+                    <span class="text-light text-sm">Booking ID</span>
+                    <span class="font-bold">#AG-8823</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-light text-sm">Date & Time</span>
+                    <span class="font-bold">20 Dec, 10:00 AM</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-sm">
+                <a href="booking_detail.html" class="btn btn-primary btn-block">Track Booking</a>
+                <a href="{% url 'customer_dashboard' %}" class="btn btn-secondary btn-block">Go to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

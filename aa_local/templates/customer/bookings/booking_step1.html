@@ -1,0 +1,77 @@
+{% extends "base_customer.html" %}
+{% block title %}Booking Step1 | Local Services{% endblock %}
+
+    {% block content %}
+            <div style="max-width: 800px; margin: 0 auto;">
+                <!-- Stepper -->
+                <div class="flex justify-between items-center" style="margin-bottom: 3rem; position: relative;">
+                    <div
+                        style="position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: #E2E8F0; z-index: 0;">
+                    </div>
+
+                    <div
+                        style="position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                        <div
+                            style="width: 40px; height: 40px; background: var(--color-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                            1</div>
+                        <span class="text-sm font-bold">Schedule</span>
+                    </div>
+
+                    <div
+                        style="position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                        <div
+                            style="width: 40px; height: 40px; background: white; border: 2px solid #E2E8F0; color: #94A3B8; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                            2</div>
+                        <span class="text-sm text-light">Address</span>
+                    </div>
+
+                    <div
+                        style="position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                        <div
+                            style="width: 40px; height: 40px; background: white; border: 2px solid #E2E8F0; color: #94A3B8; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                            3</div>
+                        <span class="text-sm text-light">Payment</span>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <h2 style="margin-bottom: 2rem;">When should the professional arrive?</h2>
+
+                <div class="card" style="margin-bottom: 2rem;">
+                    <h4 style="margin-bottom: 1rem;">Select Date</h4>
+                    <div class="flex gap-md" style="margin-bottom: 2rem; overflow-x: auto;">
+                        <button class="btn btn-primary"
+                            style="flex-direction: column; padding: 1rem; min-width: 100px;">
+                            <span>Today</span>
+                            <span class="text-lg font-bold">20 Dec</span>
+                        </button>
+                        <button class="btn btn-secondary"
+                            style="flex-direction: column; padding: 1rem; min-width: 100px;">
+                            <span>Tomorrow</span>
+                            <span class="text-lg font-bold">21 Dec</span>
+                        </button>
+                        <button class="btn btn-secondary"
+                            style="flex-direction: column; padding: 1rem; min-width: 100px;">
+                            <span>Sat</span>
+                            <span class="text-lg font-bold">22 Dec</span>
+                        </button>
+                    </div>
+
+                    <h4 style="margin-bottom: 1rem;">Select Time</h4>
+                    <div class="grid grid-cols-3 grid-gap">
+                        <button class="btn btn-outline">09:00 AM</button>
+                        <button class="btn btn-outline" style="background: var(--color-primary-light);">10:00
+                            AM</button>
+                        <button class="btn btn-outline">11:00 AM</button>
+                        <button class="btn btn-outline">01:00 PM</button>
+                        <button class="btn btn-outline">03:00 PM</button>
+                        <button class="btn btn-outline">05:00 PM</button>
+                    </div>
+                </div>
+
+                <div class="flex justify-between">
+                    <a href="{% url 'services_detail' service_id %}" class="btn btn-secondary">Back</a>
+                    <a href="{% url 'booking_step2' %}" class="btn btn-primary">Next: Select Address</a>
+                </div>
+            </div>
+        {% endblock %}

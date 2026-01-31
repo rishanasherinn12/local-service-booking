@@ -1,0 +1,352 @@
+{% extends "base_admin.html" %}
+{% block title %}Customers | Admin{% endblock %}
+
+    {% block extra_css %}
+    <style>
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(2px);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-card {
+            background: white;
+            width: 500px;
+            max-width: 90%;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .detail-row {
+            display: flex;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #F1F5F9;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            width: 140px;
+            color: #64748B;
+            font-size: 0.9rem;
+        }
+
+        .detail-value {
+            flex: 1;
+            font-weight: 500;
+            color: #1E293B;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            background: #F8FAFC;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #94A3B8;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: #1E293B;
+        }
+    </style>
+    {% endblock %}
+
+    <!-- Main Content -->
+        {% block content %}
+
+            <!-- Header & Breadcrumb -->
+            <div style="margin-bottom: 2rem;">
+                <h2 style="margin-bottom: 0.5rem;">Customers</h2>
+                <p class="text-sm text-light">Dashboard > Customers</p>
+            </div>
+
+            <!-- Customers Table Section -->
+            <div class="card" style="padding: 0; overflow: hidden;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead style="background: #F8FAFC; border-bottom: 1px solid var(--color-border);">
+                        <tr>
+                            <th style="padding: 1rem;">Customer ID</th>
+                            <th style="padding: 1rem;">Customer Name</th>
+                            <th style="padding: 1rem;">Email Address</th>
+                            <th style="padding: 1rem;">Phone Number</th>
+                            <th style="padding: 1rem;">Total Bookings</th>
+                            <th style="padding: 1rem;">Status</th>
+                            <th style="padding: 1rem;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Row 1 -->
+                        <tr style="border-bottom: 1px solid var(--color-border);" data-id="#CUST-1001"
+                            data-name="John Doe" data-email="john.doe@example.com" data-phone="+1 (555) 123-4567"
+                            data-bookings="5" data-status="Active">
+                            <td style="padding: 1rem;">#CUST-1001</td>
+                            <td style="padding: 1rem;">John Doe</td>
+                            <td style="padding: 1rem;">john.doe@example.com</td>
+                            <td style="padding: 1rem;">+1 (555) 123-4567</td>
+                            <td style="padding: 1rem;">5</td>
+                            <td style="padding: 1rem;"><span class="badge badge-success"
+                                    style="background-color: #d1fae5; color: #065f46; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">Active</span>
+                            </td>
+                            <td style="padding: 1rem;">
+                                <div class="flex gap-sm items-center">
+                                    <a href="#" class="text-primary font-bold"
+                                        onclick="openCustomerModal(this); return false;">View</a>
+                                    <button class="btn btn-outline btn-sm"
+                                        style="color: #EF4444; border-color: #EF4444;">Block</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Row 2 -->
+                        <tr style="border-bottom: 1px solid var(--color-border);" data-id="#CUST-1002"
+                            data-name="Sarah Smith" data-email="sarah.smith@example.com" data-phone="+1 (555) 987-6543"
+                            data-bookings="2" data-status="Active">
+                            <td style="padding: 1rem;">#CUST-1002</td>
+                            <td style="padding: 1rem;">Sarah Smith</td>
+                            <td style="padding: 1rem;">sarah.smith@example.com</td>
+                            <td style="padding: 1rem;">+1 (555) 987-6543</td>
+                            <td style="padding: 1rem;">2</td>
+                            <td style="padding: 1rem;"><span class="badge badge-success"
+                                    style="background-color: #d1fae5; color: #065f46; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">Active</span>
+                            </td>
+                            <td style="padding: 1rem;">
+                                <div class="flex gap-sm items-center">
+                                    <a href="#" class="text-primary font-bold"
+                                        onclick="openCustomerModal(this); return false;">View</a>
+                                    <button class="btn btn-outline btn-sm"
+                                        style="color: #EF4444; border-color: #EF4444;">Block</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Row 3 -->
+                        <tr style="border-bottom: 1px solid var(--color-border);" data-id="#CUST-1003"
+                            data-name="Mike Ross" data-email="mike.ross@example.com" data-phone="+1 (555) 456-7890"
+                            data-bookings="0" data-status="Blocked">
+                            <td style="padding: 1rem;">#CUST-1003</td>
+                            <td style="padding: 1rem;">Mike Ross</td>
+                            <td style="padding: 1rem;">mike.ross@example.com</td>
+                            <td style="padding: 1rem;">+1 (555) 456-7890</td>
+                            <td style="padding: 1rem;">0</td>
+                            <td style="padding: 1rem;"><span class="badge badge-danger"
+                                    style="background-color: #fee2e2; color: #991b1b; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">Blocked</span>
+                            </td>
+                            <td style="padding: 1rem;">
+                                <div class="flex gap-sm items-center">
+                                    <a href="#" class="text-primary font-bold"
+                                        onclick="openCustomerModal(this); return false;">View</a>
+                                    <button class="btn btn-outline btn-sm">Unblock</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Row 4 -->
+                        <tr data-id="#CUST-1004" data-name="Emily Blunt" data-email="emily.b@example.com"
+                            data-phone="+1 (555) 222-3333" data-bookings="8" data-status="Active">
+                            <td style="padding: 1rem;">#CUST-1004</td>
+                            <td style="padding: 1rem;">Emily Blunt</td>
+                            <td style="padding: 1rem;">emily.b@example.com</td>
+                            <td style="padding: 1rem;">+1 (555) 222-3333</td>
+                            <td style="padding: 1rem;">8</td>
+                            <td style="padding: 1rem;"><span class="badge badge-success"
+                                    style="background-color: #d1fae5; color: #065f46; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">Active</span>
+                            </td>
+                            <td style="padding: 1rem;">
+                                <div class="flex gap-sm items-center">
+                                    <a href="#" class="text-primary font-bold"
+                                        onclick="openCustomerModal(this); return false;">View</a>
+                                    <button class="btn btn-outline btn-sm"
+                                        style="color: #EF4444; border-color: #EF4444;">Block</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            {% endblock %}
+            
+    <!-- Customer Details Modal -->
+    <div class="modal-overlay" id="customerModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 style="margin: 0;">Customer Details</h3>
+                <button class="close-btn" onclick="closeModal()"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-row">
+                    <span class="detail-label">Customer ID</span>
+                    <span class="detail-value" id="modalId"></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Full Name</span>
+                    <span class="detail-value" id="modalName"></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Email Address</span>
+                    <span class="detail-value" id="modalEmail"></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Phone Number</span>
+                    <span class="detail-value" id="modalPhone"></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Total Bookings</span>
+                    <span class="detail-value" id="modalBookings"></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Account Status</span>
+                    <span class="detail-value" id="modalStatusBadge"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+                <div id="modalActions">
+                    <!-- Action button will be injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    {% comment %} {% block extra_js %}
+    <script>
+
+        function openCustomerModal(element) {
+            const modal = document.getElementById('customerModal');
+            // Find the parent row
+            const row = element.closest('tr');
+
+            // Get data from data attributes
+            const id = row.getAttribute('data-id');
+            const name = row.getAttribute('data-name');
+            const email = row.getAttribute('data-email');
+            const phone = row.getAttribute('data-phone');
+            const bookings = row.getAttribute('data-bookings');
+            const status = row.getAttribute('data-status');
+
+            // Populate Modal
+            document.getElementById('modalId').textContent = id;
+            document.getElementById('modalName').textContent = name;
+            document.getElementById('modalEmail').textContent = email;
+            document.getElementById('modalPhone').textContent = phone;
+            document.getElementById('modalBookings').textContent = bookings;
+
+            // Handle Status Badge
+            const statusContainer = document.getElementById('modalStatusBadge');
+            if (status === 'Active') {
+                statusContainer.innerHTML = '<span class="badge badge-success" style="background-color: #d1fae5; color: #065f46; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">Active</span>';
+                document.getElementById('modalActions').innerHTML = '<button class="btn btn-outline btn-sm" style="color: #EF4444; border-color: #EF4444;">Block Customer</button>';
+            } else {
+                statusContainer.innerHTML = '<span class="badge badge-danger" style="background-color: #fee2e2; color: #991b1b; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">Blocked</span>';
+                document.getElementById('modalActions').innerHTML = '<button class="btn btn-primary btn-sm">Unblock Customer</button>';
+            }
+
+            // Show Modal
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+        }
+
+        // Close on outside click
+        modal.addEventListener('click', function (e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+    </script>
+    {% endblock %} {% endcomment %}
+
+
+    {% block extra_js %}
+<script>
+function getModal() {
+    return document.getElementById('customerModal');
+}
+
+function openCustomerModal(element) {
+    const modal = getModal();
+    const row = element.closest('tr');
+
+    document.getElementById('modalId').textContent = row.dataset.id;
+    document.getElementById('modalName').textContent = row.dataset.name;
+    document.getElementById('modalEmail').textContent = row.dataset.email;
+    document.getElementById('modalPhone').textContent = row.dataset.phone;
+    document.getElementById('modalBookings').textContent = row.dataset.bookings;
+
+    const statusContainer = document.getElementById('modalStatusBadge');
+    const actions = document.getElementById('modalActions');
+
+    if (row.dataset.status === 'Active') {
+        statusContainer.innerHTML = `<span class="badge badge-success">Active</span>`;
+        actions.innerHTML = `<button class="btn btn-outline btn-sm text-danger">Block Customer</button>`;
+    } else {
+        statusContainer.innerHTML = `<span class="badge badge-danger">Blocked</span>`;
+        actions.innerHTML = `<button class="btn btn-primary btn-sm">Unblock Customer</button>`;
+    }
+
+    modal.classList.add('active');
+}
+
+function closeModal() {
+    getModal().classList.remove('active');
+}
+
+// Outside click close (safe)
+document.addEventListener('click', function (e) {
+    const modal = getModal();
+    if (modal && e.target === modal) {
+        closeModal();
+    }
+});
+</script>
+{% endblock %}
+

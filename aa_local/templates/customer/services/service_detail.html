@@ -82,7 +82,7 @@
                             <span class="font-bold text-xl text-primary">${{ total|floatformat:2 }}</span>
                         </div>
 
-                        <a href="booking_step1.html" class="btn btn-primary btn-block">Book Service</a>
+                        <a href="{% url "booking_step1" service.id %}" class="btn btn-primary btn-block">Book Service</a>
                         <p class="text-xs text-center text-light" style="margin-top: 1rem;">100% Satisfaction Guaranteed
                         </p>
                     </div>

@@ -1,0 +1,79 @@
+{% extends "base_customer.html" %}
+{% block title %}Booking Step2 | Local Services{% endblock %}
+
+    {% block content %}
+            <div style="max-width: 800px; margin: 0 auto;">
+                <!-- Stepper -->
+                <div class="flex justify-between items-center" style="margin-bottom: 3rem; position: relative;">
+                    <div
+                        style="position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: #E2E8F0; z-index: 0;">
+                    </div>
+
+                    <div
+                        style="position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                        <div
+                            style="width: 40px; height: 40px; background: var(--color-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                            <i class="fa-solid fa-check"></i></div>
+                        <span class="text-sm font-bold text-primary">Schedule</span>
+                    </div>
+
+                    <div
+                        style="position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                        <div
+                            style="width: 40px; height: 40px; background: var(--color-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                            2</div>
+                        <span class="text-sm font-bold">Address</span>
+                    </div>
+
+                    <div
+                        style="position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                        <div
+                            style="width: 40px; height: 40px; background: white; border: 2px solid #E2E8F0; color: #94A3B8; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                            3</div>
+                        <span class="text-sm text-light">Payment</span>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <h2 style="margin-bottom: 2rem;">Where do you need the service?</h2>
+
+                <div class="card" style="margin-bottom: 2rem;">
+                    <div class="flex flex-col gap-md">
+                        <!-- Address 1 -->
+                        <label class="flex items-start gap-md p-4"
+                            style="border: 2px solid var(--color-primary); border-radius: var(--radius-md); background: var(--color-primary-light); cursor: pointer;">
+                            <input type="radio" name="address" checked style="margin-top: 5px;">
+                            <div>
+                                <div class="flex items-center gap-sm">
+                                    <h4 style="margin: 0;">Home</h4>
+                                    <span class="badge badge-info">Default</span>
+                                </div>
+                                <p class="text-sm text-light" style="margin-top: 0.5rem;">Flat 402, Sunshine Apartments,
+                                    12th Main Road, Indiranagar, Bangalore - 560038</p>
+                            </div>
+                        </label>
+
+                        <!-- Address 2 -->
+                        <label class="flex items-start gap-md p-4"
+                            style="border: 1px solid var(--color-border); border-radius: var(--radius-md); cursor: pointer;">
+                            <input type="radio" name="address" style="margin-top: 5px;">
+                            <div>
+                                <h4 style="margin: 0;">Office</h4>
+                                <p class="text-sm text-light" style="margin-top: 0.5rem;">WeWork Galaxy, Residency Road,
+                                    Bangalore - 560025</p>
+                            </div>
+                        </label>
+                        <!-- <a href="add_address.html"> -->
+                        <button class="btn btn-outline" style="border-style: dashed;">
+                            <i class="fa-solid fa-plus"></i> Add New Address
+                        </button>
+                        <!-- </a> -->
+                    </div>
+                </div>
+
+                <div class="flex justify-between">
+                    <a href="{% url 'booking_step1' service_id %}" class="btn btn-secondary">Back</a>
+                    <a href="{% url 'booking_step3' %}" class="btn btn-primary">Next: Payment</a>
+                </div>
+            </div>
+        {% endblock %}

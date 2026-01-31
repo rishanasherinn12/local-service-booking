@@ -10,6 +10,7 @@ urlpatterns = [
     path('booking/', include('bookings.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('services/', include('services.urls')),
+    path('customers/', include('customers_mgmnt.urls')),
 
     path('accounts/', include('allauth.urls')),
 

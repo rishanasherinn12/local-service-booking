@@ -9,6 +9,8 @@
                     Overview</a>
                 <a href="{% url 'admin_booking' %}" class="sidebar-item {% if request.resolver_match.url_name == 'admin_booking' %}active{% endif %}"><i class="fa-solid fa-calendar-days"></i>
                     Bookings</a>
+                <a href="{% url "admin_customers" %}" class="sidebar-item {% if request.resolver_match.url_name == 'admin_customers' %}active{% endif %}"><i class="fa-solid fa-users"></i>
+                    Customers</a>
                 <a href="{% url 'admin_services' %}" class="sidebar-item {% if request.resolver_match.url_name == 'admin_services' %}active{% endif %}"><i class="fa-solid fa-list"></i> Services</a>
                 <a href="{% url 'admin_workers' %}" class="sidebar-item {% if request.resolver_match.url_name == 'admin_workers' %}active{% endif %}"><i class="fa-solid fa-users-gear"></i>
                     Professionals</a>
