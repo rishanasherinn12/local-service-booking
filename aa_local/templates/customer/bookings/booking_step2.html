@@ -72,8 +72,8 @@
                 </div>
 
                 <div class="flex justify-between">
-                    <a href="{% url 'booking_step1' service_id %}" class="btn btn-secondary">Back</a>
-                    <a href="{% url 'booking_step3' %}" class="btn btn-primary">Next: Payment</a>
+                    <a href="{% url 'booking_step1' booking.service_id %}" class="btn btn-secondary">Back</a>
+                    <a href="{% url 'booking_step3' booking.id %}" class="btn btn-primary">Next: Payment</a>
                 </div>
             </div>
         {% endblock %}

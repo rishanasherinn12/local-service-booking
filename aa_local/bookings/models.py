@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from .models import Service, Worker
+from services.models import Service,Worker
 
 
 # Create your models here.
@@ -31,4 +31,4 @@ class Booking(models.Model):
     updated_at = models.DateTimeField(auto_now = True)
 
     def __str__(self):
-        return f"Booking #{self.id}"
+        return f"Booking #{self.id} - {self.service.title}"

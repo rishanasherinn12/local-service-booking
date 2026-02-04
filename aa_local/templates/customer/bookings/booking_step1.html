@@ -34,44 +34,83 @@
                     </div>
                 </div>
 
+                <form method = "post">
+                    {% csrf_token %}
+
+                    <input type="hidden" name="booking_date" id="booking_date">
+                    <input type="hidden" name="booking_time" id="booking_time">
                 <!-- Content -->
                 <h2 style="margin-bottom: 2rem;">When should the professional arrive?</h2>
 
                 <div class="card" style="margin-bottom: 2rem;">
+
                     <h4 style="margin-bottom: 1rem;">Select Date</h4>
                     <div class="flex gap-md" style="margin-bottom: 2rem; overflow-x: auto;">
-                        <button class="btn btn-primary"
-                            style="flex-direction: column; padding: 1rem; min-width: 100px;">
+
+                        <button type ="button" class="btn btn-outline" onclick="selectDate('{{ today|date:'Y-m-d' }}',this)">
                             <span>Today</span>
-                            <span class="text-lg font-bold">20 Dec</span>
+                            <span class="text-lg font-bold">{{ today|date:"d M"}}</span>
                         </button>
-                        <button class="btn btn-secondary"
-                            style="flex-direction: column; padding: 1rem; min-width: 100px;">
+
+                        <button type="button" class="btn btn-outline"
+                            onclick="selectDate('{{ tomorrow|date:'Y-m-d' }}',this)">
                             <span>Tomorrow</span>
-                            <span class="text-lg font-bold">21 Dec</span>
+                            <span class="text-lg font-bold">{{ tomorrow|date:"d M"}}</span>
                         </button>
-                        <button class="btn btn-secondary"
-                            style="flex-direction: column; padding: 1rem; min-width: 100px;">
-                            <span>Sat</span>
-                            <span class="text-lg font-bold">22 Dec</span>
+
+                        <button type="button" class="btn btn-outline"
+                            onclick="selectDate('{{ day_after|date:'Y-m-d' }}',this)">
+                            <span>{{ day_after|date:"D"}}</span>
+                            <span class="text-lg font-bold">{{ day_after|date:"d M" }}</span>
                         </button>
                     </div>
 
                     <h4 style="margin-bottom: 1rem;">Select Time</h4>
                     <div class="grid grid-cols-3 grid-gap">
-                        <button class="btn btn-outline">09:00 AM</button>
-                        <button class="btn btn-outline" style="background: var(--color-primary-light);">10:00
+                        <button type="button" class="btn btn-outline" onclick="selectTime('09:00',this)">09:00 AM</button>
+                        {% comment %} <button type="button" class="btn btn-outline" onclick="selectTime('10:00',this)" style="background: var(--color-primary-light);">10:00
+                            AM</button> {% endcomment %}
+                        <button type="button" class="btn btn-outline" onclick="selectTime('10:00',this)">10:00
                             AM</button>
-                        <button class="btn btn-outline">11:00 AM</button>
-                        <button class="btn btn-outline">01:00 PM</button>
-                        <button class="btn btn-outline">03:00 PM</button>
-                        <button class="btn btn-outline">05:00 PM</button>
+                        <button type="button" class="btn btn-outline" onclick="selectTime('11:00',this)">11:00 AM</button>
+                        <button type="button" class="btn btn-outline" onclick="selectTime('01:00',this)">01:00 PM</button>
+                        <button type="button" class="btn btn-outline" onclick="selectTime('03:00',this)">03:00 PM</button>
+                        <button type="button" class="btn btn-outline" onclick="selectTime('05:00',this)">05:00 PM</button>
                     </div>
                 </div>
 
                 <div class="flex justify-between">
-                    <a href="{% url 'services_detail' service_id %}" class="btn btn-secondary">Back</a>
-                    <a href="{% url 'booking_step2' %}" class="btn btn-primary">Next: Select Address</a>
+                    <a href="{% url 'services_detail' service.id %}" class="btn btn-secondary">Back</a>
+                    <button type="submit" class="btn btn-primary">Next: Select Address</button>
                 </div>
+            </form>
             </div>
+
+            <!-- JS -->
+            <script>
+            function selectDate(date, btn) {
+                document.getElementById('booking_date').value = date;
+
+                document.querySelectorAll('[onclick^="selectDate"]').forEach(b => {
+                    b.classList.remove('btn-primary');
+                    b.classList.add('btn-outline');
+                });
+
+                btn.classList.remove('btn-outline');
+                btn.classList.add('btn-primary');
+            }
+
+            function selectTime(time, btn) {
+                document.getElementById('booking_time').value = time;
+
+                document.querySelectorAll('[onclick^="selectTime"]').forEach(b => {
+                    b.classList.remove('btn-primary');
+                    b.classList.add('btn-outline');
+                });
+
+                btn.classList.remove('btn-outline');
+                btn.classList.add('btn-primary');
+            }
+            </script>
+
         {% endblock %}
