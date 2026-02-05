@@ -11,35 +11,6 @@ from .forms import RegisterForm,CustomerProfileForm, AddressForm
 
 # Create your views here.
 
-# def register(request):
-#     if request.method == 'POST':
-#         username = request.POST.get('username')
-#         email = request.POST.get('email')
-#         phone = request.POST.get('phone')
-#         password = request.POST.get('password')
-
-#         if User.objects.filter(username = username).exists():
-#             messages.error(request,'username already taken')
-#             return redirect('register')
-        
-#         if User.objects.filter(email = email).exists():
-#             messages.error(request,'email already taken')
-#             return redirect('register')
-        
-#         if CustomerProfile.objects.filter(phone = phone).exists():
-#             messages.error(request,'phone no already taken')
-#             return redirect('register')
-        
-#         user = User.objects.create_user(username = username, email = email, password = password)
-#         user.save()
-#         CustomerProfile.objects.create(user = user, phone = phone)
-#         messages.success(request,'Account created successfully')
-#         return redirect('customer_login')
-        
-
-#     return render(request, 'customer/acc/register_customer.html')
-
-
 def register(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
@@ -109,7 +80,9 @@ def google_login_redirect(request):
 @login_required
 @never_cache
 def profile(request):
-    profile = request.user.customer_profile
+    profile,created = CustomerProfile.objects.get_or_create(user = request.user, defaults ={
+        "full_name":request.user.get_full_name() or request.user.username
+    })
     address = profile.address.all()
 
     if request.method == "POST":

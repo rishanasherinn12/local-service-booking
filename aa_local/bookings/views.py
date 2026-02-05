@@ -41,7 +41,7 @@ def booking_step1(request,service_id):
 
 def booking_step2(request,booking_id):
     booking = get_object_or_404(Booking, id=booking_id, customer=request.user)
-    customer_profile = request.user.customerprofile
+    customer_profile = request.user.customer_profile
     addresses = Address.objects.filter(customer = customer_profile) 
     if request.method == "POST":
         address_id = request.POST.get('address')
