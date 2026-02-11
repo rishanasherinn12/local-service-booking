@@ -37,43 +37,52 @@
                 <!-- Content -->
                 <h2 style="margin-bottom: 2rem;">Where do you need the service?</h2>
 
+                <form method="post">
+                    {% csrf_token %}
+
                 <div class="card" style="margin-bottom: 2rem;">
                     <div class="flex flex-col gap-md">
-                        <!-- Address 1 -->
-                        <label class="flex items-start gap-md p-4"
-                            style="border: 2px solid var(--color-primary); border-radius: var(--radius-md); background: var(--color-primary-light); cursor: pointer;">
-                            <input type="radio" name="address" checked style="margin-top: 5px;">
+
+                    <!-- Address 1 -->
+                    {% for addr in addresses %}
+                        <label class="flex items-start gap-md p-4" style="border-radius: var(--radius-md); cursor: pointer;
+                            {% if addr.is_default %}
+                            border: 2px solid var(--color-primary);background: var(--color-primary-light);
+                            {% else %}
+                            border: 1px solid var(--color-border);background: white;
+                            {% endif %}">
+
+                            <input type="radio" name="address" value="{{ addr.id }}" {% if addr.is_default %} checked {% endif %} style="margin-top: 5px;">
                             <div>
                                 <div class="flex items-center gap-sm">
-                                    <h4 style="margin: 0;">Home</h4>
-                                    <span class="badge badge-info">Default</span>
-                                </div>
-                                <p class="text-sm text-light" style="margin-top: 0.5rem;">Flat 402, Sunshine Apartments,
-                                    12th Main Road, Indiranagar, Bangalore - 560038</p>
-                            </div>
-                        </label>
+                                    <h4 style="margin: 0;">{{ addr.label }}</h4>
 
-                        <!-- Address 2 -->
-                        <label class="flex items-start gap-md p-4"
-                            style="border: 1px solid var(--color-border); border-radius: var(--radius-md); cursor: pointer;">
-                            <input type="radio" name="address" style="margin-top: 5px;">
-                            <div>
-                                <h4 style="margin: 0;">Office</h4>
-                                <p class="text-sm text-light" style="margin-top: 0.5rem;">WeWork Galaxy, Residency Road,
-                                    Bangalore - 560025</p>
+                                    {% if addr.is_default %}
+                                    <span class="badge badge-info">Default</span>
+                                    {% endif %}
+                                </div>
+                                <p class="text-sm text-light" style="margin-top: 0.5rem;">{{ addr.full_address }}, {{ addr.city }}, {{ addr.state }} - {{ addr.pincode }}</p>
+                                
+                                {% if addr.landmark %}
+                                <p class="text-sm text-light">Landmark: {{ addr.landmark }}</p>
+                                {% endif %}
                             </div>
                         </label>
+                        {% empty %}
+                            <p class="text-sm text-light">No addresses found. Please add a new address.</p>
+                    {% endfor %}
+
                         <!-- <a href="add_address.html"> -->
-                        <button class="btn btn-outline" style="border-style: dashed;">
+                        <a href="{% url 'add_address' %}?next={% url 'booking_step2' booking.id %}" class="btn btn-outline" style="border-style: dashed;">
                             <i class="fa-solid fa-plus"></i> Add New Address
-                        </button>
+                        </a>
                         <!-- </a> -->
                     </div>
                 </div>
 
                 <div class="flex justify-between">
                     <a href="{% url 'booking_step1' booking.service_id %}" class="btn btn-secondary">Back</a>
-                    <a href="{% url 'booking_step3' booking.id %}" class="btn btn-primary">Next: Payment</a>
+                    <button type="submit" class="btn btn-primary">Next: Payment</button>
                 </div>
             </div>
         {% endblock %}

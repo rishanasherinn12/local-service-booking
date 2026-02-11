@@ -122,17 +122,26 @@ def profile(request):
     
 #     return render(request, 'customer/acc/add_address.html')
 
+
 @login_required(login_url='customer_login')
 def add_address(request):
     customer = CustomerProfile.objects.get(user = request.user)
+    next_url = request.GET.get('next')  # ✅ capture redirect url
     if request.method == "POST":
         form = AddressForm(request.POST)
         if form.is_valid():
             address = form.save(commit = False)
-            address.customer = request.user.customer_profile
+            # address.customer = request.user.customer_profile
+            address.customer = customer
+
             address.save()
         
             messages.success(request, "Adress added successfully")
+
+            # ✅ redirect back to booking step2 if next exists
+            if next_url:
+                return redirect(next_url)
+            
             return redirect('profile')
         else:
             for field, errors in form.errors.items():
@@ -141,7 +150,7 @@ def add_address(request):
             return redirect('add_address')
     form = AddressForm()
     
-    return render(request, 'customer/acc/add_address.html',{'form':form})
+    return render(request, 'customer/acc/add_address.html',{'form':form,'next_url': next_url})
 
 
 # @login_required

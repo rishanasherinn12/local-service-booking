@@ -123,17 +123,25 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {% for cust in customers %}
                         <!-- Row 1 -->
-                        <tr style="border-bottom: 1px solid var(--color-border);" data-id="#CUST-1001"
-                            data-name="John Doe" data-email="john.doe@example.com" data-phone="+1 (555) 123-4567"
-                            data-bookings="5" data-status="Active">
-                            <td style="padding: 1rem;">#CUST-1001</td>
-                            <td style="padding: 1rem;">John Doe</td>
-                            <td style="padding: 1rem;">john.doe@example.com</td>
-                            <td style="padding: 1rem;">+1 (555) 123-4567</td>
-                            <td style="padding: 1rem;">5</td>
-                            <td style="padding: 1rem;"><span class="badge badge-success"
+                        <tr style="border-bottom: 1px solid var(--color-border);" data-id="#CUST-{{ cust.id }}"
+                            data-name="{{ cust.customer_profile.full_name|default:cust.username }}" data-email="{{ cust.email }}" data-phone="{{ cust.customer_profile.phone|default:'Not Added' }}"
+                            data-bookings="{{ cust.total_bookings }}" data-status="{% if cust.is_active %}Active{% else %}Blocked{% endif %}">
+                            <td style="padding: 1rem;">#CUST-{{ cust.id }}</td>
+                            <td style="padding: 1rem;">{{ cust.customer_profile.full_name|default:cust.username }}</td>
+                            <td style="padding: 1rem;">{{ cust.email }}</td>
+                            <td style="padding: 1rem;">{{ cust.customer_profile.phone|default:'Not Added' }}</td>
+                            <td style="padding: 1rem;">{{ cust.total_bookings }}</td>
+                            <td style="padding: 1rem;">
+                                {% if cust.is_active %}
+                                    <span class="badge badge-success"
                                     style="background-color: #d1fae5; color: #065f46; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">Active</span>
+                                {% else %}
+                                    <span class="badge badge-danger"
+                                    style="background-color: #fee2e2; color: #991b1b; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">Blocked</span>
+                                {% endif %}
+
                             </td>
                             <td style="padding: 1rem;">
                                 <div class="flex gap-sm items-center">
@@ -144,28 +152,9 @@
                                 </div>
                             </td>
                         </tr>
-                        <!-- Row 2 -->
-                        <tr style="border-bottom: 1px solid var(--color-border);" data-id="#CUST-1002"
-                            data-name="Sarah Smith" data-email="sarah.smith@example.com" data-phone="+1 (555) 987-6543"
-                            data-bookings="2" data-status="Active">
-                            <td style="padding: 1rem;">#CUST-1002</td>
-                            <td style="padding: 1rem;">Sarah Smith</td>
-                            <td style="padding: 1rem;">sarah.smith@example.com</td>
-                            <td style="padding: 1rem;">+1 (555) 987-6543</td>
-                            <td style="padding: 1rem;">2</td>
-                            <td style="padding: 1rem;"><span class="badge badge-success"
-                                    style="background-color: #d1fae5; color: #065f46; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">Active</span>
-                            </td>
-                            <td style="padding: 1rem;">
-                                <div class="flex gap-sm items-center">
-                                    <a href="#" class="text-primary font-bold"
-                                        onclick="openCustomerModal(this); return false;">View</a>
-                                    <button class="btn btn-outline btn-sm"
-                                        style="color: #EF4444; border-color: #EF4444;">Block</button>
-                                </div>
-                            </td>
-                        </tr>
-                        <!-- Row 3 -->
+                        {% endfor %}
+                        
+                        {% comment %} <!-- Row 3 -->
                         <tr style="border-bottom: 1px solid var(--color-border);" data-id="#CUST-1003"
                             data-name="Mike Ross" data-email="mike.ross@example.com" data-phone="+1 (555) 456-7890"
                             data-bookings="0" data-status="Blocked">
@@ -184,32 +173,12 @@
                                     <button class="btn btn-outline btn-sm">Unblock</button>
                                 </div>
                             </td>
-                        </tr>
-                        <!-- Row 4 -->
-                        <tr data-id="#CUST-1004" data-name="Emily Blunt" data-email="emily.b@example.com"
-                            data-phone="+1 (555) 222-3333" data-bookings="8" data-status="Active">
-                            <td style="padding: 1rem;">#CUST-1004</td>
-                            <td style="padding: 1rem;">Emily Blunt</td>
-                            <td style="padding: 1rem;">emily.b@example.com</td>
-                            <td style="padding: 1rem;">+1 (555) 222-3333</td>
-                            <td style="padding: 1rem;">8</td>
-                            <td style="padding: 1rem;"><span class="badge badge-success"
-                                    style="background-color: #d1fae5; color: #065f46; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">Active</span>
-                            </td>
-                            <td style="padding: 1rem;">
-                                <div class="flex gap-sm items-center">
-                                    <a href="#" class="text-primary font-bold"
-                                        onclick="openCustomerModal(this); return false;">View</a>
-                                    <button class="btn btn-outline btn-sm"
-                                        style="color: #EF4444; border-color: #EF4444;">Block</button>
-                                </div>
-                            </td>
-                        </tr>
+                        </tr> {% endcomment %}
+                        
                     </tbody>
                 </table>
             </div>
 
-            {% endblock %}
             
     <!-- Customer Details Modal -->
     <div class="modal-overlay" id="customerModal">
@@ -252,6 +221,7 @@
             </div>
         </div>
     </div>
+    {% endblock %}
     
 
     {% comment %} {% block extra_js %}

@@ -19,7 +19,7 @@ def services(request):
 def service_detail(request,id):
     service = Service.objects.get(id=id)
     print(type(service.price))
-    tax = service.price * Decimal (0.18)
+    tax = service.price * Decimal ("0.18")
     total = service.price + tax
     return render(request,'customer/services/service_detail.html',{'service':service,'tax':tax,'total':total})
 

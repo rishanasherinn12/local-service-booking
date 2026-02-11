@@ -5,6 +5,8 @@ from .models import Booking
 from django.contrib.auth.decorators import login_required
 from datetime import date, timedelta
 from django.contrib import messages
+from decimal import Decimal
+
 
 
 # Create your views here.
@@ -64,16 +66,26 @@ def booking_step2(request,booking_id):
 
 
 
-def booking_step3(request):
-    if not request.session.get('service_id'):
-        return redirect('services')
-    return render(request,'customer/bookings/booking_step3.html')
+def booking_step3(request,booking_id):
+    booking= get_object_or_404(Booking, id=booking_id, customer=request.user)
+    service_price = booking.service.price
+    tax = service_price * Decimal("0.18")
+    total_amount = service_price + tax
+
+    context={"booking":booking,"service_price":service_price,"tax":tax,"total_amount":total_amount}
+   
+    return render(request,'customer/bookings/booking_step3.html',context)
 
 
 def booking_success(request):
     return render(request,'customer/bookings/booking_success.html')
 
+
+
+
 #-------------------------------------------------------------
+
+
 
 
 def admin_bookings(request):
