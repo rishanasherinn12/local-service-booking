@@ -1,48 +1,94 @@
-# Local Service Booking System
+🏠 Local Service Booking System
 
-A web-based application that allows users to book local service professionals such as plumbers, electricians, carpenters, and other home service providers. The system connects customers with verified service providers and simplifies scheduling, management, and communication.
+A Django-based web application that enables customers to book home services and allows an admin (service company) to manage professionals, bookings, and customers.
 
----
+🚀 Overview
 
-## Features
+This platform connects customers with service professionals for home services such as:
 
-### User Features
-- User registration and login
-- Browse services by category (Plumber, Electrician, Carpenter, etc.)
-- View service provider profiles
-- Book services with preferred date and time
-- Track booking status
-- View booking history
+Plumbing
 
-### Service Provider Features
-- Provider registration and profile management
-- List services offered and pricing
-- Accept or reject booking requests
-- Manage availability and schedules
-- View customer details for confirmed bookings
+Electrical work
 
-### Admin Features
-- Manage users and service providers
-- Approve or block service providers
-- Manage service categories
-- View all bookings and system activity
+AC repair
 
----
+Cleaning
 
-## Tech Stack (Example)
+Beauty services
 
-> Adjust this section based on your actual implementation
+Customers can schedule services through a multi-step booking process, while the admin manages service operations and assigns professionals.
 
-- **Frontend:** HTML, CSS, JavaScript / React / Angular
-- **Backend:** Node.js / Django / Flask / Spring Boot
-- **Database:** MySQL / PostgreSQL / MongoDB
-- **Authentication:** JWT / Session-based authentication
-- **Hosting:** Localhost / AWS / Firebase / Vercel
+👥 User Roles
+🔹 Customer
 
----
+Register & Login
 
-## Installation
+Browse services
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/local-service-booking-system.git
+View service details
+
+Book services (date & time selection)
+
+Select saved address
+
+Track booking status
+
+View booking history
+
+Manage profile & addresses
+
+🔹 Admin (Service Company Panel)
+
+Dashboard overview
+
+Manage services & categories
+
+Manage professionals (workers)
+
+View and manage bookings
+
+Assign workers to bookings
+
+Manage customers (block / unblock)
+
+🔁 Booking Workflow
+
+Customer selects a service
+
+Chooses preferred date & time
+
+Selects saved address
+
+Booking is created with status REQUESTED
+
+Admin assigns a professional
+
+Booking progresses through status updates
+
+🛠 Tech Stack
+
+Backend: Django
+
+Frontend: HTML, CSS
+
+Database: SQLite
+
+Authentication: Django Authentication System
+
+🧱 Key Highlights
+
+Role-based system (Customer & Admin)
+
+Multi-step booking process
+
+Admin-controlled worker assignment
+
+Booking status tracking
+
+Clean dashboard UI
+
+Scalable database structure
+
+📌 Author
+
+Developed as a full-stack Django project demonstrating real-world service booking workflow and admin management system.
