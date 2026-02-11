@@ -1,94 +1,116 @@
-🏠 Local Service Booking System
+# 🏠 Local Service Booking System
 
-A Django-based web application that enables customers to book home services and allows an admin (service company) to manage professionals, bookings, and customers.
+A full-stack Django web application that simulates a real-world home service platform where customers can book services and an admin (service company) manages professionals, bookings, and operations.
 
-🚀 Overview
+---
 
-This platform connects customers with service professionals for home services such as:
+## 🚀 Project Overview
 
-Plumbing
+The **Local Service Booking System** is designed to replicate how modern service platforms operate.
 
-Electrical work
+It provides:
 
-AC repair
+- A structured multi-step booking workflow  
+- Admin-controlled worker assignment  
+- Role-based access control  
+- Booking lifecycle management  
 
-Cleaning
+The system separates responsibilities between **customers** and **admin**, ensuring scalable and maintainable architecture.
 
-Beauty services
+---
 
-Customers can schedule services through a multi-step booking process, while the admin manages service operations and assigns professionals.
+## 🧩 Core Features
 
-👥 User Roles
-🔹 Customer
+### 👤 Customer Module
 
-Register & Login
+- Secure registration & authentication  
+- Browse services by category  
+- View detailed service information  
+- Multi-step booking process:
+  - Step 1: Select date & time  
+  - Step 2: Select saved address  
+  - Step 3: Payment workflow  
+- View booking history  
+- Track booking status  
+- Manage profile & saved addresses  
 
-Browse services
+---
 
-View service details
+### 🛠 Admin Module (Service Company Panel)
 
-Book services (date & time selection)
+- Dashboard overview  
+- Manage services & categories  
+- Manage professionals (workers)  
+- View and manage all bookings  
+- Assign workers to bookings  
+- Update booking status  
+- Manage customers (block / unblock)  
 
-Select saved address
+---
 
-Track booking status
+## 🔁 Booking Lifecycle
 
-View booking history
+The system implements a structured booking status flow:
 
-Manage profile & addresses
+REQUESTED → CONFIRMED → IN_PROGRESS → COMPLETED
+                        ↘
+                     CANCELLED / REJECTED
 
-🔹 Admin (Service Company Panel)
+Each booking stores a snapshot of service details and address information to preserve historical accuracy.
 
-Dashboard overview
+---
 
-Manage services & categories
+## 🏗 Architecture Highlights
 
-Manage professionals (workers)
+- Role-based authentication using Django’s built-in authentication system  
+- Clear separation between Customer and Admin functionalities  
+- Scalable database design using ForeignKey relationships  
+- Multi-step booking flow with structured URL routing  
+- Admin-controlled worker assignment  
 
-View and manage bookings
+This project demonstrates practical backend design and real-world workflow handling.
 
-Assign workers to bookings
+---
 
-Manage customers (block / unblock)
+## 🛠 Tech Stack
 
-🔁 Booking Workflow
+- **Backend:** Django (Python)  
+- **Frontend:** HTML, CSS  
+- **Database:** SQLite  
+- **Authentication:** Django Authentication System  
 
-Customer selects a service
+---
 
-Chooses preferred date & time
+## ⚙️ Installation & Setup
 
-Selects saved address
+```bash
+git clone https://github.com/yourusername/local-service-booking.git
+cd local-service-booking
 
-Booking is created with status REQUESTED
+python -m venv venv
+venv\Scripts\activate  # Windows
 
-Admin assigns a professional
+pip install -r requirements.txt
 
-Booking progresses through status updates
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
+```
 
-🛠 Tech Stack
+## 🎯 What This Project Demonstrates
 
-Backend: Django
+- Full-stack Django development
 
-Frontend: HTML, CSS
+- Real-world booking workflow implementation
 
-Database: SQLite
+- Multi-role system design
 
-Authentication: Django Authentication System
+- Admin-based operational control
 
-🧱 Key Highlights
+- Database modeling and relationship management
 
-Role-based system (Customer & Admin)
+- Structured status management
 
-Multi-step booking process
+## 💡 Author
 
-Admin-controlled worker assignment
-
-Booking status tracking
-
-Clean dashboard UI
-
-Scalable database structure
-
-📌 Author
-
-Developed as a full-stack Django project demonstrating real-world service booking workflow and admin management system.
+Developed as a full-stack Django web application focused on building a real-world service booking platform using Django.
