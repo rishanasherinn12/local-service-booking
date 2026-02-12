@@ -19,11 +19,11 @@ def block_customer(request,user_id):
     user.is_active = False
     user.save()
     messages.success(request,'Customer blocked successfully')
-    return redirect('block_customer')
+    return redirect('admin_customers')
 
 def unblock_customer(request,user_id):
     user = get_object_or_404(User, id=user_id)
     user.is_active = True
     user.save()
     messages.success(request, "Customer unblocked successfully")
-    return redirect('unblock_customer')
+    return redirect('admin_customers')
