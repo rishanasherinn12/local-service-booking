@@ -147,8 +147,16 @@
                                 <div class="flex gap-sm items-center">
                                     <a href="#" class="text-primary font-bold"
                                         onclick="openCustomerModal(this); return false;">View</a>
+
+                                        {% if cust.is_active %}
                                     <button class="btn btn-outline btn-sm"
                                         style="color: #EF4444; border-color: #EF4444;">Block</button>
+                                        {% else %}
+                                        <a href="{% url 'unblock_customer' cust.id %}"
+                                        class="btn btn-outline btn-sm">
+                                        Unblock
+                                        </a>
+                                        {% endif %}
                                 </div>
                             </td>
                         </tr>
