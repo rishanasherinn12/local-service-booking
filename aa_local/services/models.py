@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 class ServiceCategory(models.Model):
-    name = models.CharField(max_length = 100)
+    name = models.CharField(max_length = 100,unique=True)
     icon = models.CharField(max_length = 100,blank=True)
     is_active = models.BooleanField(default = True)
 

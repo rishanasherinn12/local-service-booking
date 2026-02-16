@@ -15,12 +15,16 @@
 
         <!-- Category Tabs -->
         <div class="flex gap-sm" style="margin-top: 1rem; overflow-x: auto; padding-bottom: 0.5rem;">
-            <button class="btn btn-primary btn-sm rounded-full">All</button>
-            <button class="btn btn-secondary btn-sm rounded-full">Cleaning</button>
-            <button class="btn btn-secondary btn-sm rounded-full">Electrician</button>
+
+            <a href="{% url 'services' %}?category=all" class="btn btn-sm rounded-full {% if selected_category == 'all' or not selected_category %} btn-primary {%else%} btn-secondary {% endif %}">All</a>
+            {% for cat in categories %}
+            <a href="{% url 'services' %}?category={{ cat.id }}" class="btn btn-sm rounded-full {% if selected_category == cat.name %}btn-primary{% else %}btn-secondary{% endif %}">{{ cat.name }}</a>
+            {% endfor %}
+
+            {% comment %} <button class="btn btn-secondary btn-sm rounded-full">Electrician</button>
             <button class="btn btn-secondary btn-sm rounded-full">Plumbing</button>
             <button class="btn btn-secondary btn-sm rounded-full">AC & Appliance</button>
-            <button class="btn btn-secondary btn-sm rounded-full">Beauty</button>
+            <button class="btn btn-secondary btn-sm rounded-full">Beauty</button> {% endcomment %}
         </div>
     </div>
 

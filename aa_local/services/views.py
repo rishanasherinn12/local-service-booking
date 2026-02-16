@@ -11,8 +11,15 @@ from .forms import WorkerForm
 @login_required
 @never_cache
 def services(request):
+    category = request.GET.get('category') 
     services = Service.objects.select_related('category').all()
-    return render(request,'customer/services/service.html',{'services':services})
+
+    if category and category!= "all":
+        services = services.filter(category_id = category)
+
+    categories = ServiceCategory.objects.filter(is_active = True).distinct()
+    
+    return render(request,'customer/services/service.html',{'services':services, 'categories': categories, 'selected_category':category})
 
 @login_required
 @never_cache
