@@ -6,19 +6,24 @@
     <div style="margin-bottom: 2rem;">
         <div class="flex justify-between items-center">
             <h2>Available Services</h2>
-            <div class="search-bar" style="max-width: 300px;">
-                <input type="text" class="search-input" placeholder="Search services..."
+
+            <form method = "GET" action="{% url 'services' %}" class="search-bar" style="max-width: 300px;">
+                <input type="hidden" name="category" value="{{ selected_category|default:'all' }}">
+                <input type="text" name="search" value="{{ search }}" class="search-input" placeholder="Search services..."
                     style="padding: 0.5rem 1rem;">
+                    <button type="submit" style="border: none; background:transparent; cursor:pointer;">
                 <i class="fa-solid fa-magnifying-glass text-light" style="padding-right: 1rem;"></i>
-            </div>
+                    </button>
+                </form>
+           
         </div>
 
         <!-- Category Tabs -->
         <div class="flex gap-sm" style="margin-top: 1rem; overflow-x: auto; padding-bottom: 0.5rem;">
 
-            <a href="{% url 'services' %}?category=all" class="btn btn-sm rounded-full {% if selected_category == 'all' or not selected_category %} btn-primary {%else%} btn-secondary {% endif %}">All</a>
+            <a href="{% url 'services' %}?category=all&search={{ search|default:'' }}" class="btn btn-sm rounded-full {% if selected_category == 'all' or not selected_category %} btn-primary {%else%} btn-secondary {% endif %}">All</a>
             {% for cat in categories %}
-            <a href="{% url 'services' %}?category={{ cat.id }}" class="btn btn-sm rounded-full {% if selected_category == cat.name %}btn-primary{% else %}btn-secondary{% endif %}">{{ cat.name }}</a>
+            <a href="{% url 'services' %}?category={{ cat.id }}&search={{ search|default:'' }}" class="btn btn-sm rounded-full {% if selected_category|stringformat:'s' == cat.id|stringformat:'s' %}btn-primary{% else %}btn-secondary{% endif %}">{{ cat.name }}</a>
             {% endfor %}
 
             {% comment %} <button class="btn btn-secondary btn-sm rounded-full">Electrician</button>

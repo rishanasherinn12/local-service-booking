@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from decimal import Decimal
 from django.views.decorators.cache import never_cache
 from .forms import WorkerForm
+from django.db.models import Q
 
 
 # Create your views here.
@@ -12,14 +13,20 @@ from .forms import WorkerForm
 @never_cache
 def services(request):
     category = request.GET.get('category') 
+    search = request.GET.get('search','')
     services = Service.objects.select_related('category').all()
 
     if category and category!= "all":
         services = services.filter(category_id = category)
 
+    if search:
+        services = services.filter(Q(title__icontains = search)|Q(description__icontains = search))
+
     categories = ServiceCategory.objects.filter(is_active = True).distinct()
     
-    return render(request,'customer/services/service.html',{'services':services, 'categories': categories, 'selected_category':category})
+    return render(request,'customer/services/service.html',{'services':services, 'categories': categories, 'selected_category':category, 'search':search})
+
+
 
 @login_required
 @never_cache
