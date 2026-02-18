@@ -9,6 +9,10 @@ urlpatterns=[
     path('booking_step3/<int:booking_id>',views.booking_step3, name="booking_step3"),
     path('booking_success/',views.booking_success, name="booking_success"),
     
+    path("stripe/checkout/<int:booking_id>/", views.stripe_checkout, name="stripe_checkout"),
+    path("stripe/success/", views.stripe_success, name="stripe_success"),
+    path("stripe/cancel/", views.stripe_cancel, name="stripe_cancel"),
+    
     path('admin/',views.admin_bookings, name="admin_booking"),
     path('admin_detail/',views.admin_booking_detail, name="admin_booking_detail"),
 ]

@@ -1,12 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from services.models import Service 
 from accounts.models import Address
-from .models import Booking
+from .models import Booking, Payment
 from django.contrib.auth.decorators import login_required
 from datetime import date, timedelta
 from django.contrib import messages
 from decimal import Decimal
 
+import stripe
+from django.conf import settings
+from django.urls import reverse
+
+stripe.api_key = settings.STRIPE_SECRET_KEYS
 
 
 # Create your views here.
@@ -82,6 +87,36 @@ def booking_success(request):
 
 
 
+def stripe_checkout(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id)
+     # Amount must be in paisa (INR) => multiply by 100
+    amount = int(booking.service.price * 100) 
+
+    #Create stripe session
+    session = stripe.checkout.Session.create(payment_method_types=['card'],mode='payment',line_items=[{
+        'price_data':{'currency':'inr','product_data':{'name':booking.service.title,},'unit_amount':amount,},
+        'quantity':1,
+    }])
+
+    success_url = request.build_absolute_uri(reverse('stripe_success'))+"?session_id={CHECKOUT_SESSION_ID}",
+    cancel_url = request.build_absolute_uri(reverse('stripe_cancel')),
+
+    # Create or update Payment record
+    payment,created = Payment.objects.get_or_create(booking=booking, defaults={
+        "amount":booking.service.price,
+        "payment_status":"PENDING"
+    })
+    payment.stripe_session_id = session.id
+    payment.save()
+    return redirect(session.url)
+
+
+
+def stripe_success(request):
+    return render(request,"customer/stripe_success.html")
+
+def stripe_cancel(request):
+    return render(request, "customer/stripe_cancel.html")
 
 #-------------------------------------------------------------
 
