@@ -37,7 +37,7 @@
                 <!-- Content -->
                 <h2 style="margin-bottom: 2rem;">Where do you need the service?</h2>
 
-                <form method="post">
+                <form method="post" action="{% url 'booking_step2' booking.id %}">
                     {% csrf_token %}
 
                 <div class="card" style="margin-bottom: 2rem;">

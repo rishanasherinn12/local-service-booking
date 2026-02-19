@@ -59,7 +59,7 @@
                 <p class="text-sm text-light" style="margin-bottom: 1.5rem;">{{ service.description }}</p>
 
                 <div class="flex justify-between items-center" style="margin-top: auto;">
-                    <span class="font-bold text-lg">${{ service.price }}</span>
+                    <span class="font-bold text-lg">₹{{ service.price }}</span>
                     <a href="{% url "services_detail" service.id %}" class="btn btn-outline btn-sm">View</a>
                 </div>
             </div>

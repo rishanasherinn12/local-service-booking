@@ -12,26 +12,27 @@
                 <h2>Edit Service</h2>
             </div>
 
-            <!-- Add Service Form -->
+            <!-- Edit Service Form -->
             <div class="card" style="max-width: 800px; margin: 0 auto;">
                 <form action="{% url "edit_service" services.id %}" method="post" enctype="multipart/form-data"> <!-- Simulating form submission redirect -->
                     {% csrf_token %} 
                     <!-- Service Name -->
                     <div class="form-group">
                         <label class="form-label">Service Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control"  value="{{services.title}}" name = "title" required>
+                        {{ form.title }}
+                        {% if form.title.errors %}
+                            <small class="text-danger">{{ form.title.errors.0 }}</small>
+                        {% endif %}
                     </div>
 
                     <!-- Service Category -->
                     
                     <div class="form-group">
                         <label class="form-label">Service Category <span class="text-danger">*</span></label>
-                        <select name="category" class="form-control" required>
-                            <option value="">Select category</option>
-                            {% for cat in categories %}
-                                <option value="{{ cat.id }}" {% if services.category.id == cat.id %}selected{% endif %}>{{ cat.name }}</option>
-                            {% endfor %}
-                        </select>
+                        {{ form.category }}
+                        {% if form.category.errors %}
+                            <small class="text-danger">{{ form.category.errors.0 }}</small>
+                        {% endif %}
                     </div>
 
 
@@ -39,26 +40,36 @@
                     <div class="grid grid-cols-2 gap-md">
                         <div class="form-group">
                             <label class="form-label">Price <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" value="{{ services.price }}" name="price" required>
+                            {{ form.price }}
+                            {% if form.price.errors %}
+                                <small class="text-danger">{{ form.price.errors.0 }}</small>
+                            {% endif %}
                         </div>
+
                         <div class="form-group">
                             <label class="form-label">Estimated Duration</label>
-                            <input type="text" class="form-control" value="{{ services.duration_minutes }}" name="duration_minutes">
+                            {{ form.duration_minutes }}
+                            {% if form.duration_minutes.errors %}
+                                <small class="text-danger">{{ form.duration_minutes.errors.0 }}</small>
+                            {% endif %}
                         </div>
                     </div>
 
                     <!-- Service Description -->
                     <div class="form-group">
                         <label class="form-label">Service Description <span class="text-danger">*</span></label>
-                        <textarea class="form-control" rows="4"
-                            placeholder="Describe what is included in this service..." name="description" required>{{ services.description }}</textarea>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                            <small class="text-danger">{{ form.description.errors.0 }}</small>
+                        {% endif %}
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">What's Included</label>
-                        <textarea class="form-control" rows="5"
-                            placeholder="Enter one item per line"
-                            name="includes">{{ services.includes }}</textarea>
+                        {{ form.includes }}
+                        {% if form.includes.errors %}
+                            <small class="text-danger">{{ form.includes.errors.0 }}</small>
+                        {% endif %}
                     </div>
 
                     
@@ -73,7 +84,10 @@
                                     style="width:120px; border-radius:8px;">
                             </div>
                         {% endif %}
-                        <input type="file" class="form-control" name="image">
+                        {{ form.image }}
+                        {% if form.image.errors %}
+                            <small class="text-danger">{{ form.image.errors.0 }}</small>
+                        {% endif %}
                     </div>
 
                     <!-- Service Status -->
@@ -81,14 +95,25 @@
                         <label class="form-label" style="margin-bottom: 0.5rem;">Service Status</label>
                         <div class="flex gap-lg">
                             <label class="flex items-center gap-sm" style="cursor: pointer;">
-                                <input type="radio" name="status" value="active" {% if services.is_active %}checked{% endif %}>
+                                <input type="radio" name="is_active" value="True"
+                                {% if form.is_active.value == True or form.is_active.value == "True" %}
+                                    checked
+                                {% endif %}>            
                                 <span>Active</span>
                             </label>
+
                             <label class="flex items-center gap-sm" style="cursor: pointer;">
-                                <input type="radio" name="status" value="inactive" {% if not services.is_active %}checked{% endif %}>
+                                <input type="radio" name="is_active" value="False"
+                                {% if form.is_active.value == False or form.is_active.value == "False" %}
+                                    checked
+                                {% endif %}>
+                                
                                 <span>Inactive</span>
                             </label>
                         </div>
+                        {% if form.is_active.errors %}
+                            <small class="text-danger">{{ form.is_active.errors.0 }}</small>
+                        {% endif %}
                     </div>
 
                     <!-- Form Actions -->

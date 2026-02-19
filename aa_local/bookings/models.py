@@ -19,6 +19,7 @@ class Booking(models.Model):
     booking_date = models.DateField()
     booking_time = models.TimeField()
 
+    label = models.CharField(max_length=50, blank=True, null=True)
     address_line = models.CharField(max_length=500)
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)

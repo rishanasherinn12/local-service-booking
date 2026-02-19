@@ -70,16 +70,16 @@
 
                         <div class="flex justify-between items-center" style="margin-bottom: 1rem;">
                             <span class="text-light">Service Price</span>
-                            <span class="font-bold">${{ service.price }}</span>
+                            <span class="font-bold">₹{{ service.price }}</span>
                         </div>
                         <div class="flex justify-between items-center" style="margin-bottom: 1rem;">
                             <span class="text-light">Taxes & Fees</span>
-                            <span class="font-bold">${{ tax|floatformat:2 }}</span>
+                            <span class="font-bold">₹{{ tax|floatformat:2 }}</span>
                         </div>
                         <div class="flex justify-between items-center"
                             style="margin-bottom: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--color-border);">
                             <span class="font-bold text-lg">Total</span>
-                            <span class="font-bold text-xl text-primary">${{ total|floatformat:2 }}</span>
+                            <span class="font-bold text-xl text-primary">₹{{ total|floatformat:2 }}</span>
                         </div>
 
                         <a href="{% url "booking_step1" service.id %}" class="btn btn-primary btn-block">Book Service</a>

@@ -63,34 +63,34 @@
                     <div>
                         <h2 style="margin-bottom: 1.5rem;">Order Summary</h2>
                         <div class="card">
-                            <h3 class="text-lg" style="margin-bottom: 0.5rem;">Deep Home Cleaning</h3>
-                            <p class="text-sm text-light" style="margin-bottom: 1rem;">20 Dec, 10:00 AM • Home</p>
+                            <h3 class="text-lg" style="margin-bottom: 0.5rem;">{{ booking.service.title }}</h3>
+                            <p class="text-sm text-light" style="margin-bottom: 1rem;">{{ booking.booking_date }}, {{ booking.booking_time }} • {{ booking.label }}</p>
 
                             <hr style="border: none; border-top: 1px solid var(--color-border); margin: 1rem 0;">
 
                             <div class="flex justify-between items-center" style="margin-bottom: 0.5rem;">
                                 <span class="text-light">Service Total</span>
-                                <span>$89.00</span>
+                                <span>₹{{ service_price }}</span>
                             </div>
                             <div class="flex justify-between items-center" style="margin-bottom: 0.5rem;">
-                                <span class="text-light">Taxes (5%)</span>
-                                <span>$5.00</span>
+                                <span class="text-light">Taxes (18%)</span>
+                                <span>₹{{ tax }}</span>
                             </div>
 
                             <hr style="border: none; border-top: 1px solid var(--color-border); margin: 1rem 0;">
 
                             <div class="flex justify-between items-center" style="margin-bottom: 1.5rem;">
                                 <span class="font-bold text-lg">Amount to Pay</span>
-                                <span class="font-bold text-xl text-primary">$94.00</span>
+                                <span class="font-bold text-xl text-primary">₹{{ total_amount }}</span>
                             </div>
 
-                            <a href="{% url 'booking_success' %}" class="btn btn-primary btn-block">Confirm Booking</a>
+                            <a href="{% url 'stripe_checkout' booking.id %}" class="btn btn-primary btn-block">Confirm Booking</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="flex justify-between" style="margin-top: 2rem;">
-                    <a href="{% url 'booking_step2' %}" class="btn btn-secondary">Back to Address</a>
+                    <a href="{% url 'booking_step2' booking.id %}" class="btn btn-secondary">Back to Address</a>
                 </div>
             </div>
         {% endblock %}

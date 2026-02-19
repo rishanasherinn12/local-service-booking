@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from decimal import Decimal
 from django.views.decorators.cache import never_cache
-from .forms import WorkerForm
+from .forms import WorkerForm, ServiceForm
 from django.db.models import Q
 
 
@@ -52,48 +52,34 @@ def admin_services(request):
 @login_required
 @never_cache
 def add_service(request):
-    categories = ServiceCategory.objects.filter(is_active = True)
+    
     if request.method == "POST":
-        title = request.POST.get('title')
-        category_id = request.POST.get('category')
-        description = request.POST.get('description')
-        price = request.POST.get('price')
-        duration_minutes = request.POST.get('duration_minutes')
-        image = request.FILES.get('image')
-        status = request.POST.get('status')
-        includes = request.POST.get('includes')
+        form = ServiceForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Service added successfully')
+            return redirect('admin_services')
+    else:
+        form = ServiceForm()
+    
+    return render(request,'admin/services/add_service.html', {'form':form})
 
-        category = get_object_or_404(ServiceCategory, id=category_id)
-
-        Service.objects.create(title = title, category=category, description=description,includes=includes, 
-                               price=price, duration_minutes=duration_minutes, image=image, is_active=True if status == "active" else False)
-        messages.success(request, 'Service added successfully')
-        return redirect('admin_services')
-
-    return render(request,'admin/services/add_service.html', {'categories':categories})
 
 @login_required
 def edit_service(request,pk):
     services = get_object_or_404(Service,pk=pk)
-    categories = ServiceCategory.objects.filter(is_active=True)
+    
     if request.method == "POST":
-        services.title = request.POST.get('title')
+        form = ServiceForm(request.POST, request.FILES, instance= services)
+        if form.is_valid():
+            form.save()
+            messages.success(request,"Service updated sucessfully!")
+            return redirect('admin_services')
+    else:
+        form = ServiceForm(instance=services)
 
-        services.category = get_object_or_404(ServiceCategory,id=request.POST.get('category'))
-        services.description = request.POST.get('description')
-        services.includes = request.POST.get('includes')
-        services.price = request.POST.get('price')
-        services.duration_minutes = request.POST.get('duration_minutes')
-        services.is_active = True if request.POST.get('status') == "active" else False
+    return render(request,'admin/services/edit_service.html',{'form':form,"services": services})
 
-        if 'image' in request.FILES:
-            services.image = request.FILES['image']
-
-        services.save()
-        messages.success(request,"Service updated sucessfully!")
-        return redirect('admin_services')
-
-    return render(request,'admin/services/edit_service.html',{'services':services,'categories':categories})
 
 def delete_service(request,pk):
     services = get_object_or_404(Service,pk=pk)
