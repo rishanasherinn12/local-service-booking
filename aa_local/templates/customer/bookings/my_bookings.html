@@ -15,6 +15,7 @@
             <div class="flex flex-col gap-md">
 
                 <!-- Booking Item 1 -->
+                 {% for booking in bookings %}
                 <div class="card flex justify-between items-center group">
                     <div class="flex items-center gap-lg">
                         <div
@@ -22,18 +23,29 @@
                             <i class="fa-solid fa-broom text-light fa-lg"></i>
                         </div>
                         <div>
-                            <h4 style="margin: 0;">Deep Home Cleaning</h4>
-                            <p class="text-sm text-light" style="margin: 0.25rem 0;">Tomorrow, 10:00 AM</p>
+                            <h4 style="margin: 0;">{{ booking.service.title }}</h4>
+                            <p class="text-sm text-light" style="margin: 0.25rem 0;">{{ booking.booking_date }}, {{ booking.booking_time }}</p>
+
                             <span class="badge badge-info">Professional Assigned</span>
+                            {% comment %} {% if booking.status == "assigned" %}
+                                <span class="badge badge-info">Professional Assigned</span>
+                            {% elif booking.status == "pending" %}
+                                <span class="badge badge-warning">Pending Assignment</span>
+                            {% elif booking.status == "completed" %}
+                                <span class="badge badge-success">Completed</span>
+                            {% endif %} {% endcomment %}
                         </div>
                     </div>
                     <div class="text-right">
-                        <p class="font-bold text-lg" style="margin-bottom: 0.5rem;">$94.00</p>
-                        <a href="{% url 'booking_detail' %}" class="btn btn-secondary btn-sm">Track</a>
+                        <p class="font-bold text-lg" style="margin-bottom: 0.5rem;">₹{{ booking.total_price }}</p>
+                        <a href="{% url 'booking_detail' booking.id %}" class="btn btn-secondary btn-sm">Track</a>
                     </div>
                 </div>
+                {% empty %}
+                    <p>No bookings found.
+                {% endfor %}
 
-                <!-- Booking Item 2 -->
+                {% comment %} <!-- Booking Item 2 -->
                 <div class="card flex justify-between items-center">
                     <div class="flex items-center gap-lg">
                         <div
@@ -50,7 +62,7 @@
                         <p class="font-bold text-lg" style="margin-bottom: 0.5rem;">$25.00</p>
                         <a href="{%url 'booking_detail'%}" class="btn btn-secondary btn-sm">Details</a>
                     </div>
-                </div>
+                </div> {% endcomment %}
 
             </div>
         {% endblock %}

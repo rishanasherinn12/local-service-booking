@@ -19,6 +19,8 @@ class Booking(models.Model):
     booking_date = models.DateField()
     booking_time = models.TimeField()
 
+    total_price = models.DecimalField(max_digits=8, decimal_places=2, default=0)
+
     label = models.CharField(max_length=50, blank=True, null=True)
     address_line = models.CharField(max_length=500)
     city = models.CharField(max_length=100)

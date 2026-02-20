@@ -19,13 +19,18 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db import transaction
 from django.utils import timezone
 
+from django.contrib.admin.views.decorators import staff_member_required
+
 
 # Create your views here.
+@login_required
 def booking(request):
-    return render(request,'customer/bookings/my_bookings.html')
+    bookings=Booking.objects.select_related('service','payment').filter(customer=request.user, payment__status='SUCCESS').order_by('-created_at')
+    return render(request,'customer/bookings/my_bookings.html',{'bookings':bookings})
 
-def booking_detail(request):
-    return render(request,'customer/bookings/booking_detail.html')
+def booking_detail(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id, customer = request.user)
+    return render(request,'customer/bookings/booking_detail.html',{'booking':booking})
 
 
 @login_required
@@ -85,13 +90,23 @@ def booking_step3(request,booking_id):
     tax = service_price * Decimal("0.18")
     total_amount = service_price + tax
 
+    booking.total_price = total_amount
+    booking.save()
+
     context={"booking":booking,"service_price":service_price,"tax":tax,"total_amount":total_amount}
    
     return render(request,'customer/bookings/booking_step3.html',context)
 
 
 def booking_success(request, booking_id):
-    booking = get_object_or_404(Booking, id=booking_id)
+    booking = get_object_or_404(Booking, id=booking_id,customer=request.user)
+    payment = booking.payment
+    payment.status = 'SUCCESS'
+    payment.paid_at = timezone.now()
+    payment.save()
+
+    booking.booking_status = 'CONFIRMED'
+    booking.save()
     return render(request,'customer/bookings/booking_success.html', {'booking':booking})
 
 
@@ -168,9 +183,11 @@ def stripe_webhook(request):
 
 
 
-
+@staff_member_required
 def admin_bookings(request):
-    return render(request, 'admin/bookings/admin_bookings.html')
+    bookings = Booking.objects.select_related("customer","service","worker").order_by("-created_at")
+    context = {"booking":bookings}
+    return render(request, 'admin/bookings/admin_bookings.html',context)
 
 def admin_booking_detail(request):
     return render(request, 'admin/bookings/admin_booking_detail.html')
