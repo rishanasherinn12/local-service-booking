@@ -20,7 +20,7 @@ from django.db import transaction
 from django.utils import timezone
 
 from django.contrib.admin.views.decorators import staff_member_required
-
+from .forms import BookingAssignForm
 
 # Create your views here.
 @login_required
@@ -189,8 +189,20 @@ def admin_bookings(request):
     context = {"booking":bookings}
     return render(request, 'admin/bookings/admin_bookings.html',context)
 
-def admin_booking_detail(request):
-    return render(request, 'admin/bookings/admin_booking_detail.html')
+
+@staff_member_required
+def admin_booking_detail(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id)
+
+    if request.method == "POST":
+        form = BookingAssignForm(request.POST, instance=booking)
+        if form.is_valid():
+            form.save()
+            return redirect('admin_booking_detail', booking_id = booking.id)
+    else:
+        form = BookingAssignForm(instance = booking)
+
+    return render(request, 'admin/bookings/admin_booking_detail.html',{'booking':booking,'form':form})
 
 
 

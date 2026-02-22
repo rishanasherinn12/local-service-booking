@@ -6,23 +6,23 @@
 
             <div class="breadcrumbs">
                 <a href="admin_bookings.html">Bookings</a> <i class="fa-solid fa-chevron-right text-xs"></i>
-                <span>#AG-8822</span>
+                <span>{{ booking.id }}</span>
             </div>
 
             <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
                 <div>
                     <div class="card" style="margin-bottom: 2rem;">
-                        <h2 style="margin-bottom: 0.5rem;">AC Repair</h2>
+                        <h2 style="margin-bottom: 0.5rem;">{{ booking.service.title }}</h2>
                         <div class="flex items-center gap-md text-light">
-                            <span><i class="fa-solid fa-calendar"></i> 25 Dec, 2025</span>
-                            <span><i class="fa-solid fa-clock"></i> 02:00 PM</span>
+                            <span><i class="fa-solid fa-calendar"></i> {{ booking.booking_date }}</span>
+                            <span><i class="fa-solid fa-clock"></i>{{ booking.booking_time }}</span>
                         </div>
                         <hr style="border:none; border-top: 1px solid var(--color-border); margin: 1.5rem 0;">
 
                         <h4 style="margin-bottom: 1rem;">Customer Details</h4>
-                        <p class="font-bold">Sarah Smith</p>
-                        <p class="text-light">sarah@example.com • +1 555-0192</p>
-                        <p class="text-light" style="margin-top: 0.5rem;">142, Orchid Towers, MG Road, Bangalore</p>
+                        <p class="font-bold">{{ booking.customer.get_full_name }}</p>
+                        <p class="text-light">{{ booking.customer.email }} • {{ booking.customer.phone }}</p>
+                        <p class="text-light" style="margin-top: 0.5rem;">{{ booking.address }}</p>
                     </div>
                 </div>
 
@@ -30,22 +30,16 @@
                     <div class="card bg-white">
                         <h3 style="margin-bottom: 1rem;">Assignment</h3>
                         <p class="text-light text-sm mb-2">Current Status: <span
-                                class="badge badge-warning">Pending</span></p>
+                                class="badge badge-warning">{{ booking.status }}</span></p>
 
-                        <label class="form-label">Assign Professional</label>
-                        <select class="form-control" style="margin-bottom: 1rem;">
-                            <option>Select a worker...</option>
-                            <option>Rahul Sharma (4.8 ★)</option>
-                            <option>Vijay Kumar (4.5 ★)</option>
-                            <option>Anita Roy (4.9 ★)</option>
-                        </select>
+                        <form method="POST">
+                                {% csrf_token %}
+                            <label class="form-label">Assign Professional</label>
+                            {{ form.worker }}
 
-                        <button class="btn btn-primary btn-block">Assign & Notify</button>
+                            <button class="btn btn-primary btn-block">Assign & Notify</button>
+                        </form>
                     </div>
                 </div>
             </div>
-        </main>
-    </div>
-</body>
-
-</html>
+        {% endblock %}
