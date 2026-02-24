@@ -5,7 +5,7 @@
         {% block content %}
 
             <div class="breadcrumbs">
-                <a href="admin_bookings.html">Bookings</a> <i class="fa-solid fa-chevron-right text-xs"></i>
+                <a href="{% url 'admin_booking' %}">Bookings</a> <i class="fa-solid fa-chevron-right text-xs"></i>
                 <span>{{ booking.id }}</span>
             </div>
 
@@ -20,9 +20,9 @@
                         <hr style="border:none; border-top: 1px solid var(--color-border); margin: 1.5rem 0;">
 
                         <h4 style="margin-bottom: 1rem;">Customer Details</h4>
-                        <p class="font-bold">{{ booking.customer.get_full_name }}</p>
-                        <p class="text-light">{{ booking.customer.email }} • {{ booking.customer.phone }}</p>
-                        <p class="text-light" style="margin-top: 0.5rem;">{{ booking.address }}</p>
+                        <p class="font-bold">{{ booking.customer.username }}</p>
+                        <p class="text-light">{{ booking.customer.email }} • {{ booking.customer.customer_profile.phone }}</p>
+                        <p class="text-light" style="margin-top: 0.5rem;">{{ booking.address_line }},{{ booking.city }},{{ booking.state }} - {{ booking.pincode }}</p>
                     </div>
                 </div>
 

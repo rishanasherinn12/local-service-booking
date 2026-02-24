@@ -13,5 +13,5 @@ urlpatterns=[
     path("stripe/webhook/", views.stripe_webhook, name="stripe_webhook"),
     
     path('admin/',views.admin_bookings, name="admin_booking"),
-    path('admin_detail/',views.admin_booking_detail, name="admin_booking_detail"),
+    path('admin_detail/<int:booking_id>/',views.admin_booking_detail, name="admin_booking_detail"),
 ]

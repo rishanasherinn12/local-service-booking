@@ -13,23 +13,25 @@
             </div>
 
             <div class="grid grid-cols-1 gap-md">
+                {% for booking in bookings %}
                 <div class="card"
                     style="padding: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
                     <div>
                         <div class="flex items-center gap-sm mb-1">
-                            <span class="font-bold">#AG-8823</span>
-                            <span class="badge badge-info">Assigned</span>
+                            <span class="font-bold">#AG-{{ booking.id }}</span>
+                            <span class="badge badge-info">{{ booking.status }}</span>
                         </div>
-                        <h4 style="margin: 0;">Deep Home Cleaning</h4>
-                        <p class="text-sm text-light">Customer: John Doe • 20 Dec, 10:00 AM</p>
+                        <h4 style="margin: 0;">{{ booking.service.title }}</h4>
+                        <p class="text-sm text-light">Customer: {{ booking.customer.username }} • {{ booking.booking_date|date:"d M Y" }}, {{ booking.booking_time|time:"h:i A" }}</p>
                     </div>
                     <div class="flex flex-col items-end gap-sm">
-                        <span class="font-bold">$94.00</span>
-                        <a href="admin_booking_detail.html" class="btn btn-outline btn-sm">Manage</a>
+                        <span class="font-bold">₹{{ booking.total_price }}</span>
+                        <a href="{% url 'admin_booking_detail' booking.id %}" class="btn btn-outline btn-sm">Manage</a>
                     </div>
                 </div>
+                {% endfor %}
 
-                <div class="card"
+                {% comment %} <div class="card"
                     style="padding: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
                     <div>
                         <div class="flex items-center gap-sm mb-1">
@@ -41,8 +43,8 @@
                     </div>
                     <div class="flex flex-col items-end gap-sm">
                         <span class="font-bold">$25.00</span>
-                        <a href="{% url 'admin_booking_detail' %}" class="btn btn-primary btn-sm">Assign</a>
+                        <a href="{% url 'admin_booking_detail' booking.id %}" class="btn btn-primary btn-sm">Assign</a>
                     </div>
-                </div>
+                </div> {% endcomment %}
             </div>
         {% endblock %}

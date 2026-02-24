@@ -14,7 +14,7 @@ class BookingAssignForm(forms.ModelForm):
     
     def save(self, commit=True):
         booking = super().save(commit=False)
-        booking.status = "ASSIGNED"
+        booking.status = "CONFIRMED"
 
         if commit:
             booking.save()

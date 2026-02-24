@@ -186,7 +186,7 @@ def stripe_webhook(request):
 @staff_member_required
 def admin_bookings(request):
     bookings = Booking.objects.select_related("customer","service","worker").order_by("-created_at")
-    context = {"booking":bookings}
+    context = {"bookings":bookings}
     return render(request, 'admin/bookings/admin_bookings.html',context)
 
 
