@@ -130,4 +130,12 @@ def worker_jobs(request):
 @login_required
 def worker_profile(request,pk):
     worker = get_object_or_404(Worker,pk=pk)
-    return render(request, 'admin/workers/worker_profile.html',{'worker':worker})  
+
+    completed_jobs = worker.bookings.filter(booking_status = "COMPLETED").count()
+    total_jobs = worker.bookings.count()
+    context = {
+        "worker": worker,
+        "completed_jobs": completed_jobs,
+        "total_jobs": total_jobs,
+    }
+    return render(request, 'admin/workers/worker_profile.html', context)  

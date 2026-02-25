@@ -26,7 +26,14 @@
                 </div>
                 
                 <h3 style="margin-bottom: 0.25rem;">{{ worker.full_name }}</h3>
-                <p class="text-light text-sm mb-2">{{ worker.role }}</p>
+                {% comment %} <p class="text-light text-sm mb-2">{{ worker.role }}</p> {% endcomment %}
+                <p class="text-light text-sm mb-2">
+                    {% if worker.services.exists %}
+                        {{ worker.services.first.category.name }}
+                    {% else %}
+                        No category
+                    {% endif %}
+                </p>
 
                 {% if worker.is_active %}
                     <span class="badge badge-success">Active</span>

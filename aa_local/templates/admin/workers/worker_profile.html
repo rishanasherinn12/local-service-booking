@@ -31,7 +31,14 @@
                         {% endif %}
                     </div>
                     <h3 style="margin-bottom: 0.5rem;">{{ worker.full_name }}</h3>
-                    <p class="text-light mb-2">{{ worker.role }}</p>
+                    {% comment %} <p class="text-light mb-2">{{ worker.role }}</p> {% endcomment %}
+                    <p class="text-light mb-2">
+                        {% if worker.services.exists %}
+                            {{ worker.services.first.category.name }}
+                        {% else %}
+                            No category
+                        {% endif %}
+                    </p>
 
                     <div class="flex justify-center items-center gap-xs text-warning mb-2" style="margin-bottom: 1rem;">
                         <i class="fa-solid fa-star"></i> <span class="font-bold"
@@ -93,7 +100,15 @@
                             <div>
                                 <p class="text-sm text-light uppercase"
                                     style="font-weight: 600; margin-bottom: 0.25rem;">Primary Skill</p>
-                                <p class="font-medium">{{ worker.role }}</p>
+                                {% comment %} <p class="font-medium">{{ worker.role }}</p> {% endcomment %}
+                                <p class="font-medium">
+                                    {% for service in worker.services.all %}
+                                        {{ service.title }}{% if not forloop.last %}, {% endif %}
+                                    {% empty %}
+                                        No skills assigned
+                                    {% endfor %}
+                                </p>
+                                
                             </div>
                             <div>
                                 <p class="text-sm text-light uppercase"
@@ -103,7 +118,7 @@
                             <div>
                                 <p class="text-sm text-light uppercase"
                                     style="font-weight: 600; margin-bottom: 0.25rem;">Total Jobs</p>
-                                <p class="font-medium">142 Completed</p>
+                                <p class="font-medium">{{ completed_jobs }} Completed</p>
                             </div>
                             <div>
                                 <p class="text-sm text-light uppercase"
@@ -136,7 +151,7 @@
                             <div>
                                 <p class="text-sm text-light uppercase"
                                     style="font-weight: 600; margin-bottom: 0.25rem;">Joined Date</p>
-                                <p class="font-medium">12 Jan, 2024</p>
+                                <p class="font-medium">{{ worker.created_at|date:"d M, Y" }}</p>
                             </div>
                             <div>
                                 <p class="text-sm text-light uppercase"

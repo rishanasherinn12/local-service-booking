@@ -15,7 +15,7 @@ class ServiceAdmin(admin.ModelAdmin):
     image_preview.short_description = "Image"
 
 class WorkerAdmin(admin.ModelAdmin):
-    list_display=('full_name','role','photo','rating','is_active','email','location')
+    list_display=('full_name','photo','rating','is_active','email','location')
     
 
 # Register your models here.

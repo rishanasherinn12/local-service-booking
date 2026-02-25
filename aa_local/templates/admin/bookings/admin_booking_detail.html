@@ -37,6 +37,13 @@
                             <label class="form-label">Assign Professional</label>
                             {{ form.worker }}
 
+
+                            {% if not form.worker.field.queryset %}
+                                <p style="color: red; margin-top: 8px;">
+                                    No workers available for this service.
+                                </p>
+                            {% endif %}
+
                             <button class="btn btn-primary btn-block">Assign & Notify</button>
                         </form>
                     </div>

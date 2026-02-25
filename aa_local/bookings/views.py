@@ -22,6 +22,14 @@ from django.utils import timezone
 from django.contrib.admin.views.decorators import staff_member_required
 from .forms import BookingAssignForm
 
+# from bookings.models import Booking, Worker
+# booking = Booking.objects.get(id=53)
+# print("Booking Service:", booking.service)
+
+# Worker.objects.filter(
+#     services=booking.service,
+#     is_active=True)
+
 # Create your views here.
 @login_required
 def booking(request):
@@ -203,6 +211,10 @@ def admin_booking_detail(request, booking_id):
         form = BookingAssignForm(instance = booking)
 
     return render(request, 'admin/bookings/admin_booking_detail.html',{'booking':booking,'form':form})
+
+
+
+
 
 
 
