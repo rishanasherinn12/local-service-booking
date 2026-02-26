@@ -6,12 +6,12 @@ from services.models import Service,Worker
 # Create your models here.
 class Booking(models.Model):
     BOOKING_STATUS_CHOICES = [
-        ('REQUESTED','Requested'),
+        ('PENDING','Pending'),
+        ('ASSIGNED', 'Assigned'),
         ('CONFIRMED','Confirmed'),
         ('IN_PROGRESS','In Progress'),
         ('COMPLETED','Completed'),
         ('CANCELLED', 'Cancelled'),
-        ('REJECTED', 'Rejected'),
     ]
     customer = models.ForeignKey(User, on_delete = models.CASCADE, related_name='bookings')
     service = models.ForeignKey(Service, on_delete = models.CASCADE, related_name='bookings')
@@ -28,7 +28,7 @@ class Booking(models.Model):
     pincode = models.CharField(max_length=10)
     landmark = models.CharField(max_length=100, blank=True)
 
-    booking_status = models.CharField(max_length=20, choices = BOOKING_STATUS_CHOICES, default='REQUESTED')
+    booking_status = models.CharField(max_length=20, choices = BOOKING_STATUS_CHOICES, default='PENDING')
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now = True)

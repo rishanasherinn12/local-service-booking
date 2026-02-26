@@ -22,13 +22,7 @@ from django.utils import timezone
 from django.contrib.admin.views.decorators import staff_member_required
 from .forms import BookingAssignForm
 
-# from bookings.models import Booking, Worker
-# booking = Booking.objects.get(id=53)
-# print("Booking Service:", booking.service)
 
-# Worker.objects.filter(
-#     services=booking.service,
-#     is_active=True)
 
 # Create your views here.
 @login_required
@@ -43,8 +37,13 @@ def booking_detail(request, booking_id):
 
 @login_required
 def booking_step1(request,service_id):
+    
     service = get_object_or_404(Service, id=service_id)
     if request.method == 'POST':
+        existing_booking = Booking.objects.filter(customer = request.user, service = service, booking_status = "PENDING").first()
+        if existing_booking:
+            return redirect("booking_step2",existing_booking.id)
+    
         booking_date = request.POST.get('booking_date')
         booking_time =request.POST.get('booking_time')
 
@@ -94,6 +93,12 @@ def booking_step2(request,booking_id):
 
 def booking_step3(request,booking_id):
     booking= get_object_or_404(Booking, id=booking_id, customer=request.user)
+
+    # Only allow payment after admin assigns worker
+    if booking.booking_status != "ASSIGNED":
+        messages.error(request, "Waiting for admin approval before payment.")
+        return redirect("booking")
+    
     service_price = booking.service.price
     tax = service_price * Decimal("0.18")
     total_amount = service_price + tax
@@ -122,6 +127,10 @@ def booking_success(request, booking_id):
 def stripe_checkout(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
 
+    if booking.booking_status != "ASSIGNED":
+        messages.error(request, "Booking not approved yet.")
+        return redirect("booking")
+    
     if booking.service.price < 50:
         messages.error(request,"Online payment requires minimum ₹50.")
         return redirect("booking_step3", booking.id)
@@ -170,16 +179,17 @@ def stripe_webhook(request):
         payment_intent = session.get("payment_intent")
         try:
             payment = Payment.objects.get(stripe_session_id = session_id)
-            with transaction.atomic():
-                payment.payment_status = "SUCCESS"
-                payment.stripe_payment_intent = payment_intent
-                payment.paid_at = timezone.now()
-                payment.save()
+            if payment.status != "SUCCESS":
+                with transaction.atomic():
+                    payment.status = "SUCCESS"
+                    payment.stripe_payment_intent = payment_intent
+                    payment.paid_at = timezone.now()
+                    payment.save()
 
-            # Optional: Update booking status
-            booking = payment.booking
-            booking.booking_status = "CONFIRMED"
-            booking.save()
+                    # Optional: Update booking status
+                    booking = payment.booking
+                    booking.booking_status = "CONFIRMED"
+                    booking.save()
 
         except Payment.DoesNotExist:
             pass
@@ -193,7 +203,12 @@ def stripe_webhook(request):
 
 @staff_member_required
 def admin_bookings(request):
-    bookings = Booking.objects.select_related("customer","service","worker").order_by("-created_at")
+    # expiry_time = timezone.now() - timedelta(minutes=30)
+    # # Mark old REQUESTED bookings as CANCELLED
+    # Booking.objects.filter(booking_status="REQUESTED",created_at__lt=expiry_time).update(booking_status="CANCELLED")
+
+    bookings = Booking.objects.filter(booking_status__in = ["PENDING","ASSIGNED", "CONFIRMED"]).select_related("customer","service","worker").order_by("-created_at")
+
     context = {"bookings":bookings}
     return render(request, 'admin/bookings/admin_bookings.html',context)
 

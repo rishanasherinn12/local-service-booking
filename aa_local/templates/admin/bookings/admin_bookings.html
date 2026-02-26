@@ -19,7 +19,16 @@
                     <div>
                         <div class="flex items-center gap-sm mb-1">
                             <span class="font-bold">#AG-{{ booking.id }}</span>
-                            <span class="badge badge-info">{{ booking.status }}</span>
+
+                            {% if booking.booking_status == "PENDING" %}
+                                <span class="badge badge-warning">Pending</span>
+                            {% elif booking.booking_status == "ASSIGNED" %}
+                                <span class="badge badge-info">Assigned</span>
+                            {% elif booking.booking_status == "CONFIRMED" %}
+                                <span class="badge badge-success">Confirmed</span>
+                            {% elif booking.booking_status == "CANCELLED" %}
+                                <span class="badge badge-danger">Cancelled</span>
+                            {% endif %}
                         </div>
                         <h4 style="margin: 0;">{{ booking.service.title }}</h4>
                         <p class="text-sm text-light">Customer: {{ booking.customer.username }} • {{ booking.booking_date|date:"d M Y" }}, {{ booking.booking_time|time:"h:i A" }}</p>
