@@ -117,8 +117,8 @@ def add_worker(request):
        if form.is_valid():
            worker = form.save(commit = False) #Don't save yet
            worker.is_active = request.POST.get("is_active") == "true"
-           worker.save()
-           form.save_m2m()
+           worker.save()    #save main worker
+           form.save_m2m()  #saves services
            
            messages.success(request,"Worker added Successfully")
            return redirect("admin_workers")
