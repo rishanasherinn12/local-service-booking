@@ -8,21 +8,23 @@ class BookingAssignForm(forms.ModelForm):
         fields = ['worker']
 
     def __init__(self, *args, **kwargs):
-        booking = kwargs.get('instance') #get current booking
         super().__init__(*args, **kwargs)
+        # booking = kwargs.get('instance') #get current booking
+        booking = self.instance
         
 
-        if booking:
+        if booking and booking.service:
             self.fields['worker'].queryset = Worker.objects.filter(
                 services = booking.service, # Only workers who can do this service
                 is_active = True
             )
 
          # Add styling cleanly
+        self.fields['worker'].empty_label = "Select a worker"
         self.fields['worker'].widget.attrs.update({
             'class': 'form-control'
         }),
-        self.fields['worker'].empty_label = "Select a worker"
+        
 
         if not self.fields['worker'].queryset.exists():
             self.fields['worker'].help_text = "No workers available for this service."

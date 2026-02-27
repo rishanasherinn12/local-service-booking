@@ -242,10 +242,10 @@ def admin_booking_detail(request, booking_id):
     if request.method == "POST":
         form = BookingAssignForm(request.POST, instance=booking)
         if form.is_valid():
-            booking = form.save(commit = False)
-            if booking.worker:
+            booking = form.save()
+            if booking.worker: #worker stored in booking
                 booking.booking_status = "ASSIGNED"
-            booking.save()
+            booking.save()  #worker is saved
             return redirect('admin_booking_detail', booking_id = booking.id)
     else:
         form = BookingAssignForm(instance = booking)

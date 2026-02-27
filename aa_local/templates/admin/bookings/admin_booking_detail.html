@@ -29,8 +29,26 @@
                 <div>
                     <div class="card bg-white">
                         <h3 style="margin-bottom: 1rem;">Assignment</h3>
-                        <p class="text-light text-sm mb-2">Current Status: <span
-                                class="badge badge-warning">{{ booking.status }}</span></p>
+                        <p class="text-light text-sm mb-2">Current Status: 
+                            {% if booking.booking_status == "PENDING" %}
+                                <span class="badge badge-warning">PENDING</span>
+
+                            {% elif booking.booking_status == "ASSIGNED" %}
+                                <span class="badge badge-info">ASSIGNED</span>
+
+                            {% elif booking.booking_status == "CONFIRMED" %}
+                                <span class="badge badge-success">CONFIRMED</span>
+
+                            {% elif booking.booking_status == "CANCELLED" %}
+                                <span class="badge badge-danger">CANCELLED</span>
+                            {% endif %}
+
+
+                        {% if booking.worker %}
+                        <p class="text-sm text-light mt-2">
+                            Assigned To: <strong>{{ booking.worker.full_name }}</strong>
+                        </p>
+                        {% endif %}
 
                         <form method="POST">
                                 {% csrf_token %}
