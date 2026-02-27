@@ -11,6 +11,17 @@
                     style="width: auto; background: none; color: var(--color-text-light);">History</button>
             </div>
 
+            {% if banner == "PENDING" %}
+            <div class="card" style="background:#FFF8E1; border-left:4px solid #FFC107; padding:1rem; margin-bottom:1rem;">
+                ⏳ Your booking request is under review. Payment will be enabled once a professional is assigned.
+            </div>
+
+            {% elif banner == "ASSIGNED" %}
+            <div class="card" style="background:#E3F2FD; border-left:4px solid #2196F3; padding:1rem; margin-bottom:1rem;">
+                💳 A professional has been assigned. You can now complete payment.
+            </div>
+            {% endif %}
+
             <!-- Booking List -->
             <div class="flex flex-col gap-md">
 

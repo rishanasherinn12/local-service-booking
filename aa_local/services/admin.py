@@ -15,7 +15,11 @@ class ServiceAdmin(admin.ModelAdmin):
     image_preview.short_description = "Image"
 
 class WorkerAdmin(admin.ModelAdmin):
-    list_display=('full_name','photo','rating','is_active','email','location')
+    list_display=('full_name','display_services','photo','rating','is_active','email','location',)
+    def display_services(self, obj):
+        return ", ".join(service.title for service in obj.services.all())
+
+    display_services.short_description = "Services"
     
 
 # Register your models here.

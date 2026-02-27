@@ -115,7 +115,11 @@ def add_worker(request):
     if request.method == "POST":
        form = WorkerForm(request.POST, request.FILES)
        if form.is_valid():
-           form.save()
+           worker = form.save(commit = False) #Don't save yet
+           worker.is_active = request.POST.get("is_active") == "true"
+           worker.save()
+           form.save_m2m()
+           
            messages.success(request,"Worker added Successfully")
            return redirect("admin_workers")
     else:

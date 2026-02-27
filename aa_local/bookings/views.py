@@ -28,7 +28,17 @@ from .forms import BookingAssignForm
 @login_required
 def booking(request):
     bookings=Booking.objects.select_related('service','payment').filter(customer=request.user, payment__status='SUCCESS').order_by('-created_at')
-    return render(request,'customer/bookings/my_bookings.html',{'bookings':bookings})
+    has_pending = bookings.filter(booking_status = "PENDING").exists()
+    has_assigned = bookings.filter(booking_status="ASSIGNED").exists()
+    banner = None
+    if has_assigned:
+        banner == "ASSIGNED"
+    elif has_pending:
+        banner == "PENDING"
+    context={'bookings':bookings, "banner":banner}
+
+    return render(request,'customer/bookings/my_bookings.html', context)
+
 
 def booking_detail(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id, customer = request.user)
@@ -40,10 +50,6 @@ def booking_step1(request,service_id):
     
     service = get_object_or_404(Service, id=service_id)
     if request.method == 'POST':
-        existing_booking = Booking.objects.filter(customer = request.user, service = service, booking_status = "PENDING").first()
-        if existing_booking:
-            return redirect("booking_step2",existing_booking.id)
-    
         booking_date = request.POST.get('booking_date')
         booking_time =request.POST.get('booking_time')
 
@@ -51,7 +57,21 @@ def booking_step1(request,service_id):
             messages.error(request, "please select date and time")
             return redirect('booking_step1',service_id)
         
-        booking = Booking.objects.create(customer = request.user, service = service, booking_date = booking_date, booking_time = booking_time)
+        service_price = service.price
+        tax = service_price * Decimal("0.18")
+        total_amount = service_price + tax
+
+        existing_booking = Booking.objects.filter(customer = request.user, service = service, booking_status = "PENDING").first()
+        if existing_booking:
+            existing_booking.booking_date = booking_date
+            existing_booking.booking_time = booking_time
+            existing_booking.total_price = total_amount
+            existing_booking.booking_status = "PENDING"
+            existing_booking.created_at = timezone.now() #moves reused booking to top
+            existing_booking.save()
+            return redirect("booking_step2",existing_booking.id)
+                    
+        booking = Booking.objects.create(customer = request.user, service = service, booking_date = booking_date, booking_time = booking_time, total_price=total_amount,booking_status="PENDING")
 
         return redirect('booking_step2', booking.id) 
     
@@ -84,8 +104,8 @@ def booking_step2(request,booking_id):
         booking.pincode = address.pincode
         booking.landmark = address.landmark
         booking.save()
-
-        return redirect('booking_step3',booking_id)
+        messages.info(request,"Your booking request has been submitted. Payment will be enabled after a professional is assigned.")
+        return redirect('booking')
 
     return render(request,'customer/bookings/booking_step2.html',{'booking':booking,'addresses':addresses})
 
@@ -98,15 +118,8 @@ def booking_step3(request,booking_id):
     if booking.booking_status != "ASSIGNED":
         messages.error(request, "Waiting for admin approval before payment.")
         return redirect("booking")
-    
-    service_price = booking.service.price
-    tax = service_price * Decimal("0.18")
-    total_amount = service_price + tax
 
-    booking.total_price = total_amount
-    booking.save()
-
-    context={"booking":booking,"service_price":service_price,"tax":tax,"total_amount":total_amount}
+    context={"booking":booking}
    
     return render(request,'customer/bookings/booking_step3.html',context)
 
@@ -203,11 +216,20 @@ def stripe_webhook(request):
 
 @staff_member_required
 def admin_bookings(request):
+    from django.db.models import Case, When, Value, IntegerField
     # expiry_time = timezone.now() - timedelta(minutes=30)
     # # Mark old REQUESTED bookings as CANCELLED
     # Booking.objects.filter(booking_status="REQUESTED",created_at__lt=expiry_time).update(booking_status="CANCELLED")
 
-    bookings = Booking.objects.filter(booking_status__in = ["PENDING","ASSIGNED", "CONFIRMED"]).select_related("customer","service","worker").order_by("-created_at")
+    bookings = Booking.objects.filter(booking_status__in = ["PENDING","ASSIGNED", "CONFIRMED"]).select_related(
+        "customer","service","worker").annotate(
+            priority=Case(
+                When(booking_status="PENDING", then=Value(1)),
+                When(booking_status="ASSIGNED", then=Value(2)),
+                When(booking_status="CONFIRMED", then=Value(3)),
+                output_field=IntegerField()
+            )
+        ).order_by("priority","-created_at") #pending first
 
     context = {"bookings":bookings}
     return render(request, 'admin/bookings/admin_bookings.html',context)
@@ -220,7 +242,10 @@ def admin_booking_detail(request, booking_id):
     if request.method == "POST":
         form = BookingAssignForm(request.POST, instance=booking)
         if form.is_valid():
-            form.save()
+            booking = form.save(commit = False)
+            if booking.worker:
+                booking.booking_status = "ASSIGNED"
+            booking.save()
             return redirect('admin_booking_detail', booking_id = booking.id)
     else:
         form = BookingAssignForm(instance = booking)
