@@ -22,22 +22,35 @@ from django.utils import timezone
 from django.contrib.admin.views.decorators import staff_member_required
 from .forms import BookingAssignForm
 
-
+from django.db.models import Case, When, Value, IntegerField
 
 # Create your views here.
 @login_required
 def booking(request):
-    bookings=Booking.objects.select_related('service','payment').filter(customer=request.user, payment__status='SUCCESS').order_by('-created_at')
-    has_pending = bookings.filter(booking_status = "PENDING").exists()
-    has_assigned = bookings.filter(booking_status="ASSIGNED").exists()
+    tab = request.GET.get("tab","upcoming") #default upcoming
+    bookings=Booking.objects.select_related('service','worker','payment').filter(customer=request.user).order_by('-created_at')
+    upcoming = bookings.filter(booking_status__in=["PENDING", "ASSIGNED", "CONFIRMED", "IN_PROGRESS"]).annotate(
+        priority=Case(
+        When(booking_status="IN_PROGRESS", then=Value(1)),
+        When(booking_status="ASSIGNED", then=Value(2)),
+        When(booking_status="CONFIRMED", then=Value(3)),
+        When(booking_status="PENDING", then=Value(4)),
+        output_field=IntegerField()
+    )
+    ).order_by("priority","booking_date","booking_time")
+
+    history = bookings.filter(booking_status__in=["COMPLETED", "CANCELLED"]).order_by("-updated_at")   
     banner = None
-    if has_assigned:
-        banner == "ASSIGNED"
-    elif has_pending:
-        banner == "PENDING"
-    context={'bookings':bookings, "banner":banner}
+    
+    if upcoming.filter(booking_status="ASSIGNED").exists():
+        banner = "ASSIGNED"
+    elif upcoming.filter(booking_status="PENDING").exists():
+        banner = "PENDING"
+
+    context={"banner":banner,"upcoming":upcoming,"history":history,"active_tab":tab}
 
     return render(request,'customer/bookings/my_bookings.html', context)
+
 
 
 def booking_detail(request, booking_id):
@@ -105,6 +118,11 @@ def booking_step2(request,booking_id):
         booking.landmark = address.landmark
         booking.save()
         messages.info(request,"Your booking request has been submitted. Payment will be enabled after a professional is assigned.")
+        #-------------------------
+        # next_step = request.GET.get("next")
+        # if next_step == "payment":
+        #     return redirect('booking_step3', booking.id)
+        # #---------------------------------
         return redirect('booking')
 
     return render(request,'customer/bookings/booking_step2.html',{'booking':booking,'addresses':addresses})
@@ -119,7 +137,11 @@ def booking_step3(request,booking_id):
         messages.error(request, "Waiting for admin approval before payment.")
         return redirect("booking")
 
-    context={"booking":booking}
+    service_price = booking.service.price
+    tax = service_price * Decimal("0.18")
+    total_amount = service_price + tax
+    came_from_payment = request.GET.get("flow") == "payment"
+    context={"booking":booking,"service_price":service_price,"tax":tax,"total_amount":total_amount,"came_from_payment":came_from_payment}
    
     return render(request,'customer/bookings/booking_step3.html',context)
 

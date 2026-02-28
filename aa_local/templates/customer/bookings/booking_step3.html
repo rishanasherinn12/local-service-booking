@@ -90,7 +90,9 @@
                 </div>
 
                 <div class="flex justify-between" style="margin-top: 2rem;">
+                    {% if not came_from_payment %}
                     <a href="{% url 'booking_step2' booking.id %}" class="btn btn-secondary">Back to Address</a>
+                    {% endif %}
                 </div>
             </div>
         {% endblock %}

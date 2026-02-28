@@ -5,10 +5,30 @@
             <h2 style="margin-bottom: 2rem;">My Bookings</h2>
 
             <div class="flex gap-md" style="margin-bottom: 2rem; border-bottom: 1px solid var(--color-border);">
-                <button class="btn btn-outline"
+                {% comment %} <button class="btn btn-outline"
                     style="border: none; border-bottom: 2px solid var(--color-primary); border-radius: 0; padding-left: 0.5rem; padding-right: 0.5rem;">Upcoming</button>
                 <button class="btn btn-block"
-                    style="width: auto; background: none; color: var(--color-text-light);">History</button>
+                    style="width: auto; background: none; color: var(--color-text-light);">History</button> {% endcomment %}
+
+                    <a href="?tab=upcoming" class="btn" style="border:none;
+                            border-bottom:2px solid {% if active_tab == 'upcoming' %}var(--color-primary){% else %}transparent{% endif %};
+                            border-radius:0;
+                            padding-left:0.5rem;
+                            padding-right:0.5rem;
+                            background:none;
+                            color:{% if active_tab == 'upcoming' %}var(--color-primary){% else %}var(--color-text-light){% endif %};">
+
+                        Upcoming</a>
+                    <a href="?tab=history" class="btn" style="border:none;
+                            border-bottom:2px solid {% if active_tab == 'history' %}var(--color-primary){% else %}transparent{% endif %};
+                            border-radius:0;
+                            padding-left:0.5rem;
+                            padding-right:0.5rem;
+                            background:none;
+                            color:{% if active_tab == 'history' %}var(--color-primary){% else %}var(--color-text-light){% endif %};">
+
+                        History</a>    
+
             </div>
 
             {% if banner == "PENDING" %}
@@ -23,10 +43,11 @@
             {% endif %}
 
             <!-- Booking List -->
+             {% if active_tab == "upcoming" %}
             <div class="flex flex-col gap-md">
 
                 <!-- Booking Item 1 -->
-                 {% for booking in bookings %}
+                 {% for booking in upcoming %}
                 <div class="card flex justify-between items-center group">
                     <div class="flex items-center gap-lg">
                         <div
@@ -37,7 +58,11 @@
                             <h4 style="margin: 0;">{{ booking.service.title }}</h4>
                             <p class="text-sm text-light" style="margin: 0.25rem 0;">{{ booking.booking_date }}, {{ booking.booking_time }}</p>
 
-                            {% comment %} <span class="badge badge-info">Professional Assigned</span> {% endcomment %}
+                            {% if booking.worker %}
+                                <p class="text-sm text-light">Assigned Proffessional: {{ booking.worker.full_name }}</p>
+                            {% endif %}
+
+                            
                              {% if booking.booking_status == "PENDING" %}
                                 <span class="badge badge-warning">Pending Assignment</span>
                             {% elif booking.booking_status == "ASSIGNED" %}
@@ -59,6 +84,7 @@
                     <p>No bookings found.
                 {% endfor %}
 
+                
                 {% comment %} <!-- Booking Item 2 -->
                 <div class="card flex justify-between items-center">
                     <div class="flex items-center gap-lg">
@@ -79,4 +105,34 @@
                 </div> {% endcomment %}
 
             </div>
+            {% endif %}
+
+            {% if active_tab == "history" %}
+            <div class="flex flex-col gap-md">
+        
+                {% for booking in history %}
+                <div class="card flex justify-between items-center group">
+                    <div>
+                        <h4>{{ booking.service.title }}</h4>
+                        <p>{{ booking.booking_date }}, {{ booking.booking_time }}</p>
+                        
+                        {% if booking.booking_status == "CONFIRMED" %}
+                        <span class="badge badge-success">Payment Completed</span>
+                        {% elif booking.booking_status == "COMPLETED" %}
+                        <span class="badge badge-info">Service Completed</span>
+                        {% elif booking.booking_status == "CANCELLED" %}
+                        <span class="badge badge-danger">Cancelled</span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        ₹{{ booking.total_price }}
+                    </div>
+                </div>
+                {% empty %}
+                <p>No history bookings</p>
+                {% endfor %}
+
+            </div>
+            {% endif %}
+
         {% endblock %}
