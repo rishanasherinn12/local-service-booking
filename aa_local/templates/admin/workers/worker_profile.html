@@ -13,7 +13,7 @@
                 <h2>Worker Profile</h2>
                 <div class="flex gap-sm">
                     <a href="{% url "admin_workers" %}" class="btn btn-secondary">Back to Professionals</a>
-                    <button class="btn btn-primary">Edit Worker</button>
+                    <a href="{% url 'edit_worker' worker.id %}" class="btn btn-primary">Edit Worker</a>
                 </div>
             </div>
 

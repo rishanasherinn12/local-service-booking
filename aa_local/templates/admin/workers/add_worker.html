@@ -6,11 +6,12 @@
 
             <!-- Breadcrumbs -->
             <div class="breadcrumbs">
-                <a href="{% url "admin_workers" %}">Professionals</a> &gt; Add New Worker
+                <a href="{% url "admin_workers" %}">Professionals</a> &gt;
+                {% if is_edit %}Edit Worker {% else %} Add New Worker {% endif %}
             </div>
 
             <div class="flex justify-between items-center" style="margin-bottom: 2rem;">
-                <h2>Add New Worker</h2>
+                <h2>{% if is_edit %}Edit Worker {% else %} Add New Worker {% endif %}
             </div>
 
             <!-- Add Worker Form -->
@@ -80,11 +81,11 @@
                         <label class="form-label" style="margin-bottom: 0.5rem;">Worker Status</label>
                         <div class="flex gap-lg">
                             <label class="flex items-center gap-sm" style="cursor: pointer;">
-                                <input type="radio" name="is_active" value="true" checked>
+                                <input type="radio" name="is_active" value="true" {% if form.instance.is_active %}checked {% endif %}>
                                 <span>Active</span>
                             </label>
                             <label class="flex items-center gap-sm" style="cursor: pointer;">
-                                <input type="radio" name="is_active" value="false">
+                                <input type="radio" name="is_active" value="false" {% if not form.instance.is_active %}checked {% endif %}>
                                 <span>Inactive</span>
                             </label>
                         </div>
@@ -93,7 +94,7 @@
                     <!-- Form Actions -->
                     <div class="flex justify-between items-center" style="margin-top: 2rem;">
                         <a href="{% url "admin_workers" %}" class="btn btn-secondary">Cancel</a>
-                        <button type="submit" class="btn btn-primary">Save Worker</button>
+                        <button type="submit" class="btn btn-primary">{% if is_edit %}Update Worker {% else %} Save Worker {% endif %}</button>
                     </div>
 
                 </form>

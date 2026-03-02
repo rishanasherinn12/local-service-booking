@@ -42,10 +42,11 @@ def booking(request):
     history = bookings.filter(booking_status__in=["COMPLETED", "CANCELLED"]).order_by("-updated_at")   
     banner = None
     
-    if upcoming.filter(booking_status="ASSIGNED").exists():
-        banner = "ASSIGNED"
-    elif upcoming.filter(booking_status="PENDING").exists():
-        banner = "PENDING"
+    if tab == "upcoming":
+        if upcoming.filter(booking_status="ASSIGNED").exists():
+            banner = "ASSIGNED"
+        elif upcoming.filter(booking_status="PENDING").exists():
+            banner = "PENDING"
 
     context={"banner":banner,"upcoming":upcoming,"history":history,"active_tab":tab}
 
@@ -119,9 +120,9 @@ def booking_step2(request,booking_id):
         booking.save()
         messages.info(request,"Your booking request has been submitted. Payment will be enabled after a professional is assigned.")
         #-------------------------
-        # next_step = request.GET.get("next")
-        # if next_step == "payment":
-        #     return redirect('booking_step3', booking.id)
+        flow = request.GET.get("flow")
+        if flow == "payment":
+            return redirect(f'/booking/booking_step3/{booking.id}?flow=payment')
         # #---------------------------------
         return redirect('booking')
 

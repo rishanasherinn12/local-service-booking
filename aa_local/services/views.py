@@ -128,6 +128,25 @@ def add_worker(request):
 
 
 
+def edit_worker(request,pk):
+    worker = get_object_or_404(Worker, pk=pk)
+    if request.method == "POST":
+       form = WorkerForm(request.POST, request.FILES, instance=worker)
+       if form.is_valid():
+           worker = form.save(commit = False) #Don't save yet
+           worker.is_active = request.POST.get("is_active") == "true"
+           worker.save()    #save main worker
+           form.save_m2m()  #saves services
+           
+           messages.success(request,"Worker updated Successfully")
+           return redirect("worker_profile",pk=worker.id)
+    else:
+        form = WorkerForm(instance=worker)
+    return render(request, 'admin/workers/add_worker.html',{'form':form,"is_edit":True})  
+
+
+
+
 def worker_jobs(request):
     return render(request, 'admin/workers/worker_jobs.html')  
 

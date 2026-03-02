@@ -75,7 +75,7 @@
                     <div class="text-right">
                         <p class="font-bold text-lg" style="margin-bottom: 0.5rem;">₹{{ booking.total_price }}</p>
                         {% if booking.booking_status == "ASSIGNED" %}
-                            <a href="{% url 'booking_step3' booking.id %}" class="btn btn-primary btn-sm">Pay Now </a>
+                            <a href="{% url 'booking_step3' booking.id %}?flow=payment" class="btn btn-primary btn-sm">Pay Now </a>
                         {% endif %}
                         <a href="{% url 'booking_detail' booking.id %}" class="btn btn-secondary btn-sm">Track</a>
                     </div>
