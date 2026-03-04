@@ -54,16 +54,22 @@
                     </div>
 
                     <div class="flex flex-col gap-sm">
-                        <button class="btn btn-outline btn-block">Edit Profile</button>
+                        <a href="?edit=true" class="btn btn-outline btn-block">Edit Profile</a>
                         <button class="btn btn-secondary btn-block">View Jobs</button>
                     </div>
                 </div>
 
                 <!-- RIGHT COLUMN: Details -->
-                <div class="flex flex-col gap-md">
+                
+                    {% if is_edit %}
+                    <form method="post" action="{% url 'worker_profile' worker.pk %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% endif %}
 
+                <div class="flex flex-col gap-md">
                     <!-- Section 1: Personal Information -->
                     <div class="card">
+                        
                         <h4
                             style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--color-border); padding-bottom: 1rem;">
                             Personal Information</h4>
@@ -71,22 +77,46 @@
                             <div>
                                 <p class="text-sm text-light uppercase"
                                     style="font-weight: 600; margin-bottom: 0.25rem;">Full Name</p>
+                                {% if is_edit %}
+                                <div class="w-full">
+                                    {{ form.full_name }}
+                                </div>
+                                {% else %}
                                 <p class="font-medium">{{ worker.full_name }}</p>
+                                {% endif %}
                             </div>
                             <div>
                                 <p class="text-sm text-light uppercase"
                                     style="font-weight: 600; margin-bottom: 0.25rem;">Experience</p>
+                                    {% if is_edit %}
+                                <div class="w-full">
+                                    {{ form.experiance_years }}
+                                </div>
+                                {% else %}
                                 <p class="font-medium">{{ worker.experiance_years }} Years</p>
+                                {% endif %}
                             </div>
                             <div>
                                 <p class="text-sm text-light uppercase"
                                     style="font-weight: 600; margin-bottom: 0.25rem;">Phone Number</p>
+                                    {% if is_edit %}
+                                <div class="w-full">
+                                    {{ form.phone }}
+                                </div>
+                                {% else %}
                                 <p class="font-medium">{{ worker.phone }}</p>
+                                {% endif %}
                             </div>
                             <div>
                                 <p class="text-sm text-light uppercase"
                                     style="font-weight: 600; margin-bottom: 0.25rem;">Email Address</p>
+                                    {% if is_edit %}
+                                <div class="w-full">
+                                    {{ form.email }}
+                                </div>
+                                {% else %}
                                 <p class="font-medium">{{ worker.email }}</p>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -113,7 +143,13 @@
                             <div>
                                 <p class="text-sm text-light uppercase"
                                     style="font-weight: 600; margin-bottom: 0.25rem;">Service Area</p>
+                                    {% if is_edit %}
+                                <div class="w-full">
+                                    {{ form.location }}
+                                </div>
+                                {% else %}
                                 <p class="font-medium">{{ worker.location }}</p>
+                                {% endif %}
                             </div>
                             <div>
                                 <p class="text-sm text-light uppercase"
@@ -158,9 +194,19 @@
                                     style="font-weight: 600; margin-bottom: 0.25rem;">Last Active</p>
                                 <p class="font-medium">Today, 09:30 AM</p>
                             </div>
+                            
                         </div>
                     </div>
+                    
 
                 </div>
+                {% if is_edit %}
+                    <div class="flex gap-sm mt-4">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <a href="{% url 'worker_profile' worker.pk %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                    </form>
+                    {% endif %}
+
             </div>
         {% endblock %}

@@ -150,15 +150,40 @@ def edit_worker(request,pk):
 def worker_jobs(request):
     return render(request, 'admin/workers/worker_jobs.html')  
 
-@login_required
-def worker_profile(request,pk):
-    worker = get_object_or_404(Worker,pk=pk)
 
-    completed_jobs = worker.bookings.filter(booking_status = "COMPLETED").count()
+@login_required
+def worker_profile(request, pk):
+    worker = get_object_or_404(Worker, pk=pk)
+
+    is_edit = request.GET.get("edit") == "true"
+    
+    if request.method == "POST":
+        form = WorkerForm(request.POST, request.FILES, instance=worker)
+        # remove fields not used in inline edit
+        form.fields.pop('is_active', None)
+        form.fields.pop('services', None)        
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profile updated successfully")
+            return redirect("worker_profile", pk=worker.pk)
+
+    else:
+        form = WorkerForm(instance=worker)
+
+        if is_edit:
+            form.fields.pop('is_active', None)
+            form.fields.pop('services', None)
+
+    completed_jobs = worker.bookings.filter(booking_status="COMPLETED").count()
     total_jobs = worker.bookings.count()
+
     context = {
         "worker": worker,
         "completed_jobs": completed_jobs,
         "total_jobs": total_jobs,
+        "form": form,
+        "is_edit": is_edit
     }
-    return render(request, 'admin/workers/worker_profile.html', context)  
+
+    return render(request, 'admin/workers/worker_profile.html', context)
