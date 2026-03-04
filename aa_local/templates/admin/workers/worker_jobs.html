@@ -6,28 +6,42 @@
 
             <!-- Breadcrumbs -->
             <div class="breadcrumbs">
-                <a href="admin_workers.html">Professionals</a> &gt; Worker Jobs
+                <a href="{% url 'admin_workers' %}">Professionals</a> &gt; Worker Jobs
             </div>
 
             <div class="flex justify-between items-center" style="margin-bottom: 2rem;">
                 <h2>Worker Jobs</h2>
-                <a href="admin_workers.html" class="btn btn-secondary">Back to Professionals</a>
+                <a href="{% url 'admin_workers' %}" class="btn btn-secondary">Back to Professionals</a>
             </div>
 
             <!-- Worker Summary -->
             <div class="card flex items-center gap-lg" style="margin-bottom: 2rem; padding: 1.5rem;">
                 <div
                     style="width: 60px; height: 60px; background: #CBD5E1; border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                    <i class="fa-solid fa-user fa-lg text-light"></i>
+
+                    {% if worker.photo %}
+                        <img src="{{ worker.photo.url }}"
+                            style="width:100%; height:100%; object-fit:cover;">
+                    {% else %}
+                        <i class="fa-solid fa-user fa-lg text-light"></i>
+                    {% endif %}
                 </div>
                 <div>
-                    <h3 style="margin-bottom: 0.25rem;">Rahul Sharma</h3>
+                    <h3 style="margin-bottom: 0.25rem;">{{ worker.full_name }}</h3>
                     <div class="flex items-center gap-md">
-                        <span class="text-light text-sm">Cleaning Expert</span>
+                        <span class="text-light text-sm">{% if worker.services.exists %}
+                                {{ worker.services.first.category.name }}
+                            {% else %}
+                                No category
+                            {% endif %}</span>  
                         <div class="flex items-center gap-xs text-warning text-sm">
-                            <i class="fa-solid fa-star"></i> 4.8
+                            <i class="fa-solid fa-star"></i> {{ worker.rating }}
                         </div>
-                        <span class="badge badge-success">Active</span>
+                        {% if worker.is_active %}
+                            <span class="badge badge-success">Active</span>
+                        {% else %}
+                            <span class="badge badge-danger">Inactive</span>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -38,26 +52,51 @@
             <div class="grid grid-cols-1 gap-md">
 
                 <!-- Job Card 1 -->
+                 {% for job in jobs %}
                 <div class="card"
                     style="padding: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
                     <div>
                         <div class="flex items-center gap-sm mb-1">
-                            <span class="font-bold">#AG-8823</span>
-                            <span class="badge badge-info">Assigned</span>
+                            <span class="font-bold">#{{ job.id }}</span>
+
+                            {% if job.booking_status == "PENDING" %}
+                                <span class="badge badge-warning">Pending</span>
+
+                            {% elif job.booking_status == "ASSIGNED" %}
+                                <span class="badge badge-info">Assigned</span>
+
+                            {% elif job.booking_status == "CONFIRMED" %}
+                                <span class="badge badge-success">Confirmed</span>
+
+                            {% elif job.booking_status == "IN_PROGRESS" %}
+                                <span class="badge badge-info">In Progress</span>
+
+                            {% elif job.booking_status == "COMPLETED" %}
+                                <span class="badge badge-success">Completed</span>
+
+                            {% elif job.booking_status == "CANCELLED" %}
+                                <span class="badge badge-danger">Cancelled</span>
+                            {% endif %}
                         </div>
-                        <h4 style="margin: 0;">Deep Home Cleaning</h4>
-                        <p class="text-sm text-light">Customer: John Doe • 20 Dec, 10:00 AM</p>
-                        <p class="text-sm text-light"><i class="fa-solid fa-location-dot"></i> 142, Orchid Towers, MG
-                            Road</p>
+                        <h4 style="margin: 0;">{{ job.service.title }}</h4>
+                        <p class="text-sm text-light">Customer: {{ job.customer.name }} • {{ job.booking_date }}, {{ job.booking_time }}</p>
+                        <p class="text-sm text-light"><i class="fa-solid fa-location-dot"></i> {{ job.address_line }}</p>
                     </div>
                     <div class="flex flex-col items-end gap-sm">
-                        <span class="font-bold">$94.00</span>
-                        <a href="admin_booking_detail.html" class="btn btn-secondary btn-sm">View Booking</a>
+                        <span class="font-bold">₹{{ job.total_price }}</span>
+                        <a href="{% url 'admin_booking_detail' job.id %}?from=worker_jobs" class="btn btn-secondary btn-sm">View Booking</a>
                     </div>
                 </div>
+                {% empty %}
+                <div class="card text-center p-4">
+                    <p class="text-light">No jobs assigned to this worker yet</p>
+                </div>
+                {% endfor %}
+                
+                
 
                 <!-- Job Card 2 -->
-                <div class="card"
+                {% comment %} <div class="card"
                     style="padding: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
                     <div>
                         <div class="flex items-center gap-sm mb-1">
@@ -92,7 +131,7 @@
                         <span class="font-bold">$30.00</span>
                         <a href="admin_booking_detail.html" class="btn btn-secondary btn-sm">View Booking</a>
                     </div>
-                </div>
+                </div> {% endcomment %}
 
             </div>
         {% endblock %}

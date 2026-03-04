@@ -45,16 +45,12 @@
                     <i class="fa-solid fa-star"></i> {{ worker.rating }}
                 </div>
                 
-
                 <div class="flex justify-center gap-sm mt-3">
-                    <a href="{% url 'worker_profile' worker.id %}">
-                        <button class="btn btn-outline btn-sm">Profile</button>
-                    </a>
-                    <a href="{% url "worker_jobs" worker.id %}">
-                        <button class="btn btn-secondary btn-sm">Jobs</button>
-                    </a>
+                    <a href="{% url 'worker_profile' worker.id %}" class="btn btn-secondary btn-sm">Profile</a>
+                    <a href="{% url 'worker_jobs' worker.id %}" class="btn btn-secondary btn-sm">Jobs</a>                  
                 </div>
             </div>
+            
             {% empty %}
                 <p class="text-light">No workers added yet</p>
             {% endfor %}

@@ -261,6 +261,7 @@ def admin_bookings(request):
 @staff_member_required
 def admin_booking_detail(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
+    from_page = request.GET.get("from")
 
     if request.method == "POST":
         form = BookingAssignForm(request.POST, instance=booking)
@@ -273,7 +274,7 @@ def admin_booking_detail(request, booking_id):
     else:
         form = BookingAssignForm(instance = booking)
 
-    return render(request, 'admin/bookings/admin_booking_detail.html',{'booking':booking,'form':form})
+    return render(request, 'admin/bookings/admin_booking_detail.html',{'booking':booking,'form':form,"from_page": from_page})
 
 
 

@@ -147,8 +147,11 @@ def edit_worker(request,pk):
 
 
 
-def worker_jobs(request):
-    return render(request, 'admin/workers/worker_jobs.html')  
+def worker_jobs(request,pk):
+    worker = get_object_or_404(Worker, pk=pk)
+    jobs = worker.bookings.select_related("customer","service").order_by("-created_at")
+    context = {"worker":worker,"jobs":jobs}
+    return render(request, 'admin/workers/worker_jobs.html',context)  
 
 
 @login_required

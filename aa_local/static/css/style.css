@@ -497,3 +497,20 @@ h4 { font-size: 1.25rem; }
     border: 1px solid #bbf7d0;
 }
 
+
+/* profile and jobs button hovering in admin_worker */
+.btn-secondary:hover {
+    color: #0f766e;
+    border-color: #0f766e;
+    background-color: transparent;
+}
+.btn.btn-secondary.btn-sm:hover {
+    color: #0f766e;
+    border-color: #0f766e;
+    background-color: transparent;
+}
+.btn {
+    transition: all 0.2s ease;
+}
+
+

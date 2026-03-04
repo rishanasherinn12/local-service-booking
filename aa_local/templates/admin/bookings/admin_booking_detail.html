@@ -5,8 +5,14 @@
         {% block content %}
 
             <div class="breadcrumbs">
+                {% if from_page == "worker_jobs" %}
+                <a href="{% url 'admin_workers' %}">Professionals</a>
+                <i class="fa-solid fa-chevron-right text-xs"></i>
+                <span>Booking {{ booking.id }}</span>
+                {% else %}
                 <a href="{% url 'admin_booking' %}">Bookings</a> <i class="fa-solid fa-chevron-right text-xs"></i>
                 <span>{{ booking.id }}</span>
+                {% endif %}
             </div>
 
             <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
