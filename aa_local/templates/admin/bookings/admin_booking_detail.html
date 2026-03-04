@@ -5,10 +5,18 @@
         {% block content %}
 
             <div class="breadcrumbs">
-                {% if from_page == "worker_jobs" %}
-                <a href="{% url 'admin_workers' %}">Professionals</a>
+                {% if from_page == "dashboard" %}
+                <a href="{% url 'admin_dashboard' %}">Dashboard</a>
                 <i class="fa-solid fa-chevron-right text-xs"></i>
                 <span>Booking {{ booking.id }}</span>
+
+                {% elif from_page == "worker_jobs" %}
+                <a href="{% url 'admin_workers' %}">Professionals</a>
+                <i class="fa-solid fa-chevron-right text-xs"></i>
+                <a href="{% url 'worker_jobs' booking.worker.id %}">Worker Jobs</a>
+                <i class="fa-solid fa-chevron-right text-xs"></i>
+                <span>Booking {{ booking.id }}</span>
+
                 {% else %}
                 <a href="{% url 'admin_booking' %}">Bookings</a> <i class="fa-solid fa-chevron-right text-xs"></i>
                 <span>{{ booking.id }}</span>
