@@ -1,12 +1,38 @@
 from django.shortcuts import render
-from django.db.models import Sum
+from django.db.models import Sum, Avg
 from bookings.models import Booking
 from services.models import Worker
-
+from django.utils import timezone
 
 # Create your views here.
 def customer_dashboard(request):
-    return render(request,'customer/dashboard/customer_dashboard.html')
+    user = request.user
+
+    
+    active_bookings = Booking.objects.filter(
+        customer=user,booking_status__in=["PENDING","ASSIGNED","CONFIRMED","IN_PROGRESS"]
+    ).count()
+
+    completed_services = Booking.objects.filter(customer=user,booking_status = "COMPLETED").count()
+    # avg_rating = Booking.objects.filter(customer=user, rating__isnull=False).aggregate(avg=Avg("rating"))["avg"] or 0
+    upcoming_booking = Booking.objects.filter(customer=user,
+            booking_date__gte=timezone.now().date(),
+            booking_status__in=["ASSIGNED","CONFIRMED","PENDING"]).order_by("booking_date","booking_time").first()
+    recent_activity = Booking.objects.filter(customer=user).order_by("-created_at")[:3]
+    context = {
+        "active_bookings": active_bookings,
+        "completed_services": completed_services,
+        # "avg_rating": round(avg_rating,1),
+        "avg_rating": 0,
+        "upcoming_booking": upcoming_booking,
+        "recent_activity": recent_activity
+    }
+
+    return render(request,'customer/dashboard/customer_dashboard.html',context)
+
+
+
+
 
 def admin_dashboard(request):
     total_revenue = Booking.objects.filter(booking_status = "COMPLETED").aggregate(total=Sum("total_price"))["total"] or 0

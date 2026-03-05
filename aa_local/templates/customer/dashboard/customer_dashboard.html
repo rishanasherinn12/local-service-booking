@@ -10,7 +10,7 @@
                     <p class="text-light">Here's what's happening with your home services.</p>
                 </div>
                 <div class="flex items-center gap-md">
-                    <a href="services.html" class="btn btn-primary">
+                    <a href="{% url 'services' %}" class="btn btn-primary">
                         <i class="fa-solid fa-plus"></i> New Booking
                     </a>
                 </div>
@@ -23,7 +23,7 @@
                         <i class="fa-solid fa-calendar text-info fa-lg"></i>
                     </div>
                     <div>
-                        <h3 style="margin-bottom: 0;">2</h3>
+                        <h3 style="margin-bottom: 0;">{{ active_bookings }}</h3>
                         <p class="text-sm text-light">Active Bookings</p>
                     </div>
                 </div>
@@ -33,7 +33,7 @@
                         <i class="fa-solid fa-check text-success fa-lg"></i>
                     </div>
                     <div>
-                        <h3 style="margin-bottom: 0;">12</h3>
+                        <h3 style="margin-bottom: 0;">{{ completed_services }}</h3>
                         <p class="text-sm text-light">Completed Services</p>
                     </div>
                 </div>
@@ -43,7 +43,7 @@
                         <i class="fa-solid fa-star text-warning fa-lg"></i>
                     </div>
                     <div>
-                        <h3 style="margin-bottom: 0;">4.8</h3>
+                        <h3 style="margin-bottom: 0;">{{ avg_rating }}</h3>
                         <p class="text-sm text-light">Average Rating</p>
                     </div>
                 </div>
@@ -52,12 +52,17 @@
             <!-- Upcoming Booking -->
             <div style="margin-bottom: 2rem;">
                 <h3 style="margin-bottom: 1rem;">Up Next</h3>
+
+                {% if upcoming_booking %}
                 <div class="card">
                     <div class="flex justify-between items-center"
                         style="border-bottom: 1px solid var(--color-border); padding-bottom: 1rem; margin-bottom: 1rem;">
                         <div class="flex items-center gap-md">
                             <i class="fa-solid fa-calendar-day text-primary"></i>
-                            <span class="font-bold">Tomorrow, 10:00 AM</span>
+
+                            <span class="font-bold">{{ upcoming_booking.booking_date|date:"F j, Y" }},
+                                        {{ upcoming_booking.booking_time|time:"h:i A" }}
+                            </span>
                         </div>
                         <span class="badge badge-warning">Scheduled</span>
                     </div>
@@ -69,46 +74,60 @@
                                 <i class="fa-solid fa-broom text-light"></i>
                             </div>
                             <div>
-                                <h4 class="margin-bottom: 0.25rem">Deep Home Cleaning</h4>
-                                <p class="text-sm text-light">3 BHK • Standard Plan</p>
+                                <h4 class="margin-bottom: 0.25rem">{{ upcoming_booking.service.title }}</h4>
+                                <p class="text-sm text-light">{{ upcoming_booking.service.category.name }} • {{ upcoming_booking.city }}</p>
                             </div>
                         </div>
-                        <a href="booking_detail.html" class="btn btn-secondary btn-sm">View Details</a>
+                        <a href="{% url 'booking_detail' upcoming_booking.id %}" class="btn btn-secondary btn-sm">View Details</a>
+                        
                     </div>
                 </div>
+                {% else %}
+
+                    <div class="card text-center p-6">
+                        <p class="text-light">No upcoming bookings</p>
+                    </div>
+                    {% endif %}
             </div>
 
             <!-- Recent Activity -->
             <div>
                 <h3 style="margin-bottom: 1rem;">Recent Activity</h3>
                 <div class="card" style="padding: 0;">
+                    {% for booking in recent_activity %}
                     <div style="padding: 1rem; border-bottom: 1px solid var(--color-border);">
                         <div class="flex justify-between items-center">
                             <div>
-                                <span class="font-bold">AC Repair</span> <span class="text-light text-sm">• 2 days
+                                <span class="font-bold">{{ booking.service.title }}</span> <span class="text-light text-sm">• {{ booking.created_at|timesince }}
                                     ago</span>
                             </div>
-                            <span class="badge badge-success">Completed</span>
+
+                            {% if booking.booking_status == "COMPLETED" %}
+                                <span class="badge badge-success">Completed</span>
+
+                            {% elif booking.booking_status == "CANCELLED" %}
+                                <span class="badge badge-danger">Cancelled</span>
+
+                            {% elif booking.booking_status == "PENDING" %}
+                                <span class="badge badge-warning">Pending</span>
+
+                            {% elif booking.booking_status == "ASSIGNED" %}
+                                <span class="badge badge-info">Assigned</span>
+
+                            {% else %}
+                                <span class="badge badge-secondary">{{ booking.booking_status }}</span>
+                            {% endif %}
                         </div>
                     </div>
-                    <div style="padding: 1rem; border-bottom: 1px solid var(--color-border);">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <span class="font-bold">Plumbing Check</span> <span class="text-light text-sm">• 1 week
-                                    ago</span>
-                            </div>
-                            <span class="badge badge-success">Completed</span>
-                        </div>
-                    </div>
+                    {% empty %}
+
                     <div style="padding: 1rem;">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <span class="font-bold">Sofa Cleaning</span> <span class="text-light text-sm">• 2 weeks
-                                    ago</span>
-                            </div>
-                            <span class="badge badge-danger">Cancelled</span>
-                        </div>
+                        <p class="text-light">No recent activity</p>
                     </div>
+
+                    {% endfor %}
+                    
+                    
                 </div>
             </div>
             {% endblock %}
