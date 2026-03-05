@@ -81,6 +81,9 @@
                             <a href="{% url 'booking_step3' booking.id %}?flow=payment" class="btn btn-primary btn-sm">Pay Now </a>
                         {% endif %}
                         <a href="{% url 'booking_detail' booking.id %}" class="btn btn-secondary btn-sm">Track</a>
+                        {% if booking.booking_status == "PENDING" or booking.booking_status == "ASSIGNED" %}
+                        <a href="{% url 'cancel_booking' booking.id %}" class="btn btn-danger btn-sm">Cancel</a>
+                        {% endif %}
                     </div>
                 </div>
                 {% empty %}

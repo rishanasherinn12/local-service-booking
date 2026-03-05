@@ -53,6 +53,19 @@ def booking(request):
     return render(request,'customer/bookings/my_bookings.html', context)
 
 
+@login_required
+def cancel_booking(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id, customer=request.user)
+    if booking.booking_status in ["PENDING","ASSIGNED"]:
+        booking.booking_status = "CANCELLED"
+        booking.save()
+        messages.success(request,"Booking cancelled successfully.")
+    else:
+        messages.error(request, "This booking cannot be cancelled.")
+    return redirect("booking")
+
+
+
 
 def booking_detail(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id, customer = request.user)
