@@ -113,6 +113,10 @@
 
                             {% elif booking.booking_status == "ASSIGNED" %}
                                 <span class="badge badge-info">Assigned</span>
+                                
+                            {% elif booking.booking_status == "CONFIRMED" %}
+                                <span class="badge badge-success">Confirmed</span>
+
 
                             {% else %}
                                 <span class="badge badge-secondary">{{ booking.booking_status }}</span>

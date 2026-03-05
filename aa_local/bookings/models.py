@@ -61,3 +61,12 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"Payment for Booking #{self.booking.id}"
+
+class Review(models.Model):
+    booking = models.OneToOneField(Booking,on_delete=models.CASCADE,related_name="review")
+    customer = models.ForeignKey(User,on_delete=models.CASCADE)
+    worker = models.ForeignKey(Worker,on_delete=models.CASCADE)
+    rating = models.IntegerField(choices=[(i,i) for i in range(1,6)])
+    comment = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
