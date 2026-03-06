@@ -9,6 +9,7 @@ urlpatterns=[
     path('booking_step3/<int:booking_id>',views.booking_step3, name="booking_step3"),
     path('booking_success/<int:booking_id>',views.booking_success, name="booking_success"),
     path('cancel_booking/<int:booking_id>',views.cancel_booking, name="cancel_booking"),
+    path("review/add/<int:booking_id>/", views.add_review, name="add_review"),
     
     path("stripe/checkout/<int:booking_id>/", views.stripe_checkout, name="stripe_checkout"),
     path("stripe/webhook/", views.stripe_webhook, name="stripe_webhook"),

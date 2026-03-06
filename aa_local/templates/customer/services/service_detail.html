@@ -23,7 +23,7 @@
 
                     <h1 style="margin-bottom: 1rem;">{{ service.title }}</h1>
                     <div class="flex items-center gap-md" style="margin-bottom: 2rem;">
-                        <span class="badge badge-success"><i class="fa-solid fa-star"></i> 4.9 (1.2k Rantings)</span>
+                        <span class="badge badge-success"><i class="fa-solid fa-star"></i> {{ avg_rating|default:"0"|floatformat:1 }} ({{ reviews.count }} Rantings)</span>
                         <span class="text-light">{{ service.duration_minutes }} Hours duration</span>
                     </div>
 
@@ -43,23 +43,21 @@
 
                     <div class="card">
                         <h3 style="margin-bottom: 1rem;">Customer Reviews</h3>
+                        {% for review in reviews %}
                         <div
                             style="border-bottom: 1px solid var(--color-border); padding-bottom: 1rem; margin-bottom: 1rem;">
                             <div class="flex items-center gap-sm" style="margin-bottom: 0.5rem;">
-                                <span class="font-bold">Sarah J.</span>
-                                <span class="text-warning text-sm"><i class="fa-solid fa-star"></i> 5.0</span>
+                                <span class="font-bold">{{ review.customer.username }}</span>
+                                <span class="text-warning text-sm"><i class="fa-solid fa-star"></i> {{ review.rating }}</span>
                             </div>
-                            <p class="text-light text-sm">Amazing service! The team was very professional and left my
-                                house sparkling clean.</p>
+                            {% if review.comment %}
+                            <p class="text-light text-sm">{{ review.comment }}</p>
+                            {% endif %}
                         </div>
-                        <div>
-                            <div class="flex items-center gap-sm" style="margin-bottom: 0.5rem;">
-                                <span class="font-bold">Mike T.</span>
-                                <span class="text-warning text-sm"><i class="fa-solid fa-star"></i> 4.5</span>
-                            </div>
-                            <p class="text-light text-sm">Great work overall, arriving a bit late but finished on time.
-                            </p>
-                        </div>
+                        {% empty %}
+                        <p class="text-light">No reviews yet.</p>
+                        {% endfor %}
+                        
                     </div>
                 </div>
 

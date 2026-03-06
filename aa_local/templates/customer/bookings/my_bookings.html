@@ -134,14 +134,33 @@
                         <p>₹{{ booking.total_price }}</p>
 
                         {% if booking.booking_status == "COMPLETED" %}
-                            {% if booking.review %}
-                                <span class="badge badge-success">Reviewed</span>
-                            {% else %}
-                                <a href="{% url 'add_review' booking.id %}" class="btn btn-secondary btn-sm">
-                                    Leave Review
-                                </a>
-                            {% endif %}
+                        {% if booking.review %}
+                            <span class="badge badge-success">Reviewed</span>
+                        {% else %}
+
+                        <form method="POST" action="{% url 'add_review' booking.id %}">
+                            {% csrf_token %}
+
+                            <select name="rating" style="padding:4px; margin-bottom:5px;">
+                                <option value="5">5 ⭐</option>
+                                <option value="4">4 ⭐</option>
+                                <option value="3">3 ⭐</option>
+                                <option value="2">2 ⭐</option>
+                                <option value="1">1 ⭐</option>
+                            </select>
+
+                            <input type="text" name="comment" placeholder="Write review"
+                            style="padding:4px; width:150px; margin-bottom:5px;">
+
+                            <button class="btn btn-secondary btn-sm">
+                                Submit
+                            </button>
+
+                        </form>
+
                         {% endif %}
+                    {% endif %}
+
                     </div>
                 </div>
                 {% empty %}

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from services.models import Service 
 from accounts.models import Address
-from .models import Booking, Payment
+from .models import Booking, Payment, Review
 from django.contrib.auth.decorators import login_required
 from datetime import date, timedelta
 from django.contrib import messages
@@ -22,7 +22,8 @@ from django.utils import timezone
 from django.contrib.admin.views.decorators import staff_member_required
 from .forms import BookingAssignForm
 
-from django.db.models import Case, When, Value, IntegerField
+from django.db.models import Case, When, Value, IntegerField, Avg
+
 
 # Create your views here.
 @login_required
@@ -245,6 +246,20 @@ def stripe_webhook(request):
 
     return HttpResponse(status=200)
 
+
+@login_required
+def add_review(request, booking_id):
+    booking = get_object_or_404(Booking,id=booking_id, customer=request.user)
+    if request.method == "POST":
+        rating=request.POST.get("rating")
+        comment=request.POST.get("comment")
+
+        Review.objects.create(booking=booking,customer=request.user,worker=booking.worker, rating=rating,comment=comment)
+        avg = Review.objects.filter(worker=booking.worker).aggregate(avg=Avg("rating"))["avg"]
+        booking.worker.rating=round(avg,1)
+        booking.worker.save()
+    return redirect("booking")
+    
 
 #-------------------------------------------------------------
 

@@ -3,6 +3,7 @@ from django.db.models import Sum, Avg
 from bookings.models import Booking
 from services.models import Worker
 from django.utils import timezone
+from bookings.models import Booking, Review
 
 # Create your views here.
 def customer_dashboard(request):
@@ -14,7 +15,7 @@ def customer_dashboard(request):
     ).count()
 
     completed_services = Booking.objects.filter(customer=user,booking_status = "COMPLETED").count()
-    # avg_rating = Booking.objects.filter(customer=user, rating__isnull=False).aggregate(avg=Avg("rating"))["avg"] or 0
+    avg_rating = Review.objects.filter(customer=request.user).aggregate(avg=Avg("rating"))["avg"] or 0
     upcoming_booking = Booking.objects.filter(customer=user,
             booking_date__gte=timezone.now().date(),
             booking_status__in=["ASSIGNED","CONFIRMED","PENDING"]).order_by("booking_date","booking_time").first()
@@ -22,8 +23,7 @@ def customer_dashboard(request):
     context = {
         "active_bookings": active_bookings,
         "completed_services": completed_services,
-        # "avg_rating": round(avg_rating,1),
-        "avg_rating": 0,
+        "avg_rating": round(avg_rating or 0,1),
         "upcoming_booking": upcoming_booking,
         "recent_activity": recent_activity
     }

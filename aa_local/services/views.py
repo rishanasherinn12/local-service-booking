@@ -5,7 +5,8 @@ from django.contrib.auth.decorators import login_required
 from decimal import Decimal
 from django.views.decorators.cache import never_cache
 from .forms import WorkerForm, ServiceForm
-from django.db.models import Q
+from django.db.models import Q, Avg
+from bookings.models import Review
 
 
 # Create your views here.
@@ -14,7 +15,9 @@ from django.db.models import Q
 def services(request):
     category = request.GET.get('category') 
     search = request.GET.get('search','')
-    services = Service.objects.select_related('category').all()
+    services = Service.objects.select_related('category').annotate(
+        avg_rating=Avg('bookings__review__rating')
+    )
 
     if category and category!= "all":
         services = services.filter(category_id = category)
@@ -31,11 +34,16 @@ def services(request):
 @login_required
 @never_cache
 def service_detail(request,id):
-    service = Service.objects.get(id=id)
-    print(type(service.price))
+    service = get_object_or_404(Service,id=id)
+    
     tax = service.price * Decimal ("0.18")
     total = service.price + tax
-    return render(request,'customer/services/service_detail.html',{'service':service,'tax':tax,'total':total})
+    reviews = Review.objects.filter(booking__service=service).select_related("customer")
+    avg_rating = reviews.aggregate(avg=Avg("rating"))["avg"]
+    context={
+        'service':service,'tax':tax,'total':total,'reviews': reviews,'avg_rating':avg_rating,
+    }
+    return render(request,'customer/services/service_detail.html',context)
 
 
 
