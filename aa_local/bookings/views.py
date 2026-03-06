@@ -256,7 +256,7 @@ def add_review(request, booking_id):
 
         Review.objects.create(booking=booking,customer=request.user,worker=booking.worker, rating=rating,comment=comment)
         avg = Review.objects.filter(worker=booking.worker).aggregate(avg=Avg("rating"))["avg"]
-        booking.worker.rating=round(avg,1)
+        booking.worker.rating=round(avg, 2)
         booking.worker.save()
     return redirect("booking")
     

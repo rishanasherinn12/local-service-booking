@@ -42,7 +42,7 @@
                 {% endif %}
 
                 <div class="flex justify-center gap-xs text-warning mb-2">
-                    <i class="fa-solid fa-star"></i> {{ worker.rating }}
+                    <i class="fa-solid fa-star"></i> {{ worker.rating|default:0|floatformat:1 }}
                 </div>
                 
                 <div class="flex justify-center gap-sm mt-3">
