@@ -63,16 +63,17 @@
                             {% endif %}
 
                             
-                             {% if booking.booking_status == "PENDING" %}
+                            {% if booking.booking_status == "PENDING" %}
                                 <span class="badge badge-warning">Pending Assignment</span>
                             {% elif booking.booking_status == "ASSIGNED" %}
                                 <span class="badge badge-info">Professional Assigned</span>
                             {% elif booking.booking_status == "CONFIRMED" %}
                                 <span class="badge badge-success">Payment Completed</span>
                             {% elif booking.booking_status == "IN_PROGRESS" %}
-                                <span class="badge badge-primary">Service In Progress</span>
+                                <span class="badge badge-warning">Service In Progress</span>
                                
                             {% endif %} 
+
                         </div>
                     </div>
                     <div class="text-right">
@@ -88,27 +89,7 @@
                 </div>
                 {% empty %}
                     <p>No bookings found.
-                {% endfor %}
-
-                
-                {% comment %} <!-- Booking Item 2 -->
-                <div class="card flex justify-between items-center">
-                    <div class="flex items-center gap-lg">
-                        <div
-                            style="width: 60px; height: 60px; background: #F1F5F9; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                            <i class="fa-solid fa-fan text-light fa-lg"></i>
-                        </div>
-                        <div>
-                            <h4 style="margin: 0;">AC Service</h4>
-                            <p class="text-sm text-light" style="margin: 0.25rem 0;">Dec 25, 02:00 PM</p>
-                            <span class="badge badge-warning">Pending Assignment</span>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="font-bold text-lg" style="margin-bottom: 0.5rem;">$25.00</p>
-                        <a href="{%url 'booking_detail'%}" class="btn btn-secondary btn-sm">Details</a>
-                    </div>
-                </div> {% endcomment %}
+                {% endfor %}               
 
             </div>
             {% endif %}

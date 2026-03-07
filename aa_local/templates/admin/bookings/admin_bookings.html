@@ -26,6 +26,11 @@
                                 <span class="badge badge-info">Assigned</span>
                             {% elif booking.booking_status == "CONFIRMED" %}
                                 <span class="badge badge-success">Confirmed</span>
+                            {% elif booking.booking_status == "IN_PROGRESS" %}
+                                <span class="badge badge-warning">In Progress</span>
+
+                            {% elif booking.booking_status == "COMPLETED" %}
+                                <span class="badge badge-success">Completed</span>
                             {% elif booking.booking_status == "CANCELLED" %}
                                 <span class="badge badge-danger">Cancelled</span>
                             {% endif %}

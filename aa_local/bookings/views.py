@@ -280,12 +280,14 @@ def admin_bookings(request):
     # # Mark old REQUESTED bookings as CANCELLED
     # Booking.objects.filter(booking_status="REQUESTED",created_at__lt=expiry_time).update(booking_status="CANCELLED")
 
-    bookings = Booking.objects.filter(booking_status__in = ["PENDING","ASSIGNED", "CONFIRMED"]).select_related(
+    bookings = Booking.objects.filter(booking_status__in = ["PENDING","ASSIGNED", "CONFIRMED","IN_PROGRESS","COMPLETED"]).select_related(
         "customer","service","worker").annotate(
             priority=Case(
                 When(booking_status="PENDING", then=Value(1)),
                 When(booking_status="ASSIGNED", then=Value(2)),
                 When(booking_status="CONFIRMED", then=Value(3)),
+                When(booking_status="IN_PROGRESS", then=Value(4)),
+                When(booking_status="COMPLETED", then=Value(5)),
                 output_field=IntegerField()
             )
         ).order_by("priority","-created_at") #pending first
@@ -319,9 +321,22 @@ def admin_booking_detail(request, booking_id):
     return render(request, 'admin/bookings/admin_booking_detail.html',{'booking':booking,'form':form,"from_page": from_page})
 
 
+@staff_member_required
+def start_service_admin(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id)
+    if booking.booking_status == "CONFIRMED":
+        booking.booking_status = "IN_PROGRESS"
+        booking.save()
+    return redirect("admin_booking_detail", booking_id=booking.id)
 
-
-
+@staff_member_required
+def complete_service_admin(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id)
+    if booking.booking_status == "IN_PROGRESS":
+        booking.booking_status = "COMPLETED"
+        booking.save()
+        
+    return redirect("admin_booking_detail", booking_id=booking.id)
 
 
 

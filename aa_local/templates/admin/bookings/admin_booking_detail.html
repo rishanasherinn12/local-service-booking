@@ -55,6 +55,12 @@
 
                             {% elif booking.booking_status == "CANCELLED" %}
                                 <span class="badge badge-danger">CANCELLED</span>
+
+                            {% elif booking.booking_status == "IN_PROGRESS" %}
+                                <span class="badge badge-warning">IN PROGRESS</span>
+
+                            {% elif booking.booking_status == "COMPLETED" %}
+                                <span class="badge badge-success">COMPLETED</span>
                             {% endif %}
 
 
@@ -81,6 +87,18 @@
                         </form>
                         {% else %}
                         <p class="text-light">Worker already assigned.</p>
+                        {% endif %}
+                        <!-- Admin service control buttons -->
+                        {% if booking.booking_status == "CONFIRMED" %}
+                        <a href="{% url 'start_service_admin' booking.id %}" class="btn btn-warning">
+                        Start Service
+                        </a>
+                        {% endif %}
+
+                        {% if booking.booking_status == "IN_PROGRESS" %}
+                        <a href="{% url 'complete_service_admin' booking.id %}" class="btn btn-success">
+                        Mark Completed
+                        </a>
                         {% endif %}
                     </div>
                 </div>

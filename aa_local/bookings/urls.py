@@ -16,4 +16,6 @@ urlpatterns=[
     
     path('admin/',views.admin_bookings, name="admin_booking"),
     path('admin_detail/<int:booking_id>/',views.admin_booking_detail, name="admin_booking_detail"),
+    path('admin-detail/start/<int:booking_id>/',views.start_service_admin, name="start_service_admin"),
+    path('admin-detail/complete/<int:booking_id>/',views.complete_service_admin, name="complete_service_admin"),
 ]
