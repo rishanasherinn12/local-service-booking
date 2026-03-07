@@ -18,6 +18,7 @@ class Booking(models.Model):
     worker = models.ForeignKey(Worker, on_delete = models.SET_NULL, null=True, blank=True, related_name='bookings')
     booking_date = models.DateField()
     booking_time = models.TimeField()
+    end_time = models.TimeField(null=True, blank = True)
 
     total_price = models.DecimalField(max_digits=8, decimal_places=2, default=0)
 

@@ -3,7 +3,7 @@ from services.models import Service
 from accounts.models import Address
 from .models import Booking, Payment, Review
 from django.contrib.auth.decorators import login_required
-from datetime import date, timedelta
+from datetime import date, timedelta,datetime
 from django.contrib import messages
 from decimal import Decimal
 
@@ -85,6 +85,10 @@ def booking_step1(request,service_id):
             messages.error(request, "please select date and time")
             return redirect('booking_step1',service_id)
         
+        booking_date = datetime.strptime(booking_date, "%Y-%m-%d").date()
+        booking_time = datetime.strptime(booking_time, "%H:%M").time()
+
+        
         service_price = service.price
         tax = service_price * Decimal("0.18")
         total_amount = service_price + tax
@@ -98,8 +102,12 @@ def booking_step1(request,service_id):
             existing_booking.created_at = timezone.now() #moves reused booking to top
             existing_booking.save()
             return redirect("booking_step2",existing_booking.id)
-                    
-        booking = Booking.objects.create(customer = request.user, service = service, booking_date = booking_date, booking_time = booking_time, total_price=total_amount,booking_status="PENDING")
+
+        start_datetime = datetime.combine(booking_date,booking_time)
+        duration = service.duration_minutes  
+        end_datetime = start_datetime + timedelta(minutes=duration)      
+        # booking.end_time = end_datetime.time()                                   
+        booking = Booking.objects.create(customer = request.user, service = service, booking_date = booking_date, booking_time = booking_time, end_time=end_datetime.time(), total_price=total_amount,booking_status="PENDING")
 
         return redirect('booking_step2', booking.id) 
     
@@ -281,6 +289,12 @@ def admin_bookings(request):
                 output_field=IntegerField()
             )
         ).order_by("priority","-created_at") #pending first
+
+    # calculate end time
+    for booking in bookings:
+        start = datetime.combine(booking.booking_date, booking.booking_time)
+        booking.end_time = start + timedelta(minutes=booking.service.duration_minutes)
+
 
     context = {"bookings":bookings}
     return render(request, 'admin/bookings/admin_bookings.html',context)

@@ -31,7 +31,13 @@
                             {% endif %}
                         </div>
                         <h4 style="margin: 0;">{{ booking.service.title }}</h4>
-                        <p class="text-sm text-light">Customer: {{ booking.customer.username }} • {{ booking.booking_date|date:"d M Y" }}, {{ booking.booking_time|time:"h:i A" }}</p>
+                        <p class="text-sm text-light">Customer: {{ booking.customer.username }}</p>
+                        {% if booking.worker %}
+                        <p class="text-sm text-light"><i class="fa-solid fa-user"></i>
+                        Worker: {{ booking.worker.full_name }}
+                        </p>
+                        {% endif %}
+                        <p class="text-sm text-light"><i class="fa-regular fa-clock"></i> {{ booking.booking_date|date:"d M Y" }} • {{ booking.booking_time|time:"h:i A" }} - {{ booking.end_time|time:"h:i A" }}</p>
                     </div>
                     <div class="flex flex-col items-end gap-sm">
                         <span class="font-bold">₹{{ booking.total_price }}</span>

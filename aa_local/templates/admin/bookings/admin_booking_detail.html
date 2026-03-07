@@ -29,7 +29,7 @@
                         <h2 style="margin-bottom: 0.5rem;">{{ booking.service.title }}</h2>
                         <div class="flex items-center gap-md text-light">
                             <span><i class="fa-solid fa-calendar"></i> {{ booking.booking_date }}</span>
-                            <span><i class="fa-solid fa-clock"></i>{{ booking.booking_time }}</span>
+                            <span><i class="fa-solid fa-clock"></i>{{ booking.booking_time }}{% if booking.end_time %} - {{ booking.end_time }}{% endif %}</span>
                         </div>
                         <hr style="border:none; border-top: 1px solid var(--color-border); margin: 1.5rem 0;">
 
@@ -64,6 +64,7 @@
                         </p>
                         {% endif %}
 
+                        {% if booking.booking_status == "PENDING" %}
                         <form method="POST">
                                 {% csrf_token %}
                             <label class="form-label">Assign Professional</label>
@@ -78,6 +79,9 @@
 
                             <button class="btn btn-primary btn-block">Assign & Notify</button>
                         </form>
+                        {% else %}
+                        <p class="text-light">Worker already assigned.</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>

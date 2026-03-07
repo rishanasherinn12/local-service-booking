@@ -56,7 +56,6 @@ INSTALLED_APPS = [
     'dashboard.apps.DashboardConfig',
     'landing_page.apps.Landing_pageConfig',
     'services.apps.ServicesConfig',
-
 ]
 
 MIDDLEWARE = [

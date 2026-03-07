@@ -45,7 +45,7 @@ class ServiceForm(forms.ModelForm):
             "title": forms.TextInput(attrs={"class": "form-control","placeholder": "AC Service & Repair"}),
             "category": forms.Select(attrs={"class": "form-control"}),
             "price": forms.NumberInput(attrs={"class": "form-control","placeholder": "0.00"}),
-            "duration_minutes": forms.NumberInput(attrs={"class": "form-control","placeholder": "120"}),
+            "duration_minutes": forms.NumberInput(attrs={"class": "form-control","placeholder": "120 minutes"}),
             "description": forms.Textarea(attrs={"class": "form-control", "rows": 4,"placeholder": "Describe what is included in this service..."}),
             "includes": forms.Textarea(attrs={"class": "form-control", "rows": 5,"placeholder": "Enter one item per line (e.g. Deep dusting, Floor cleaning, etc.)"}),
             "image": forms.ClearableFileInput(attrs={"class": "form-control"}),
