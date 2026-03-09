@@ -32,6 +32,12 @@ class Booking(models.Model):
     booking_status = models.CharField(max_length=20, choices = BOOKING_STATUS_CHOICES, default='PENDING')
 
     created_at = models.DateTimeField(auto_now_add=True)
+    assigned_at = models.DateTimeField(null=True,blank=True)
+    confirmed_at = models.DateTimeField(null=True, blank=True)
+    started_at = models.DateTimeField(null=True, blank=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+    cancelled_at = models.DateTimeField(null=True, blank=True)
+
     updated_at = models.DateTimeField(auto_now = True)
 
     def __str__(self):

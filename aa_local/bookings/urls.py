@@ -10,6 +10,7 @@ urlpatterns=[
     path('booking_success/<int:booking_id>',views.booking_success, name="booking_success"),
     path('cancel_booking/<int:booking_id>',views.cancel_booking, name="cancel_booking"),
     path("review/add/<int:booking_id>/", views.add_review, name="add_review"),
+    path("booking/invoice//<int:booking_id>/", views.download_invoice, name="download_invoice"),
     
     path("stripe/checkout/<int:booking_id>/", views.stripe_checkout, name="stripe_checkout"),
     path("stripe/webhook/", views.stripe_webhook, name="stripe_webhook"),

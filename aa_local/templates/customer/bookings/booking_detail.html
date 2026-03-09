@@ -1,10 +1,12 @@
 {% extends "base_customer.html" %}
+{% load duration_format %}
+
 {% block title %}Booking Detail | Local Services{% endblock %}
 
     {% block content %}
             <div class="breadcrumbs">
-                <a href="{% url 'booking' %}">My Bookings</a> <i class="fa-solid fa-chevron-right text-xs"></i>
-                <span>#AG-8823</span>
+                <a href="{% url 'booking' %}?tab={{ tab }}">My Bookings</a> <i class="fa-solid fa-chevron-right text-xs"></i>
+                <span>#AG-{{ booking.id }}</span>
             </div>
 
             <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
@@ -14,37 +16,180 @@
                     <div class="card">
                         <div class="flex justify-between items-start" style="margin-bottom: 1.5rem;">
                             <div>
-                                <h2 style="font-size: 1.5rem;">Deep Home Cleaning</h2>
-                                <p class="text-light">Booking #AG-8823</p>
+                                <h2 style="font-size: 1.5rem;">{{ booking.service.title }}</h2>
+                                <p class="text-light">Booking #AG-{{ booking.id }}</p>
                             </div>
-                            <span class="badge badge-info text-md">On The Way</span>
+
+                            
+                            {% if booking.booking_status == "PENDING" %}
+                            <span class="badge badge-warning ">Pending Assignment</span>
+
+                            {% elif booking.booking_status == "ASSIGNED" %}
+                            <span class="badge badge-info ">Professional Assigned</span>
+
+                            {% elif booking.booking_status == "CONFIRMED" %}
+                            <span class="badge badge-success ">Payment Completed</span>
+
+                            {% elif booking.booking_status == "IN_PROGRESS" %}
+                            <span class="badge badge-primary ">Service In Progress</span>
+
+                            {% elif booking.booking_status == "COMPLETED" %}
+                            <span class="badge badge-success ">Service Completed</span>
+                            {% elif booking.booking_status == "CANCELLED" %}
+                            <span class="badge badge-danger">Booking Cancelled</span>
+                            {% endif %}
+
                         </div>
 
+                        
+
+                        <div class="card" style="margin-top:15px;">
+                            <h3 style="margin-bottom:10px;">Service Time</h3>
+
+                            <div class="flex items-center gap-md text-light">
+                                <i class="fa-solid fa-calendar"></i>
+                                {{ booking.booking_date|date:"d M Y" }}
+                            </div>
+
+                            <div class="flex items-center gap-md text-light">
+                                <i class="fa-solid fa-clock"></i>
+                                {{ booking.booking_time|time:"h:i A" }} - {{ booking.end_time|time:"h:i A" }}
+                            </div>
+
+                            <!-- ETA -->
+                            <p class="text-sm text-primary">
+                                <i class="fa-solid fa-location-arrow"></i>
+                                Expected arrival: {{ booking.eta|time:"h:i A" }}
+                            </p>
+
+                            <p class="text-sm text-light" style="margin-top:6px;">
+                                Duration: {{ booking.service.duration_minutes|duration_format }} 
+                            </p>
+
+                        </div>
+
+
+
+
+
+
                         <!-- Timeline -->
-                        <div
+                        {% comment %} <div
                             style="margin-bottom: 2rem; position: relative; padding-left: 2rem; border-left: 2px solid #E2E8F0;">
                             <div style="margin-bottom: 2rem; position: relative;">
                                 <div
                                     style="position: absolute; left: -2.6rem; top: 0; width: 20px; height: 20px; background: var(--color-success); border-radius: 50%; border: 4px solid white;">
                                 </div>
                                 <h4 style="margin: 0;">Booking Confirmed</h4>
-                                <p class="text-sm text-light">Dec 19, 09:30 AM</p>
+                                <p class="text-sm text-light">{{ booking.created_at }}</p>
                             </div>
+
+                            <!-- Worker assigned -->
+                            {% if booking.booking_status != "PENDING" %}
                             <div style="margin-bottom: 2rem; position: relative;">
                                 <div
                                     style="position: absolute; left: -2.6rem; top: 0; width: 20px; height: 20px; background: var(--color-success); border-radius: 50%; border: 4px solid white;">
                                 </div>
                                 <h4 style="margin: 0;">Professional Assigned</h4>
-                                <p class="text-sm text-light">Dec 19, 10:00 AM</p>
-                            </div>
+                                 <p class="text-sm text-light">Dec 19, 10:00 AM</p>
+                            {% endif %}
+
+                            <!-- Payment confirmed -->
+                            {% if booking.booking_status == "CONFIRMED" or booking.booking_status == "IN_PROGRESS" or booking.booking_status == "COMPLETED" %}
                             <div style="margin-bottom: 0; position: relative;">
                                 <div
                                     style="position: absolute; left: -2.6rem; top: 0; width: 20px; height: 20px; background: var(--color-primary); border-radius: 50%; border: 4px solid white;">
                                 </div>
-                                <h4 style="margin: 0;">Out for Service</h4>
-                                <p class="text-sm text-light">Dec 20, 09:15 AM</p>
+                                <h4 style="margin: 0;">Payment Completed</h4>
+                                <p class="text-sm text-light">Dec 20, 09:15 AM</p> 
                             </div>
+                            {% endif %}
+                            <!-- Service in progress -->
+                            {% if booking.booking_status == "IN_PROGRESS" or booking.booking_status == "COMPLETED" %}
+                            <div style="margin-bottom: 2rem; position: relative;">
+                                <div style="position:absolute;left:-2.6rem;top:0;width:20px;height:20px;background:var(--color-primary);border-radius:50%;border:4px solid white;"></div>
+                                <h4 style="margin:0;">Service In Progress</h4>
+                            </div>
+                            {% endif %}
+
+                            <!-- Completed -->
+                            {% if booking.booking_status == "COMPLETED" %}
+                            <div style="margin-bottom:0; position: relative;">
+                                <div style="position:absolute;left:-2.6rem;top:0;width:20px;height:20px;background:var(--color-success);border-radius:50%;border:4px solid white;"></div>
+                                <h4 style="margin:0;">Service Completed</h4>
+                            </div>
+                            {% endif %}
+
+
+                        </div> {% endcomment %}
+
+                    {% if booking.booking_status != "CANCELLED" %}
+                        <div class="progress-container">
+
+                            <div class="progress-step {% if current_step >= 1 %}active{% endif %}">
+                                <div class="circle">1</div>
+                                <p>Booked</p>
+                                <small class="text-light">
+                                    {{ booking.created_at|date:"d M" }} • {{ booking.created_at|time:"h:i A" }}
+                                </small>
+                            </div>
+
+                            <div class="progress-step {% if current_step >= 2 %}active{% endif %}">
+                                <div class="circle">2</div>
+                                <p>Assigned</p>
+                                {% if booking.assigned_at %}
+                                <small class="text-light">
+                                    {{ booking.assigned_at|date:"d M" }} • {{ booking.assigned_at|time:"h:i A" }}
+                                </small>
+                                {% endif %}
+                            </div>
+
+                            <div class="progress-step {% if current_step >= 3 %}active{% endif %}">
+                                <div class="circle">3</div>
+                                <p>Confirmed</p>
+                                {% if booking.confirmed_at %}
+                                <small class="text-light">
+                                    {{ booking.confirmed_at|date:"d M" }} • {{ booking.confirmed_at|time:"h:i A" }}
+                                </small>
+                                {% endif %}
+                            </div>
+
+                            <div class="progress-step {% if current_step >= 4 %}active{% endif %}">
+                                <div class="circle">4</div>
+                                <p>In Progress</p>
+                                {% if booking.started_at %}
+                                <small class="text-light">
+                                    {{ booking.started_at|date:"d M" }} • {{ booking.started_at|time:"h:i A" }}
+                                </small>
+                                {% endif %}
+                            </div>
+
+                            <div class="progress-step {% if current_step >= 5 %}active{% endif %}">
+                                <div class="circle">5</div>
+                                <p>Completed</p>
+                                {% if booking.completed_at %}
+                                <small class="text-light">
+                                    {{ booking.completed_at|date:"d M" }} • {{ booking.completed_at|time:"h:i A" }}
+                                </small>
+                                {% endif %}
+                            </div>
+
                         </div>
+                    {% else %}
+
+                        <div class="card" style="background:#FEE2E2; border-left:4px solid #EF4444; padding:1rem; margin-top:20px;">
+                            <h4 style="margin-bottom:5px;">Booking Cancelled</h4>
+                            <p class="text-light">
+                                This booking was cancelled on
+                                {{ cancelled_time|date:"d M Y" }} • {{ cancelled_time|time:"h:i A" }}
+                            </p>
+                        </div>
+
+                    {% endif %}
+
+
+
+
 
                         <hr style="border: none; border-top: 1px solid var(--color-border); margin-bottom: 1.5rem;">
 
@@ -52,55 +197,106 @@
                         <div class="flex items-start gap-md">
                             <i class="fa-solid fa-location-dot text-primary fa-lg" style="margin-top: 5px;"></i>
                             <div>
-                                <p class="font-bold">Home</p>
-                                <p class="text-light">Flat 402, Sunshine Apartments, 12th Main Road, Indiranagar,
-                                    Bangalore - 560038</p>
+                                <p class="font-bold">{{ booking.label }}</p>
+                                <p class="text-light">{{ booking.address_line }}, {{ booking.city }},
+                                    {{ booking.state }} - {{ booking.pincode }}</p>
+                                {% if booking.landmark %}
+                                <p class="text-light text-sm">
+                                    Landmark: {{ booking.landmark }}
+                                </p>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Assigned Professional -->
+                 {% if booking.booking_status != "CANCELLED" %}
                 <div class="flex flex-col gap-lg">
+                    {% if booking.worker %}
                     <div class="card">
                         <h3 style="margin-bottom: 1rem;">Professional</h3>
                         <div class="flex items-center gap-md" style="margin-bottom: 1.5rem;">
                             <div
-                                style="width: 50px; height: 50px; background: #CBD5E1; border-radius: 50%; overflow: hidden;">
-                                <img src="https://via.placeholder.com/50" alt="Avatar"
+                                style="width: 50px; height: 50px; background: #CBD5E1; border-radius: 50%; overflow: hidden;display:flex;align-items:center;justify-content:center;">
+                                {% if booking.worker.photo %}
+                                    <img src="{{  booking.worker.photo.url }}" alt="Avatar"
                                     style="width: 100%; height: 100%; object-fit: cover;">
+                                {% else %}
+                                    <span class="avatar-text">
+                                    {{ booking.worker.full_name|slice:":1" }}
+                                    </span>
+                                {% endif %}
                             </div>
                             <div>
-                                <h4 style="margin: 0;">Rahul Sharma</h4>
+                                <h4 style="margin: 0;">{{ booking.worker.full_name }}</h4>
                                 <div class="flex items-center gap-xs text-sm text-warning">
-                                    <i class="fa-solid fa-star"></i> 4.8
+                                    <i class="fa-solid fa-star"></i> {{ booking.worker.rating }}
                                 </div>
+                                <p class="text-sm text-light">
+                                    <i class="fa-solid fa-phone"></i> {{ booking.worker.phone }}
+                                </p>
                             </div>
                         </div>
+
                         <div class="flex gap-sm">
-                            <button class="btn btn-primary btn-sm flex-grow"><i class="fa-solid fa-phone"></i>
-                                Call</button>
+                            {% comment %} <button class="btn btn-primary btn-sm flex-grow"><i class="fa-solid fa-phone"></i>
+                                Call</button> {% endcomment %}
                             <!-- <button class="btn btn-secondary btn-sm flex-grow"><i class="fa-solid fa-message"></i>
                                 Chat</button> -->
+                            <a href="tel:{{ booking.worker.phone }}" 
+                            class="btn btn-primary btn-sm flex-grow">
+                            <i class="fa-solid fa-phone"></i> Call
+                            </a>
+
                         </div>
                     </div>
+                    {% else %}
+                    <!-- Worker not assigned yet -->
+                    <div class="card">
+                        <h3 style="margin-bottom:1rem;">Professional</h3>
+                        <p class="text-light">A professional will be assigned soon.</p>
+                    </div>
+
+                    {% endif %}
 
                     <div class="card">
                         <h3 style="margin-bottom: 1rem;">Payment</h3>
                         <div class="flex justify-between items-center" style="margin-bottom: 0.5rem;">
                             <span class="text-light">Total Amount</span>
-                            <span class="font-bold">$94.00</span>
+                            <span class="font-bold">₹{{ booking.total_price }}</span>
                         </div>
                         <div class="flex justify-between items-center" style="margin-bottom: 1rem;">
                             <span class="text-light">Status</span>
-                            <span class="badge badge-warning">Pending (Cash)</span>
+                            {% if booking.payment %}
+                            <span class="badge badge-warning">{{ booking.payment.status }}({{ booking.payment.get_payment_method_display }})</span>
+                            {% else %}
+                            <span class="badge badge-warning">
+                                    Pending
+                                </span>
+                            {% endif %}
                         </div>
-                        <button class="btn btn-outline btn-block btn-sm">Download Invoice</button>
+                        {% if booking.payment and booking.payment.status == "SUCCESS" %}
+                            <a href="{% url 'download_invoice' booking.id %}" 
+                            class="btn btn-outline btn-block btn-sm">
+                            Download Invoice
+                            </a>
+                            {% elif booking.booking_status == "ASSIGNED" %}
+
+                            <a href="{% url 'booking_step3' booking.id %}" 
+                            class="btn btn-primary btn-block btn-sm">
+                            Pay Now
+                            </a>
+                        {% endif %}
                     </div>
 
-                    <button class="btn btn-secondary btn-block text-danger"
-                        style="border-color: #FECACA; background: #FEF2F2;">Cancel Booking</button>
+                    {% if booking.booking_status == "PENDING" or booking.booking_status == "ASSIGNED" %}
+                    <a href="{% url 'cancel_booking' booking.id %}" class="btn btn-secondary btn-block text-danger"
+                        style="border-color: #FECACA; background: #FEF2F2;">Cancel Booking</a>
+                    {% endif %}
                 </div>
+
+                {% endif %}
 
             </div>
     {% endblock %}

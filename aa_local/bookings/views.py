@@ -25,6 +25,12 @@ from .forms import BookingAssignForm
 from django.db.models import Case, When, Value, IntegerField, Avg
 
 
+#invoice
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+from reportlab.platypus import Table, TableStyle
+from reportlab.lib import colors
+
 # Create your views here.
 @login_required
 def booking(request):
@@ -59,6 +65,7 @@ def cancel_booking(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id, customer=request.user)
     if booking.booking_status in ["PENDING","ASSIGNED"]:
         booking.booking_status = "CANCELLED"
+        booking.cancelled_at = timezone.now()
         booking.save()
         messages.success(request,"Booking cancelled successfully.")
     else:
@@ -69,8 +76,107 @@ def cancel_booking(request, booking_id):
 
 
 def booking_detail(request, booking_id):
-    booking = get_object_or_404(Booking, id=booking_id, customer = request.user)
-    return render(request,'customer/bookings/booking_detail.html',{'booking':booking})
+    booking = get_object_or_404(Booking.objects.select_related("service","worker","payment"), id=booking_id, customer = request.user)
+    progress = {
+        "PENDING": 1,
+        "ASSIGNED": 2,
+        "CONFIRMED": 3,
+        "IN_PROGRESS": 4,
+        "COMPLETED": 5
+    }
+    current_step = progress.get(booking.booking_status, 1)
+
+    start = datetime.combine(booking.booking_date, booking.booking_time)
+    start = timezone.make_aware(start)
+    booking.eta = start - timedelta(minutes=10) #ETA estimated time for arrival
+    tab = request.GET.get("tab", "upcoming")
+
+    context={
+        'booking':booking,
+        'current_step':current_step,
+        'booked_time':booking.created_at,
+        'assigned_time':booking.assigned_at,
+        'confirmed_time': booking.confirmed_at,
+        'started_time': booking.started_at,
+        'completed_time': booking.completed_at,
+        'cancelled_time': booking.cancelled_at,
+        'tab':tab,
+        }
+    return render(request,'customer/bookings/booking_detail.html',context)
+
+
+
+
+def download_invoice(request, booking_id):
+
+    booking = get_object_or_404(
+        Booking,
+        id=booking_id,
+        customer=request.user
+    )
+
+    if not booking.payment or booking.payment.status != "SUCCESS":
+        return HttpResponse("Invoice not available")
+
+    response = HttpResponse(content_type="application/pdf")
+    response['Content-Disposition'] = f'attachment; filename="LocalServe_invoice_{booking.id}.pdf"'
+
+    p = canvas.Canvas(response, pagesize=A4)
+
+    width, height = A4
+
+    # Title
+    p.setFont("Helvetica-Bold", 18)
+    p.drawString(50, height - 50, "LocalServe Invoice")
+
+    # Booking Info
+    p.setFont("Helvetica", 11)
+
+    p.drawString(50, height - 100, f"Invoice No: INV-{booking.id}")
+    p.drawString(50, height - 120, f"Booking ID: AG-{booking.id}")
+    p.drawString(50, height - 140, f"Customer: {request.user.username}")
+
+    p.drawString(350, height - 100, f"Date: {booking.booking_date}")
+    p.drawString(350, height - 120, f"Payment: {booking.payment.get_payment_method_display()}")
+
+    # Table Data
+    data = [
+        ["Service", "Duration", "Amount"],
+        [
+            booking.service.title,
+            f"{booking.service.duration_minutes} min",
+            f"₹{booking.total_price}"
+        ],
+    ]
+
+    table = Table(data, colWidths=[250, 120, 120])
+
+    table.setStyle(TableStyle([
+        ("BACKGROUND", (0,0), (-1,0), colors.lightgrey),
+        ("GRID", (0,0), (-1,-1), 1, colors.grey),
+        ("FONTNAME", (0,0), (-1,0), "Helvetica-Bold"),
+        ("ALIGN", (2,1), (2,1), "RIGHT"),
+    ]))
+
+    table.wrapOn(p, width, height)
+    table.drawOn(p, 50, height - 250)
+
+    # Total Section
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(350, height - 300, f"Total Paid: ₹{booking.total_price}")
+
+    # Footer
+    p.setFont("Helvetica", 10)
+    p.drawString(50, 80, "Thank you for using LocalServe!")
+    p.drawString(50, 60, "This is a system generated invoice.")
+
+    p.showPage()
+    p.save()
+
+    return response
+
+
+
 
 
 @login_required
@@ -177,6 +283,7 @@ def booking_success(request, booking_id):
     payment.save()
 
     booking.booking_status = 'CONFIRMED'
+    booking.confirmed_at = timezone.now()
     booking.save()
     return render(request,'customer/bookings/booking_success.html', {'booking':booking})
 
@@ -247,6 +354,7 @@ def stripe_webhook(request):
                     # Optional: Update booking status
                     booking = payment.booking
                     booking.booking_status = "CONFIRMED"
+                    booking.confirmed_at = timezone.now()
                     booking.save()
 
         except Payment.DoesNotExist:
@@ -302,6 +410,7 @@ def admin_bookings(request):
     return render(request, 'admin/bookings/admin_bookings.html',context)
 
 
+
 @staff_member_required
 def admin_booking_detail(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
@@ -311,8 +420,10 @@ def admin_booking_detail(request, booking_id):
         form = BookingAssignForm(request.POST, instance=booking)
         if form.is_valid():
             booking = form.save()
-            if booking.worker: #worker stored in booking
+
+            if booking.worker and not booking.assigned_at: #worker stored in booking
                 booking.booking_status = "ASSIGNED"
+                booking.assigned_at = timezone.now()
             booking.save()  #worker is saved
             return redirect('admin_booking_detail', booking_id = booking.id)
     else:
@@ -326,6 +437,7 @@ def start_service_admin(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
     if booking.booking_status == "CONFIRMED":
         booking.booking_status = "IN_PROGRESS"
+        booking.started_at = timezone.now()
         booking.save()
     return redirect("admin_booking_detail", booking_id=booking.id)
 
@@ -334,6 +446,7 @@ def complete_service_admin(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
     if booking.booking_status == "IN_PROGRESS":
         booking.booking_status = "COMPLETED"
+        booking.completed_at = timezone.now()
         booking.save()
         
     return redirect("admin_booking_detail", booking_id=booking.id)

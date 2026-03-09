@@ -81,7 +81,7 @@
                         {% if booking.booking_status == "ASSIGNED" %}
                             <a href="{% url 'booking_step3' booking.id %}?flow=payment" class="btn btn-primary btn-sm">Pay Now </a>
                         {% endif %}
-                        <a href="{% url 'booking_detail' booking.id %}" class="btn btn-secondary btn-sm">Track</a>
+                        <a href="{% url 'booking_detail' booking.id %}?tab=upcoming" class="btn btn-secondary btn-sm">Track</a>
                         {% if booking.booking_status == "PENDING" or booking.booking_status == "ASSIGNED" %}
                         <a href="{% url 'cancel_booking' booking.id %}" class="btn btn-danger btn-sm">Cancel</a>
                         {% endif %}
@@ -111,39 +111,65 @@
                         <span class="badge badge-danger">Cancelled</span>
                         {% endif %}
                     </div>
-                    <div>
-                        <p>₹{{ booking.total_price }}</p>
+                    <div style="text-align:right; min-width:200px;">
 
+                        <!-- Price -->
+                        <p class="font-bold text-lg" style="margin-bottom:8px;">
+                            ₹{{ booking.total_price }}
+                        </p>
+
+                        <!-- View Details -->
+                        <a href="{% url 'booking_detail' booking.id %}?tab=history"
+                        class="btn btn-outline btn-sm"
+                        style="margin-bottom:10px;">
+                        View Details
+                        </a>
+
+                        <!-- Review Section -->
                         {% if booking.booking_status == "COMPLETED" %}
-                        {% if booking.review %}
-                            <span class="badge badge-success">Reviewed</span>
-                        {% else %}
 
-                        <form method="POST" action="{% url 'add_review' booking.id %}">
-                            {% csrf_token %}
+                            {% if booking.review %}
+                                <div>
+                                    <span class="badge badge-success">Reviewed</span>
+                                </div>
+                            {% else %}
 
-                            <select name="rating" style="padding:4px; margin-bottom:5px;">
-                                <option value="5">5 ⭐</option>
-                                <option value="4">4 ⭐</option>
-                                <option value="3">3 ⭐</option>
-                                <option value="2">2 ⭐</option>
-                                <option value="1">1 ⭐</option>
-                            </select>
+                            <form method="POST"
+                                action="{% url 'add_review' booking.id %}"
+                                style="margin-top:8px;">
 
-                            <input type="text" name="comment" placeholder="Write review"
-                            style="padding:4px; width:150px; margin-bottom:5px;">
+                                {% csrf_token %}
 
-                            <button class="btn btn-secondary btn-sm">
-                                Submit
-                            </button>
+                                <div style="display:flex; gap:6px; align-items:center;">
 
-                        </form>
+                                    <select name="rating" style="padding:4px;">
+                                        <option value="5">5 ⭐</option>
+                                        <option value="4">4 ⭐</option>
+                                        <option value="3">3 ⭐</option>
+                                        <option value="2">2 ⭐</option>
+                                        <option value="1">1 ⭐</option>
+                                    </select>
+
+                                    <input type="text"
+                                        name="comment"
+                                        placeholder="Write review"
+                                        style="padding:4px; width:120px;">
+
+                                    <button class="btn btn-secondary btn-sm">
+                                        Submit
+                                    </button>
+
+                                </div>
+
+                            </form>
+
+                            {% endif %}
 
                         {% endif %}
-                    {% endif %}
 
                     </div>
                 </div>
+
                 {% empty %}
                 <p>No history bookings</p>
                 {% endfor %}
