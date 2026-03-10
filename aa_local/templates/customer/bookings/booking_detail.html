@@ -5,7 +5,14 @@
 
     {% block content %}
             <div class="breadcrumbs">
-                <a href="{% url 'booking' %}?tab={{ tab }}">My Bookings</a> <i class="fa-solid fa-chevron-right text-xs"></i>
+                {% if source == "dashboard" %}
+
+                <a href="{% url 'customer_dashboard' %}">Dashboard</a>
+
+                {% else %}
+                <a href="{% url 'booking' %}?tab={{ tab }}">My Bookings</a> 
+                {% endif %}
+                <i class="fa-solid fa-chevron-right text-xs"></i>
                 <span>#AG-{{ booking.id }}</span>
             </div>
 
@@ -74,54 +81,7 @@
 
 
                         <!-- Timeline -->
-                        {% comment %} <div
-                            style="margin-bottom: 2rem; position: relative; padding-left: 2rem; border-left: 2px solid #E2E8F0;">
-                            <div style="margin-bottom: 2rem; position: relative;">
-                                <div
-                                    style="position: absolute; left: -2.6rem; top: 0; width: 20px; height: 20px; background: var(--color-success); border-radius: 50%; border: 4px solid white;">
-                                </div>
-                                <h4 style="margin: 0;">Booking Confirmed</h4>
-                                <p class="text-sm text-light">{{ booking.created_at }}</p>
-                            </div>
-
-                            <!-- Worker assigned -->
-                            {% if booking.booking_status != "PENDING" %}
-                            <div style="margin-bottom: 2rem; position: relative;">
-                                <div
-                                    style="position: absolute; left: -2.6rem; top: 0; width: 20px; height: 20px; background: var(--color-success); border-radius: 50%; border: 4px solid white;">
-                                </div>
-                                <h4 style="margin: 0;">Professional Assigned</h4>
-                                 <p class="text-sm text-light">Dec 19, 10:00 AM</p>
-                            {% endif %}
-
-                            <!-- Payment confirmed -->
-                            {% if booking.booking_status == "CONFIRMED" or booking.booking_status == "IN_PROGRESS" or booking.booking_status == "COMPLETED" %}
-                            <div style="margin-bottom: 0; position: relative;">
-                                <div
-                                    style="position: absolute; left: -2.6rem; top: 0; width: 20px; height: 20px; background: var(--color-primary); border-radius: 50%; border: 4px solid white;">
-                                </div>
-                                <h4 style="margin: 0;">Payment Completed</h4>
-                                <p class="text-sm text-light">Dec 20, 09:15 AM</p> 
-                            </div>
-                            {% endif %}
-                            <!-- Service in progress -->
-                            {% if booking.booking_status == "IN_PROGRESS" or booking.booking_status == "COMPLETED" %}
-                            <div style="margin-bottom: 2rem; position: relative;">
-                                <div style="position:absolute;left:-2.6rem;top:0;width:20px;height:20px;background:var(--color-primary);border-radius:50%;border:4px solid white;"></div>
-                                <h4 style="margin:0;">Service In Progress</h4>
-                            </div>
-                            {% endif %}
-
-                            <!-- Completed -->
-                            {% if booking.booking_status == "COMPLETED" %}
-                            <div style="margin-bottom:0; position: relative;">
-                                <div style="position:absolute;left:-2.6rem;top:0;width:20px;height:20px;background:var(--color-success);border-radius:50%;border:4px solid white;"></div>
-                                <h4 style="margin:0;">Service Completed</h4>
-                            </div>
-                            {% endif %}
-
-
-                        </div> {% endcomment %}
+                        
 
                     {% if booking.booking_status != "CANCELLED" %}
                         <div class="progress-container">

@@ -70,15 +70,15 @@
                     <div class="flex justify-between items-center">
                         <div class="flex items-center gap-lg">
                             <div
-                                style="width: 50px; height: 50px; background: #F1F5F9; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                                <i class="fa-solid fa-broom text-light"></i>
+                                style="width: 50px; height: 50px; background: {{ upcoming_booking.service.category.color }}; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                <i class="{{ upcoming_booking.service.category.icon }}" style="color: {{ upcoming_booking.service.category.icon_color }};"></i>
                             </div>
                             <div>
                                 <h4 class="margin-bottom: 0.25rem">{{ upcoming_booking.service.title }}</h4>
                                 <p class="text-sm text-light">{{ upcoming_booking.service.category.name }} • {{ upcoming_booking.city }}</p>
                             </div>
                         </div>
-                        <a href="{% url 'booking_detail' upcoming_booking.id %}" class="btn btn-secondary btn-sm">View Details</a>
+                        <a href="{% url 'booking_detail' upcoming_booking.id %}?from=dashboard" class="btn btn-secondary btn-sm">View Details</a>
                         
                     </div>
                 </div>

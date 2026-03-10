@@ -93,6 +93,7 @@ def booking_detail(request, booking_id):
     start = timezone.make_aware(start)
     booking.eta = start - timedelta(minutes=10) #ETA estimated time for arrival
     tab = request.GET.get("tab", "upcoming")
+    source = request.GET.get("from")
 
     context={
         'booking':booking,
@@ -104,6 +105,7 @@ def booking_detail(request, booking_id):
         'completed_time': booking.completed_at,
         'cancelled_time': booking.cancelled_at,
         'tab':tab,
+        'source':source,
         }
     return render(request,'customer/bookings/booking_detail.html',context)
 

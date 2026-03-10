@@ -130,7 +130,7 @@
     </section>
 
     <!-- Banner Section -->
-    <section class="section" style="background-color: white;">
+    {% comment %} <section class="section" style="background-color: white;">
         <div class="container">
             <div class="card" style="background: #0F172A; color: white; display: grid; grid-template-columns: 1fr 1fr; overflow: hidden; border: none;">
                 <div style="padding: 4rem;">
@@ -144,7 +144,62 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> {% endcomment %}
+
+
+    {% comment %} <section class="section" style="background-color: white;">
+    <div class="container">
+
+        <div class="flex justify-between items-center" style="margin-bottom:2rem;">
+            <h2>Popular Services</h2>
+            <a href="{% url 'services' %}" class="text-primary font-bold">
+                View All <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-3 grid-gap">
+
+            {% for service in best_services %}
+
+            <div class="card card-hover flex flex-col">
+
+                <div style="height:160px; background:#E2E8F0; border-radius: var(--radius-md) var(--radius-md) 0 0; display:flex; align-items:center; justify-content:center;">
+                    {% if service.image %}
+                        <img src="{{ service.image.url }}" style="width:100%; height:100%; object-fit:cover;">
+                    {% else %}
+                        <i class="fa-solid fa-screwdriver-wrench fa-3x text-light"></i>
+                    {% endif %}
+                </div>
+
+                <div style="padding:1.5rem; flex-grow:1;">
+                    <h3 style="margin-bottom:0.5rem;">{{ service.title }}</h3>
+                    <p class="text-light text-sm">{{ service.description|truncatewords:12 }}</p>
+                </div>
+
+                <div class="flex justify-between items-center" style="padding:0 1.5rem 1.5rem;">
+                    <span class="font-bold">₹{{ service.price }}</span>
+                    <a href="{% url 'services_detail' service.id %}" class="btn btn-outline btn-sm">View</a>
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+</section> {% endcomment %}
+
+
+
+
+
+
+
+
+
+
+
 
     <!-- Why Choose Us -->
     <section class="section" id="about">
