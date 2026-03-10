@@ -45,7 +45,7 @@
                 {% else %}
                 <i class="fa-solid fa-broom fa-3x text-light"></i>
                 {% endif %}
-                {% if service.is_best_seller %}
+                {% if service.id in top_ids %}
                 <span class="badge badge-warning" style="position: absolute; top: 1rem; right: 1rem;">Best
                             Seller</span>
                 {% endif %}

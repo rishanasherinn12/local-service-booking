@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from decimal import Decimal
 from django.views.decorators.cache import never_cache
 from .forms import WorkerForm, ServiceForm
-from django.db.models import Q, Avg
+from django.db.models import Q, Avg, Count
 from bookings.models import Review
 
 
@@ -16,8 +16,8 @@ def services(request):
     category = request.GET.get('category') 
     search = request.GET.get('search','')
     services = Service.objects.select_related('category').annotate(
-        avg_rating=Avg('bookings__review__rating')
-    )
+        avg_rating=Avg('bookings__review__rating'),total_bookings=Count('bookings')
+    ).order_by('-total_bookings')
 
     if category and category!= "all":
         services = services.filter(category_id = category)
@@ -26,8 +26,20 @@ def services(request):
         services = services.filter(Q(title__icontains = search)|Q(description__icontains = search)|Q(category__name__icontains=search))
 
     categories = ServiceCategory.objects.filter(is_active = True).distinct()
+    top_services = Service.objects.annotate(
+    total_bookings=Count('bookings')
+    ).order_by('-total_bookings')[:3]
+
+    top_ids = [s.id for s in top_services]
     
-    return render(request,'customer/services/service.html',{'services':services, 'categories': categories, 'selected_category':category, 'search':search})
+    context ={
+        'services':services, 
+        'categories': categories, 
+        'selected_category':category, 
+        'search':search,
+        "top_ids": top_ids
+    }
+    return render(request,'customer/services/service.html',context)
 
 
 
