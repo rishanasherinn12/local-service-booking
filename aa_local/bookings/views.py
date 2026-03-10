@@ -31,6 +31,9 @@ from reportlab.pdfgen import canvas
 from reportlab.platypus import Table, TableStyle
 from reportlab.lib import colors
 
+#celery
+# from .tasks import send_booking_email
+
 # Create your views here.
 @login_required
 def booking(request):
@@ -214,6 +217,13 @@ def booking_step1(request,service_id):
         end_datetime = start_datetime + timedelta(minutes=duration)      
         # booking.end_time = end_datetime.time()                                   
         booking = Booking.objects.create(customer = request.user, service = service, booking_date = booking_date, booking_time = booking_time, end_time=end_datetime.time(), total_price=total_amount,booking_status="PENDING")
+
+        # send_booking_email.delay(
+        #     request.user.email,
+        #     service.title,
+        #     booking_date,
+        #     booking_time
+        # )       #.delay() sends the tasks to celery queue
 
         return redirect('booking_step2', booking.id) 
     

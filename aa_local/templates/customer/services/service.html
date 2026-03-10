@@ -64,6 +64,12 @@
                 </div>
             </div>
         </div>
+        {% empty %}
+
+        <div style="grid-column: 1 / -1; text-align:center; padding:40px;">
+            <h3>No services found</h3>
+            <p class="text-light">Try searching for another service.</p>
+        </div>
         {%  endfor %}
 
     </div>

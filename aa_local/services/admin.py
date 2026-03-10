@@ -3,7 +3,7 @@ from .models import ServiceCategory, Service, Worker
 from django.utils.html import format_html
 
 class ServiceCategoryAdmin(admin.ModelAdmin):
-    list_display=('name','icon','is_active')
+    list_display=('name','icon','color','icon_color','is_active')
 
 class ServiceAdmin(admin.ModelAdmin):
     list_display=('title','category','price', 'image_preview','includes','is_active')

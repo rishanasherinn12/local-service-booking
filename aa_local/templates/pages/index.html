@@ -22,7 +22,7 @@
                 <a href="{% url 'home' %}" class="nav-link active">Home</a>
                 <a href="#services" class="nav-link">Services</a>
                 <a href="#about" class="nav-link">About Us</a>
-                <a href="{% url "customer_login" %}" class="btn btn-primary btn-sm">Login / Sign Up</a>
+                <a href="{% url 'customer_login' %}" class="btn btn-primary btn-sm">Login / Sign Up</a>
                 <a href="{% url 'login_admin' %}" class="btn btn-secondary btn-sm">Partner Access</a>
             </nav>
         </div>
@@ -34,11 +34,30 @@
             <h1>Expert Home Services,<br>Instantly Booked.</h1>
             <p>The most reliable app for home cleaning, beauty, appliance repair, and more. Trusted by over 1 million happy customers.</p>
             
-            <div class="search-bar">
-                <i class="fa-solid fa-location-dot text-primary" style="padding-left: 1.5rem;"></i>
-                <input type="text" class="search-input" placeholder="Search for 'AC Repair' or 'Deep Cleaning'...">
-                <button class="search-btn">Find Services</button>
-            </div>
+            
+
+
+        <form method="GET" action="{% url 'services' %}" class="search-bar">
+
+            <i class="fa-solid fa-location-dot text-primary" style="padding-left: 1.5rem;"></i>
+
+            <input 
+                type="text"
+                name="search"
+                class="search-input"
+                placeholder="Search for 'AC Repair' or 'Deep Cleaning'..."
+            >
+
+            <input type="hidden" name="category" value="all">
+
+            <button type="submit" class="search-btn">
+                Find Services
+            </button>
+
+        </form>
+
+
+
 
             <div class="flex justify-center gap-md" style="margin-top: 2rem; opacity: 0.8;">
                 <span class="text-sm"><i class="fa-solid fa-check-circle text-success"></i> Verified Professionals</span>
@@ -53,20 +72,34 @@
         <div class="container">
             <div class="flex justify-between items-center" style="margin-bottom: 2rem;">
                 <h2>Explore Categories</h2>
-                <a href="services.html" class="text-primary font-bold">View All <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="{% url 'services' %}" class="text-primary font-bold">View All <i class="fa-solid fa-arrow-right"></i></a>
             </div>
 
             <div class="grid grid-cols-4 grid-gap">
                 <!-- Category 1 -->
-                <a href="services.html" class="card card-hover flex flex-col items-center justify-center text-center p-6" style="cursor: pointer;">
-                    <div style="background: #E0F2FE; width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
-                        <i class="fa-solid fa-broom text-primary fa-xl"></i>
-                    </div>
-                    <h4 class="margin-bottom: 0.5rem">Cleaning</h4>
-                    <span class="text-sm text-light">Home, Kitchen, Bathroom</span>
-                </a>
+                 {% for category in categories %}
+                <a href="{% url 'services' %}?category={{ category.id }}" class="card card-hover flex flex-col items-center justify-center text-center p-6" style="cursor: pointer;">
+                    {% comment %} <div style="background: {{ category.color }}; width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+                        <i class="{{ category.icon }}  text-primary fa-xl"></i>
+                    </div> {% endcomment %}
+                    <div style="background: {{ category.color }};
+                        width:64px;
+                        height:64px;
+                        border-radius:50%;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        margin-bottom:1rem;">
 
-                <!-- Category 2 -->
+                        <i class="{{ category.icon }} fa-xl"
+                        style="color: {{ category.icon_color }};"></i>
+
+                        </div>
+                    <h4 class="margin-bottom: 0.5rem">{{ category.name }}</h4>
+                    <span class="text-sm text-light">{{ category.services.count }} Services</span>
+                </a>
+                {% endfor %}
+                {% comment %} <!-- Category 2 -->
                 <a href="services.html" class="card card-hover flex flex-col items-center justify-center text-center p-6" style="cursor: pointer;">
                     <div style="background: #FCE7F3; width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
                         <i class="fa-solid fa-spa text-primary fa-xl" style="color: #DB2777;"></i>
@@ -91,7 +124,7 @@
                     </div>
                     <h4 class="margin-bottom: 0.5rem">Painting</h4>
                     <span class="text-sm text-light">Wall, Furniture, Exterior</span>
-                </a>
+                </a> {% endcomment %}
             </div>
         </div>
     </section>
@@ -182,6 +215,6 @@
         </div>
     </footer>
 
-    <script src="js/script.js"></script>
+    <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>

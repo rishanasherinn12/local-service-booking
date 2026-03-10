@@ -4,8 +4,10 @@ from bookings.models import Booking
 from services.models import Worker
 from django.utils import timezone
 from bookings.models import Booking, Review
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
+@login_required
 def customer_dashboard(request):
     user = request.user
 
@@ -33,7 +35,7 @@ def customer_dashboard(request):
 
 
 
-
+@login_required
 def admin_dashboard(request):
     total_revenue = Booking.objects.filter(booking_status = "COMPLETED").aggregate(total=Sum("total_price"))["total"] or 0
     total_bookings = Booking.objects.count()

@@ -10,7 +10,7 @@ from bookings.models import Review
 
 
 # Create your views here.
-@login_required
+
 @never_cache
 def services(request):
     category = request.GET.get('category') 
@@ -23,7 +23,7 @@ def services(request):
         services = services.filter(category_id = category)
 
     if search:
-        services = services.filter(Q(title__icontains = search)|Q(description__icontains = search))
+        services = services.filter(Q(title__icontains = search)|Q(description__icontains = search)|Q(category__name__icontains=search))
 
     categories = ServiceCategory.objects.filter(is_active = True).distinct()
     
@@ -31,7 +31,7 @@ def services(request):
 
 
 
-@login_required
+
 @never_cache
 def service_detail(request,id):
     service = get_object_or_404(Service,id=id)
@@ -44,6 +44,7 @@ def service_detail(request,id):
         'service':service,'tax':tax,'total':total,'reviews': reviews,'avg_rating':avg_rating,
     }
     return render(request,'customer/services/service_detail.html',context)
+
 
 
 
@@ -100,10 +101,14 @@ def add_category(request):
     if request.method == "POST":
         name = request.POST.get("name")
         icon = request.POST.get("icon")
+        color = request.POST.get("color")
+        icon_color = request.POST.get("icon_color")
 
         ServiceCategory.objects.create(
             name=name,
             icon=icon,
+            color=color,
+            icon_color=icon_color,
             is_active=True
         )
 
