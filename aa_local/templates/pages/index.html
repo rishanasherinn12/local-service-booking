@@ -302,16 +302,16 @@
                     <h4>Company</h4>
                     <ul>
                         <li><a href="#about">About Us</a></li>
-                        <li><a href="#">Terms of Use</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="terms">Terms of Use</a></li>
+                        <li><a href="privacy">Privacy Policy</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
                     <h4>For Partners</h4>
                     <ul>
                         {% comment %} <li><a href="login_admin.html">Register as Professional</a></li> {% endcomment %}
-                        <li><a href="#">Success Stories</a></li>
-                        <li><a href="#">Partner Support</a></li>
+                        <li><a href="{% url 'success_stories' %}">Success Stories</a></li>
+                        <li><a href="{% url 'partner_support' %}">Partner Support</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">

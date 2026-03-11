@@ -20,3 +20,17 @@ def home(request):
         "total_bookings": total_bookings,
     }
     return render (request,'pages/index.html',context)
+
+
+
+def terms(request):
+    return render(request,"pages/terms.html")
+
+def privacy(request):
+    return render(request,"pages/privacy.html")
+
+def success_stories(request):
+    return render(request,"pages/success_stories.html")
+
+def partner_support(request):
+    return render(request,"pages/partner_support.html")
