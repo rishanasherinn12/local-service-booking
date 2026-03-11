@@ -99,32 +99,7 @@
                     <span class="text-sm text-light">{{ category.services.count }} Services</span>
                 </a>
                 {% endfor %}
-                {% comment %} <!-- Category 2 -->
-                <a href="services.html" class="card card-hover flex flex-col items-center justify-center text-center p-6" style="cursor: pointer;">
-                    <div style="background: #FCE7F3; width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
-                        <i class="fa-solid fa-spa text-primary fa-xl" style="color: #DB2777;"></i>
-                    </div>
-                    <h4 class="margin-bottom: 0.5rem">Beauty & Spa</h4>
-                    <span class="text-sm text-light">Manicure, Pedicure, Facial</span>
-                </a>
-
-                <!-- Category 3 -->
-                <a href="services.html" class="card card-hover flex flex-col items-center justify-center text-center p-6" style="cursor: pointer;">
-                    <div style="background: #FEF3C7; width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
-                        <i class="fa-solid fa-screwdriver-wrench text-primary fa-xl" style="color: #D97706;"></i>
-                    </div>
-                    <h4 class="margin-bottom: 0.5rem">Appliance Repair</h4>
-                    <span class="text-sm text-light">AC, Washing Machine, RO</span>
-                </a>
-
-                <!-- Category 4 -->
-                <a href="services.html" class="card card-hover flex flex-col items-center justify-center text-center p-6" style="cursor: pointer;">
-                    <div style="background: #DCFCE7; width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
-                        <i class="fa-solid fa-paint-roller text-primary fa-xl" style="color: #16A34A;"></i>
-                    </div>
-                    <h4 class="margin-bottom: 0.5rem">Painting</h4>
-                    <span class="text-sm text-light">Wall, Furniture, Exterior</span>
-                </a> {% endcomment %}
+                
             </div>
         </div>
     </section>
@@ -147,7 +122,7 @@
     </section> {% endcomment %}
 
 
-    {% comment %} <section class="section" style="background-color: white;">
+     {% comment %} <section class="section" style="background-color: white;">
     <div class="container">
 
         <div class="flex justify-between items-center" style="margin-bottom:2rem;">
@@ -188,10 +163,93 @@
         </div>
 
     </div>
-</section> {% endcomment %}
+</section>  {% endcomment %}
 
+<section class="section">
+    <div class="container">
 
+        <!-- Dark Container -->
+        <div class="card"
+        style="
+        background:linear-gradient(135deg,#0F172A,#1E293B);
+        color:white;
+        padding:3rem;
+        border:none;
+        border-radius:16px;
+        box-shadow:0 10px 30px rgba(0,0,0,0.25);
+        ">
 
+        <!-- Section Header -->
+        <div class="flex justify-between items-center" style="margin-bottom:2rem;">
+            <h2 style="color:white;">Popular Services</h2>
+
+            <a href="{% url 'services' %}" class="text-primary font-bold">
+                View All <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <!-- Services Grid -->
+        <div class="grid grid-cols-3 grid-gap">
+
+            {% for service in best_services %}
+
+            <div class="card card-hover flex flex-col"
+            style="background:#1E293B; border:none; color:white;">
+
+                <!-- Service Image -->
+                <div style="height:160px; border-radius:var(--radius-md) var(--radius-md) 0 0; overflow:hidden; position:relative;">
+
+                    <!-- Popular Badge -->
+                    <span class="badge badge-warning"
+                    style="position:absolute; top:10px; right:10px;">
+                        🔥 Popular
+                    </span>
+
+                    {% if service.image %}
+                        <img src="{{ service.image.url }}"
+                        style="width:100%; height:100%; object-fit:cover;">
+                    {% else %}
+                        <div style="height:100%; display:flex; align-items:center; justify-content:center;">
+                            <i class="fa-solid fa-screwdriver-wrench fa-3x text-light"></i>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Service Content -->
+                <div style="padding:1.5rem; flex-grow:1;">
+                    <h3 style="margin-bottom:0.5rem; color:white;">
+                        {{ service.title }}
+                    </h3>
+
+                    <p style="color:#94A3B8; font-size:14px;">
+                        {{ service.description|truncatewords:12 }}
+                    </p>
+                </div>
+
+                <!-- Price + Button -->
+                <div class="flex justify-between items-center"
+                style="padding:0 1.5rem 1.5rem;">
+
+                    <span class="font-bold text-primary">
+                        ₹{{ service.price }}
+                    </span>
+
+                    <a href="{% url 'services_detail' service.id %}"
+                    class="btn btn-primary btn-sm">
+                        View
+                    </a>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        </div>
+    </div>
+</section>
 
 
 
@@ -243,7 +301,7 @@
                 <div class="footer-col">
                     <h4>Company</h4>
                     <ul>
-                        <li><a href="#">About Us</a></li>
+                        <li><a href="#about">About Us</a></li>
                         <li><a href="#">Terms of Use</a></li>
                         <li><a href="#">Privacy Policy</a></li>
                     </ul>
@@ -251,7 +309,7 @@
                 <div class="footer-col">
                     <h4>For Partners</h4>
                     <ul>
-                        <li><a href="login_admin.html">Register as Professional</a></li>
+                        {% comment %} <li><a href="login_admin.html">Register as Professional</a></li> {% endcomment %}
                         <li><a href="#">Success Stories</a></li>
                         <li><a href="#">Partner Support</a></li>
                     </ul>
@@ -259,8 +317,8 @@
                 <div class="footer-col">
                     <h4>Contact</h4>
                     <ul>
-                        <li><a href="#">help@antigravity.com</a></li>
-                        <li><a href="#">+1 (555) 123-4567</a></li>
+                        <li><a href="#">help@localserve.com</a></li>
+                        {% comment %} <li><a href="#">+1 (555) 123-4567</a></li> {% endcomment %}
                     </ul>
                 </div>
             </div>
