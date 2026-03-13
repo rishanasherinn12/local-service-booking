@@ -11,21 +11,23 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 import os
 from pathlib import Path
-from dotenv import load_dotenv
+
 from decouple import config
+
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv(BASE_DIR / '.env')
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -153,12 +155,11 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
-DEFAULT_FROM_EMAIL = 'Local Service Booking <rishanasherin.project@gmail.com>'
-
-
+# DEFAULT_FROM_EMAIL = 'Local Service Booking <rishanasherin.project@gmail.com>'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 #google auth
 SITE_ID = 1
 
@@ -167,8 +168,8 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend', #allauth
 ]
 
-client_id = os.getenv('client_id')
-secret_google_auth = os.getenv('secret')
+client_id = config('client_id')
+secret_google_auth = config('secret')
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
@@ -216,3 +217,9 @@ STRIPE_PUBLIC_KEY = config("STRIPE_PUBLIC_KEY")
 STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY")
 
 STRIPE_WEBHOOK_SECRET = config("STRIPE_WEBHOOK_SECRET")
+
+
+
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'

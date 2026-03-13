@@ -33,6 +33,7 @@ from reportlab.lib import colors
 
 #celery
 # from .tasks import send_booking_email
+from .tasks import send_booking_confirmation_email
 
 # Create your views here.
 @login_required
@@ -297,6 +298,14 @@ def booking_success(request, booking_id):
     booking.booking_status = 'CONFIRMED'
     booking.confirmed_at = timezone.now()
     booking.save()
+
+    # ✅ Trigger Celery task
+    send_booking_confirmation_email.delay(
+        booking.customer.email,
+        booking.service.title,
+        booking.booking_date,
+        booking.booking_time
+    )
     return render(request,'customer/bookings/booking_success.html', {'booking':booking})
 
 
