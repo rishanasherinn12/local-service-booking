@@ -25,16 +25,16 @@
             <div class="card p-4" style="background: #F8FAFC; border: none; margin-bottom: 2rem; text-align: left;">
                 <div class="flex justify-between items-center" style="margin-bottom: 0.5rem;">
                     <span class="text-light text-sm">Booking ID</span>
-                    <span class="font-bold">#AG-8823</span>
+                    <span class="font-bold">#AG-{{ booking.id }}</span>
                 </div>
                 <div class="flex justify-between items-center">
                     <span class="text-light text-sm">Date & Time</span>
-                    <span class="font-bold">20 Dec, 10:00 AM</span>
+                    <span class="font-bold">{{ booking.booking_date }}, {{ booking.booking_time }}</span>
                 </div>
             </div>
 
             <div class="flex flex-col gap-sm">
-                <a href="booking_detail" class="btn btn-primary btn-block">Track Booking</a>
+                <a href="{% url 'booking_detail' booking.id %}" class="btn btn-primary btn-block">Track Booking</a>
                 <a href="{% url 'customer_dashboard' %}" class="btn btn-secondary btn-block">Go to Dashboard</a>
             </div>
         </div>
