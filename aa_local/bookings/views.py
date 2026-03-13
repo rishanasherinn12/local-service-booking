@@ -410,7 +410,14 @@ def admin_bookings(request):
     # Booking.objects.filter(booking_status="REQUESTED",created_at__lt=expiry_time).update(booking_status="CANCELLED")
 
     bookings = Booking.objects.filter(booking_status__in = ["PENDING","ASSIGNED", "CONFIRMED","IN_PROGRESS","COMPLETED"]).select_related(
-        "customer","service","worker").annotate(
+        "customer","service","worker")
+    
+     # STATUS FILTER
+    status = request.GET.get("booking_status")
+    if status:
+        bookings = bookings.filter(booking_status=status)
+
+    bookings = bookings.annotate(
             priority=Case(
                 When(booking_status="PENDING", then=Value(1)),
                 When(booking_status="ASSIGNED", then=Value(2)),
@@ -425,7 +432,6 @@ def admin_bookings(request):
     for booking in bookings:
         start = datetime.combine(booking.booking_date, booking.booking_time)
         booking.end_time = start + timedelta(minutes=booking.service.duration_minutes)
-
 
     context = {"bookings":bookings}
     return render(request, 'admin/bookings/admin_bookings.html',context)
