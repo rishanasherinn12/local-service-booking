@@ -54,7 +54,7 @@
                         <!-- 7. Set as Default -->
                         <div class="form-group">
                             <div class="flex items-center gap-sm">
-                                <input type="checkbox" id="defaultaddr" name="is_default" style="width: 1.2rem; height: 1.2rem; cursor: pointer;">
+                                <input type="checkbox" id="defaultaddr" name="is_default" style="width: 1.2rem; height: 1.2rem; cursor: pointer;" {% if address.is_default %}checked{% endif %}>
                                 <label for="defaultaddr" class="form-label"
                                     style="margin-bottom: 0; cursor: pointer;">Make this my default address</label>
                             </div>

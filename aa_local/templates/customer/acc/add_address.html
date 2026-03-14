@@ -5,7 +5,7 @@
 
             <!-- Breadcrumbs -->
             <div class="breadcrumbs">
-                <a href="profile.html">Profile</a> <span
+                <a href="{% url 'profile' %}">Profile</a> <span
                     style="margin: 0 0.5rem; color: var(--color-text-light);">></span> Add Address
             </div>
 
@@ -55,7 +55,7 @@
                         <!-- 7. Set as Default -->
                         <div class="form-group">
                             <div class="flex items-center gap-sm">
-                                <input type="checkbox" id="defaultaddr"
+                                <input type="checkbox" id="defaultaddr" name="is_default"
                                     style="width: 1.2rem; height: 1.2rem; cursor: pointer;">
                                 <label for="defaultaddr" class="form-label"
                                     style="margin-bottom: 0; cursor: pointer;">Make this my default address</label>

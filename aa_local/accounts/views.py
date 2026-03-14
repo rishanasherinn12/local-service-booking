@@ -15,6 +15,12 @@ def register(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
+
+            #  Check duplicate phone
+            if CustomerProfile.objects.filter(phone=form.cleaned_data['phone']).exists():
+                messages.error(request, "Phone number already registered")
+                return redirect('register')
+
             user = form.save(commit = False)
             user.email = form.cleaned_data['email']
             user.save()
@@ -103,26 +109,6 @@ def profile(request):
 
 
 
-
-
-
-# @login_required(login_url='customer_login')
-# def add_address(request):
-#     customer = CustomerProfile.objects.get(user = request.user)
-#     if request.method == "POST":
-#         label = request.POST.get('label')
-#         full_address = request.POST.get('full_address')
-#         city = request.POST.get('city')
-#         state = request.POST.get('state')
-#         pincode = request.POST.get('pincode')
-#         landmark = request.POST.get('landmark')
-#         Address.objects.create(customer = customer, label = label, full_address = full_address, city = city, state = state, pincode = pincode, landmark = landmark)
-#         messages.success(request, "Adress added successfully")
-#         return redirect('profile')
-    
-#     return render(request, 'customer/acc/add_address.html')
-
-
 @login_required(login_url='customer_login')
 def add_address(request):
     customer = CustomerProfile.objects.get(user = request.user)
@@ -133,10 +119,19 @@ def add_address(request):
             address = form.save(commit = False)
             # address.customer = request.user.customer_profile
             address.customer = customer
+            # convert checkbox value properly
+            address.is_default = request.POST.get("is_default") == "on"
+
+            # ensure only one default address
+            if address.is_default:
+                Address.objects.filter(customer=customer).update(is_default=False)
+
+            if not Address.objects.filter(customer=customer, is_default=True).exists():
+                address.is_default = True
 
             address.save()
         
-            messages.success(request, "Adress added successfully")
+            messages.success(request, "Address added successfully")
 
             # ✅ redirect back to booking step2 if next exists
             if next_url:
@@ -153,24 +148,6 @@ def add_address(request):
     return render(request, 'customer/acc/add_address.html',{'form':form,'next_url': next_url})
 
 
-# @login_required
-# def edit_address(request, pk):
-#     profile = request.user.customer_profile
-#     address = get_object_or_404(Address, pk=pk, customer=profile)
-#     if request.method == "POST":
-#         address.label = request.POST.get('label')
-#         address.full_address = request.POST.get('full_address')
-#         address.city = request.POST.get('city')
-#         address.state = request.POST.get('state')
-#         address.pincode = request.POST.get('pincode')
-#         address.landmark = request.POST.get('landmark')
-#         address.is_default = bool(request.POST.get('is_default'))
-#         address.save()
-
-#         messages.success(request,'Address Updated Successfully')
-#         return redirect('profile')
-    
-#     return render(request, 'customer/acc/edit_address.html',{'address':address})
 
 
 @login_required
@@ -180,7 +157,13 @@ def edit_address(request, pk):
     if request.method == "POST":
         form = AddressForm(request.POST, instance = address)
         if form.is_valid():
-            form.save()
+            address = form.save(commit=False)
+            address.is_default = request.POST.get("is_default") == "on"
+            # ensure only one default address
+            if address.is_default:
+                Address.objects.filter(customer=profile).exclude(pk=address.pk).update(is_default=False)
+
+            address.save()
             messages.success(request,'Address Updated Successfully')
             return redirect('profile')
         else:

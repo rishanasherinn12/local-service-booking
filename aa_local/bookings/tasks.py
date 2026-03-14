@@ -2,8 +2,6 @@ from celery import shared_task
 from django.core.mail import send_mail, get_connection
 from django.conf import settings
 
-print("EMAIL USER:", settings.EMAIL_HOST_USER)
-print("EMAIL PASS:", settings.EMAIL_HOST_PASSWORD[:5])
 
 @shared_task
 def send_booking_confirmation_email(email, service, date, time):
@@ -11,14 +9,19 @@ def send_booking_confirmation_email(email, service, date, time):
     subject = "Booking Confirmed"
 
     message = f"""
-Your booking is confirmed.
+    Hello,
 
-Service: {service}
-Date: {date}
-Time: {time}
+    Your booking has been successfully confirmed.
 
-Thank you for choosing LocalServe.
-"""
+    Service : {service}
+    Date    : {date}
+    Time    : {time}
+
+    Thank you for choosing LocalServe.
+
+    Regards,
+    LocalServe Team
+    """.strip()
 
     connection = get_connection(
         backend="django.core.mail.backends.smtp.EmailBackend",

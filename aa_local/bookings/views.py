@@ -78,7 +78,7 @@ def cancel_booking(request, booking_id):
 
 
 
-
+@login_required
 def booking_detail(request, booking_id):
     booking = get_object_or_404(Booking.objects.select_related("service","worker","payment"), id=booking_id, customer = request.user)
     progress = {
@@ -200,7 +200,35 @@ def booking_step1(request,service_id):
         booking_date = datetime.strptime(booking_date, "%Y-%m-%d").date()
         booking_time = datetime.strptime(booking_time, "%H:%M").time()
 
+        print("Selected time:", booking_time)
+        print("Current time:", timezone.localtime())
+
+        # prevent past date
+        if booking_date < date.today():
+            messages.error(request, "You cannot book a past date.")
+            return redirect("booking_step1", service_id)
+        # prevent past time for today
+        now = timezone.localtime()
+
+        selected_datetime = datetime.combine(booking_date, booking_time)
+        selected_datetime = timezone.make_aware(selected_datetime)
+
+        if selected_datetime <= now:
+            messages.error(request, "Please select a future time.")
+            return redirect("booking_step1", service_id)
         
+        # prevent user booking same time slot
+        existing_slot = Booking.objects.filter(
+            customer=request.user,
+            booking_date=booking_date,
+            booking_time=booking_time,
+            booking_status__in=["PENDING","ASSIGNED","CONFIRMED","IN_PROGRESS"]
+        ).exists()
+
+        if existing_slot:
+            messages.error(request, "You already have a booking at this time.")
+            return redirect("booking_step1", service_id)
+                
         service_price = service.price
         tax = service_price * Decimal("0.18")
         total_amount = service_price + tax
@@ -221,13 +249,6 @@ def booking_step1(request,service_id):
         # booking.end_time = end_datetime.time()                                   
         booking = Booking.objects.create(customer = request.user, service = service, booking_date = booking_date, booking_time = booking_time, end_time=end_datetime.time(), total_price=total_amount,booking_status="PENDING")
 
-        # send_booking_email.delay(
-        #     request.user.email,
-        #     service.title,
-        #     booking_date,
-        #     booking_time
-        # )       #.delay() sends the tasks to celery queue
-
         return redirect('booking_step2', booking.id) 
     
     context={
@@ -240,6 +261,7 @@ def booking_step1(request,service_id):
 
 
 
+@login_required
 def booking_step2(request,booking_id):
     booking = get_object_or_404(Booking, id=booking_id, customer=request.user)
     customer_profile = request.user.customer_profile
@@ -271,6 +293,7 @@ def booking_step2(request,booking_id):
 
 
 
+@login_required
 def booking_step3(request,booking_id):
     booking= get_object_or_404(Booking, id=booking_id, customer=request.user)
 
@@ -288,6 +311,7 @@ def booking_step3(request,booking_id):
     return render(request,'customer/bookings/booking_step3.html',context)
 
 
+@login_required
 def booking_success(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id,customer=request.user)
     payment = booking.payment
@@ -310,6 +334,7 @@ def booking_success(request, booking_id):
 
 
 
+@login_required
 def stripe_checkout(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
 
@@ -321,7 +346,8 @@ def stripe_checkout(request, booking_id):
         messages.error(request,"Online payment requires minimum ₹50.")
         return redirect("booking_step3", booking.id)
      # Amount must be in paisa (INR) => multiply by 100
-    amount = int(booking.service.price * 100) 
+    # amount = int(booking.service.price * 100) 
+    amount = int(booking.total_price * 100) 
 
     success_url = request.build_absolute_uri(reverse('booking_success', args=[booking.id]))+"?session_id={CHECKOUT_SESSION_ID}"
     cancel_url = request.build_absolute_uri(reverse('booking_step3', args=[booking.id]))

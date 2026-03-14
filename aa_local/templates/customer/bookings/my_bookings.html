@@ -140,9 +140,9 @@
 
                                 {% csrf_token %}
 
-                                <div style="display:flex; gap:6px; align-items:center;">
+                                <div class="flex items-center gap-sm">
 
-                                    <select name="rating" style="padding:4px;">
+                                    <select name="rating" class="form-select form-select-sm">
                                         <option value="5">5 ⭐</option>
                                         <option value="4">4 ⭐</option>
                                         <option value="3">3 ⭐</option>
@@ -153,7 +153,7 @@
                                     <input type="text"
                                         name="comment"
                                         placeholder="Write review"
-                                        style="padding:4px; width:120px;">
+                                        class="form-input" style="height:32px; width:160px;">
 
                                     <button class="btn btn-secondary btn-sm">
                                         Submit

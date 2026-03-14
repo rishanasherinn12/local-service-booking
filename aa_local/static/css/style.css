@@ -614,3 +614,8 @@ font-weight:600;
     font-size: 0.9rem;
     cursor: pointer;
 }
+.form-input {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--color-border);
+}

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Antigravity Services | Home Services, On Demand</title>
+    <title>LocalServe Services | On Demand</title>
     <link rel="stylesheet" href="{% static 'css/style.css'  %}">
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -14,7 +14,7 @@
     <!-- Header -->
     <header class="navbar">
         <div class="container nav-container">
-            <a href="index.html" class="logo">
+            <a href="{% url 'home' %}" class="logo">
                 <i class="fa-solid fa-bolt text-primary"></i>
                 <div>Local<span>Serve</span></div>
             </a>
@@ -55,9 +55,6 @@
             </button>
 
         </form>
-
-
-
 
             <div class="flex justify-center gap-md" style="margin-top: 2rem; opacity: 0.8;">
                 <span class="text-sm"><i class="fa-solid fa-check-circle text-success"></i> Verified Professionals</span>
@@ -105,65 +102,6 @@
     </section>
 
     <!-- Banner Section -->
-    {% comment %} <section class="section" style="background-color: white;">
-        <div class="container">
-            <div class="card" style="background: #0F172A; color: white; display: grid; grid-template-columns: 1fr 1fr; overflow: hidden; border: none;">
-                <div style="padding: 4rem;">
-                    <span class="badge badge-warning" style="margin-bottom: 1rem;">New Offer</span>
-                    <h2 style="color: white; margin-bottom: 1rem;">Get 20% off on your first AC Service</h2>
-                    <p style="color: #94A3B8; margin-bottom: 2rem;">Summer is here! Ensure your AC is running efficiently with our expert servicing. Use code SUMMER20.</p>
-                    <a href="services.html" class="btn btn-primary">Book Now</a>
-                </div>
-                <div style="background: linear-gradient(45deg, #0F766E, #1E293B); display: flex; align-items: center; justify-content: center;">
-                    <i class="fa-solid fa-fan fa-6x" style="opacity: 0.5; color: white;"></i>
-                </div>
-            </div>
-        </div>
-    </section> {% endcomment %}
-
-
-     {% comment %} <section class="section" style="background-color: white;">
-    <div class="container">
-
-        <div class="flex justify-between items-center" style="margin-bottom:2rem;">
-            <h2>Popular Services</h2>
-            <a href="{% url 'services' %}" class="text-primary font-bold">
-                View All <i class="fa-solid fa-arrow-right"></i>
-            </a>
-        </div>
-
-        <div class="grid grid-cols-3 grid-gap">
-
-            {% for service in best_services %}
-
-            <div class="card card-hover flex flex-col">
-
-                <div style="height:160px; background:#E2E8F0; border-radius: var(--radius-md) var(--radius-md) 0 0; display:flex; align-items:center; justify-content:center;">
-                    {% if service.image %}
-                        <img src="{{ service.image.url }}" style="width:100%; height:100%; object-fit:cover;">
-                    {% else %}
-                        <i class="fa-solid fa-screwdriver-wrench fa-3x text-light"></i>
-                    {% endif %}
-                </div>
-
-                <div style="padding:1.5rem; flex-grow:1;">
-                    <h3 style="margin-bottom:0.5rem;">{{ service.title }}</h3>
-                    <p class="text-light text-sm">{{ service.description|truncatewords:12 }}</p>
-                </div>
-
-                <div class="flex justify-between items-center" style="padding:0 1.5rem 1.5rem;">
-                    <span class="font-bold">₹{{ service.price }}</span>
-                    <a href="{% url 'services_detail' service.id %}" class="btn btn-outline btn-sm">View</a>
-                </div>
-
-            </div>
-
-            {% endfor %}
-
-        </div>
-
-    </div>
-</section>  {% endcomment %}
 
 <section class="section">
     <div class="container">
