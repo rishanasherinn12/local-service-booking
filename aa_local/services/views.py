@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Service, ServiceCategory, Worker
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
+
 from decimal import Decimal
 from django.views.decorators.cache import never_cache
 from .forms import WorkerForm, ServiceForm
@@ -14,10 +16,10 @@ from bookings.models import Review
 @never_cache
 def services(request):
     category = request.GET.get('category') 
-    search = request.GET.get('search','')
-    services = Service.objects.select_related('category').annotate(
+    search = request.GET.get('search','').strip()
+    services = Service.objects.filter(is_active=True).select_related('category').annotate(
         avg_rating=Avg('bookings__review__rating'),total_bookings=Count('bookings')
-    ).order_by('-total_bookings')
+    ).order_by('-total_bookings','-avg_rating')
 
     if category and category!= "all":
         services = services.filter(category_id = category)
@@ -25,10 +27,8 @@ def services(request):
     if search:
         services = services.filter(Q(title__icontains = search)|Q(description__icontains = search)|Q(category__name__icontains=search))
 
-    categories = ServiceCategory.objects.filter(is_active = True).distinct()
-    top_services = Service.objects.annotate(
-    total_bookings=Count('bookings')
-    ).order_by('-total_bookings')[:3]
+    categories = ServiceCategory.objects.filter(is_active = True)
+    top_services = services[:3]
 
     top_ids = [s.id for s in top_services]
     
@@ -46,7 +46,7 @@ def services(request):
 
 @never_cache
 def service_detail(request,id):
-    service = get_object_or_404(Service,id=id)
+    service = get_object_or_404(Service,id=id, is_active=True)
     
     tax = service.price * Decimal ("0.18")
     total = service.price + tax
@@ -63,14 +63,14 @@ def service_detail(request,id):
 #--------------------------------
 
 
-@login_required
+@staff_member_required
 @never_cache
 def admin_services(request):
     services = Service.objects.select_related('category').all()
     return render(request,'admin/services/admin_services.html',{'services':services})
 
 
-@login_required
+@staff_member_required
 @never_cache
 def add_service(request):
     
@@ -80,13 +80,18 @@ def add_service(request):
             form.save()
             messages.success(request, 'Service added successfully')
             return redirect('admin_services')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, error)
     else:
         form = ServiceForm()
     
     return render(request,'admin/services/add_service.html', {'form':form})
 
 
-@login_required
+@staff_member_required
+@never_cache
 def edit_service(request,pk):
     services = get_object_or_404(Service,pk=pk)
     
@@ -96,19 +101,29 @@ def edit_service(request,pk):
             form.save()
             messages.success(request,"Service updated sucessfully!")
             return redirect('admin_services')
+        
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, error)
+                    
     else:
         form = ServiceForm(instance=services)
 
     return render(request,'admin/services/edit_service.html',{'form':form,"services": services})
 
 
+@staff_member_required
+@never_cache
 def delete_service(request,pk):
     services = get_object_or_404(Service,pk=pk)
     services.delete()
     messages.success(request,"Service deleted successfully!")
     return redirect('admin_services')
 
-@login_required
+
+@staff_member_required
+@never_cache
 def add_category(request):
     if request.method == "POST":
         name = request.POST.get("name")
@@ -131,11 +146,16 @@ def add_category(request):
 
 
 
+@staff_member_required
+@never_cache
 def admin_workers(request):
     workers = Worker.objects.all()
     return render(request, 'admin/workers/admin_workers.html',{'workers':workers})  
 
 
+
+@staff_member_required
+@never_cache
 def add_worker(request):
     if request.method == "POST":
        form = WorkerForm(request.POST, request.FILES)
@@ -153,6 +173,8 @@ def add_worker(request):
 
 
 
+@staff_member_required
+@never_cache
 def edit_worker(request,pk):
     worker = get_object_or_404(Worker, pk=pk)
     if request.method == "POST":
@@ -171,7 +193,8 @@ def edit_worker(request,pk):
 
 
 
-
+@staff_member_required
+@never_cache
 def worker_jobs(request,pk):
     worker = get_object_or_404(Worker, pk=pk)
     jobs = worker.bookings.select_related("customer","service").order_by("-created_at")
@@ -179,7 +202,8 @@ def worker_jobs(request,pk):
     return render(request, 'admin/workers/worker_jobs.html',context)  
 
 
-@login_required
+@staff_member_required
+@never_cache
 def worker_profile(request, pk):
     worker = get_object_or_404(Worker, pk=pk)
 

@@ -5,9 +5,12 @@ from services.models import Worker
 from django.utils import timezone
 from bookings.models import Booking, Review
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
+from django.contrib.admin.views.decorators import staff_member_required
 
 # Create your views here.
 @login_required
+@never_cache
 def customer_dashboard(request):
     user = request.user
 
@@ -35,7 +38,8 @@ def customer_dashboard(request):
 
 
 
-@login_required
+@staff_member_required
+@never_cache
 def admin_dashboard(request):
     total_revenue = Booking.objects.filter(booking_status = "COMPLETED").aggregate(total=Sum("total_price"))["total"] or 0
     total_bookings = Booking.objects.count()

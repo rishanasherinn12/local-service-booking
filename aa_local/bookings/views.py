@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import date, timedelta,datetime
 from django.contrib import messages
 from decimal import Decimal
+from django.views.decorators.cache import never_cache
 
 import stripe
 from django.conf import settings
@@ -37,9 +38,10 @@ from .tasks import send_booking_confirmation_email
 
 # Create your views here.
 @login_required
+@never_cache
 def booking(request):
     tab = request.GET.get("tab","upcoming") #default upcoming
-    bookings=Booking.objects.select_related('service','worker','payment').filter(customer=request.user).order_by('-created_at')
+    bookings=Booking.objects.select_related('service','worker','payment','customer').filter(customer=request.user).order_by('-created_at')
     upcoming = bookings.filter(booking_status__in=["PENDING", "ASSIGNED", "CONFIRMED", "IN_PROGRESS"]).annotate(
         priority=Case(
         When(booking_status="IN_PROGRESS", then=Value(1)),
@@ -67,6 +69,11 @@ def booking(request):
 @login_required
 def cancel_booking(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id, customer=request.user)
+    #  Prevent cancelling paid bookings
+    if booking.payment and booking.payment.status == "SUCCESS":
+        messages.error(request,"Paid bookings cannot be cancelled.")
+        return redirect("booking")
+
     if booking.booking_status in ["PENDING","ASSIGNED"]:
         booking.booking_status = "CANCELLED"
         booking.cancelled_at = timezone.now()
@@ -79,6 +86,7 @@ def cancel_booking(request, booking_id):
 
 
 @login_required
+@never_cache
 def booking_detail(request, booking_id):
     booking = get_object_or_404(Booking.objects.select_related("service","worker","payment"), id=booking_id, customer = request.user)
     progress = {
@@ -186,6 +194,7 @@ def download_invoice(request, booking_id):
 
 
 @login_required
+@never_cache
 def booking_step1(request,service_id):
     
     service = get_object_or_404(Service, id=service_id)
@@ -199,9 +208,6 @@ def booking_step1(request,service_id):
         
         booking_date = datetime.strptime(booking_date, "%Y-%m-%d").date()
         booking_time = datetime.strptime(booking_time, "%H:%M").time()
-
-        print("Selected time:", booking_time)
-        print("Current time:", timezone.localtime())
 
         # prevent past date
         if booking_date < date.today():
@@ -262,6 +268,7 @@ def booking_step1(request,service_id):
 
 
 @login_required
+@never_cache
 def booking_step2(request,booking_id):
     booking = get_object_or_404(Booking, id=booking_id, customer=request.user)
     customer_profile = request.user.customer_profile
@@ -294,6 +301,7 @@ def booking_step2(request,booking_id):
 
 
 @login_required
+@never_cache
 def booking_step3(request,booking_id):
     booking= get_object_or_404(Booking, id=booking_id, customer=request.user)
 
@@ -312,9 +320,14 @@ def booking_step3(request,booking_id):
 
 
 @login_required
+@never_cache
 def booking_success(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id,customer=request.user)
-    payment = booking.payment
+    # safety check
+    payment = getattr(booking, "payment", None)
+    if not payment:
+        return redirect("booking")
+    
     payment.status = 'SUCCESS'
     payment.paid_at = timezone.now()
     payment.save()
@@ -336,7 +349,7 @@ def booking_success(request, booking_id):
 
 @login_required
 def stripe_checkout(request, booking_id):
-    booking = get_object_or_404(Booking, id=booking_id)
+    booking = get_object_or_404(Booking, id=booking_id, customer=request.user)
 
     if booking.booking_status != "ASSIGNED":
         messages.error(request, "Booking not approved yet.")
@@ -345,8 +358,7 @@ def stripe_checkout(request, booking_id):
     if booking.service.price < 50:
         messages.error(request,"Online payment requires minimum ₹50.")
         return redirect("booking_step3", booking.id)
-     # Amount must be in paisa (INR) => multiply by 100
-    # amount = int(booking.service.price * 100) 
+     # Amount must be in paisa (INR) => multiply by 100 
     amount = int(booking.total_price * 100) 
 
     success_url = request.build_absolute_uri(reverse('booking_success', args=[booking.id]))+"?session_id={CHECKOUT_SESSION_ID}"
@@ -363,7 +375,7 @@ def stripe_checkout(request, booking_id):
     
     # Create or update Payment record
     payment,created = Payment.objects.get_or_create(booking=booking, defaults={
-        "amount":booking.service.price,
+        "amount":booking.total_price,
         "status":"PENDING"
     })
     payment.stripe_session_id = session.id

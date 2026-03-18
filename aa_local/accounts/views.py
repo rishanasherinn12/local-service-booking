@@ -37,8 +37,13 @@ def register(request):
     return render(request, 'customer/acc/register_customer.html', {'form': form})
 
 
-
+@never_cache
 def customer_login(request):
+    if request.user.is_authenticated:
+        if request.user.is_staff:
+            return redirect('admin_dashboard')
+        return redirect('customer_dashboard')
+    
     if request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -46,6 +51,10 @@ def customer_login(request):
         user = authenticate(request, username = username , password =password)     
 
         if user is not None:
+            if not user.is_active:
+                messages.error(request,"Your account has been blocked")
+                return redirect('customer_login')
+            
             login(request, user) #create session
             if user.is_staff:
                 return redirect('admin_dashboard')
@@ -110,6 +119,7 @@ def profile(request):
 
 
 @login_required(login_url='customer_login')
+@never_cache
 def add_address(request):
     customer = CustomerProfile.objects.get(user = request.user)
     next_url = request.GET.get('next')  # ✅ capture redirect url
@@ -151,6 +161,7 @@ def add_address(request):
 
 
 @login_required
+@never_cache
 def edit_address(request, pk):
     profile = request.user.customer_profile
     address = get_object_or_404(Address, pk=pk, customer=profile)
@@ -178,6 +189,7 @@ def edit_address(request, pk):
 
 
 @login_required
+@never_cache
 def delete_address(request,pk):
     profile = request.user.customer_profile
     address = get_object_or_404(Address, pk=pk, customer=profile)
@@ -191,9 +203,11 @@ def delete_address(request,pk):
 @login_required
 def logout_user(request):
     logout(request)
-    return redirect('home')
+    return redirect('customer_login')
+    
 
 
+@never_cache
 def login_admin(request):
     if request.method == "POST":
         username = request.POST.get('username')

@@ -6,10 +6,10 @@ from django.db.models import Count, Avg
 
 # Create your views here.
 def home(request):
-    categories = ServiceCategory.objects.filter(is_active = True)[:4]
-    best_services = Service.objects.filter(is_active=True).annotate(total_bookings=Count("bookings")).order_by("-total_bookings")[:3]
-    top_workers = Worker.objects.filter(is_active=True).order_by("-rating")[:4]
-    total_customers = Booking.objects.values("customer").distinct().count()
+    categories = ServiceCategory.objects.filter(is_active = True).prefetch_related("services")[:4]
+    best_services = Service.objects.filter(is_active=True).annotate(total_bookings=Count("bookings"),avg_rating=Avg("bookings__review__rating")).order_by("-total_bookings", "-avg_rating")[:3]
+    top_workers = Worker.objects.filter(is_active=True).order_by("-rating","-created_at")[:4]
+    total_customers = Booking.objects.values("customer_id").distinct().count()
     total_bookings = Booking.objects.count()
     
     context={

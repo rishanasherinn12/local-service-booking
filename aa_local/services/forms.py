@@ -65,3 +65,22 @@ class ServiceForm(forms.ModelForm):
             raise forms.ValidationError("Duration must be greater than 0 minutes.")
         
         return duration
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        title = cleaned_data.get("title")
+        category = cleaned_data.get("category")
+
+        if title and category:
+            qs = Service.objects.filter(title__iexact=title, category=category)
+
+            # Ignore current instance when editing
+            if self.instance.pk:
+                qs = qs.exclude(pk=self.instance.pk)
+
+            if qs.exists():
+                raise forms.ValidationError(
+                    "A service with this title already exists in this category."
+                )
+
+        return cleaned_data
