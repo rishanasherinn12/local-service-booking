@@ -1,2 +1,7 @@
 .env 
 dv/ 
+# SQLite database
+db.sqlite3*
+
+# JSON data dump
+*.json
