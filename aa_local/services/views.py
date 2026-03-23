@@ -7,41 +7,92 @@ from django.contrib.admin.views.decorators import staff_member_required
 from decimal import Decimal
 from django.views.decorators.cache import never_cache
 from .forms import WorkerForm, ServiceForm
-from django.db.models import Q, Avg, Count
+from django.db.models import Q, Avg, Count,Case, When, IntegerField
 from bookings.models import Review
+from django.db.models.functions import Coalesce
 
 
 # Create your views here.
 
+# @never_cache
+# def services(request):
+#     category = request.GET.get('category') 
+#     search = request.GET.get('search','').strip()
+#     base_services = Service.objects.filter(is_active=True).select_related('category').annotate(
+#         avg_rating=Coalesce(Avg('bookings__review__rating'),0.0),total_bookings=Count('bookings', distinct=True)
+#     )
+
+#     top_services = base_services.order_by('-total_bookings','-avg_rating')[:3]
+
+#     top_ids = [s.id for s in top_services]
+
+#      # Services shown on page
+#     services = base_services.select_related('category').order_by(
+#         'bestseller_order','-total_bookings', '-avg_rating'
+#     )
+
+#     if category and category!= "all":
+#         services = services.filter(category_id = category)
+
+#     if search:
+#         services = services.filter(Q(title__icontains = search)|Q(description__icontains = search)|Q(category__name__icontains=search))
+
+#     categories = ServiceCategory.objects.filter(is_active = True)
+    
+#     context ={
+#         'services':services, 
+#         'categories': categories, 
+#         'selected_category':category, 
+#         'search':search,
+#         "top_ids": top_ids
+#     }
+#     return render(request,'customer/services/service.html',context)
+
+
 @never_cache
 def services(request):
-    category = request.GET.get('category') 
+    category = request.GET.get('category')
     search = request.GET.get('search','').strip()
-    services = Service.objects.filter(is_active=True).select_related('category').annotate(
-        avg_rating=Avg('bookings__review__rating'),total_bookings=Count('bookings')
-    ).order_by('-total_bookings','-avg_rating')
 
-    if category and category!= "all":
-        services = services.filter(category_id = category)
+    base_services = Service.objects.filter(is_active=True).select_related('category').annotate(
+        avg_rating=Coalesce(Avg('bookings__review__rating'), 0.0),
+        total_bookings=Count('bookings', distinct=True)
+    )
+
+    # top 3 best sellers
+    top_services = base_services.order_by('-total_bookings','-avg_rating')[:3]
+    top_ids = list(top_services.values_list('id', flat=True))
+
+    # add flag to push best sellers to top
+    services = base_services.annotate(
+        bestseller_order=Case(
+            When(id__in=top_ids, then=0),
+            default=1,
+            output_field=IntegerField()
+        )
+    ).order_by('bestseller_order','-total_bookings','-avg_rating')
+
+    if category and category != "all":
+        services = services.filter(category_id=category)
 
     if search:
-        services = services.filter(Q(title__icontains = search)|Q(description__icontains = search)|Q(category__name__icontains=search))
+        services = services.filter(
+            Q(title__icontains=search) |
+            Q(description__icontains=search) |
+            Q(category__name__icontains=search)
+        )
 
-    categories = ServiceCategory.objects.filter(is_active = True)
-    top_services = services[:3]
+    categories = ServiceCategory.objects.filter(is_active=True)
 
-    top_ids = [s.id for s in top_services]
-    
-    context ={
-        'services':services, 
-        'categories': categories, 
-        'selected_category':category, 
-        'search':search,
-        "top_ids": top_ids
+    context = {
+        'services': services,
+        'categories': categories,
+        'selected_category': category,
+        'search': search,
+        'top_ids': top_ids
     }
+
     return render(request,'customer/services/service.html',context)
-
-
 
 
 @never_cache
